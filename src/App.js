@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import Menu from './components/Menu';
+import Footer from './components/Footer';
+import Categories from './components/Categories';
+import Products from './components/Products';
 
-function App() {
+const Container = styled.div`
+  padding: 20px;
+`;
+
+const App = () => {
+  const [view, setView] = useState('categories');
+
+  const renderView = () => {
+    switch (view) {
+      case 'categories':
+        return <Categories />;
+      case 'products':
+        return <Products />;
+      // Lisää muut näkymät
+      default:
+        return <Categories />;
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Menu />
+      <Container>{renderView()}</Container>
+      <Footer setView={setView} />
+    </>
   );
-}
+};
 
 export default App;
