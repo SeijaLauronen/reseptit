@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/reseptit/static/css/main.e6c13ad2.css",
+    "main.js": "/reseptit/static/js/main.d3dc40ce.js",
+    "index.html": "/reseptit/index.html",
+    "main.e6c13ad2.css.map": "/reseptit/static/css/main.e6c13ad2.css.map",
+    "main.d3dc40ce.js.map": "/reseptit/static/js/main.d3dc40ce.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.d3dc40ce.js"
+  ]
+}
