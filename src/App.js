@@ -1,35 +1,43 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import Menu from './components/Menu';
-import Footer from './components/Footer';
 import Categories from './components/Categories';
 import Products from './components/Products';
+import Footer from './components/Footer'; // Varmista, että tämä rivi on mukana
+import styled from 'styled-components'; //containeria varten 
 
+// Määritellään Container-komponentti täällä, voisi myös tehdä erillisen komponentin
 const Container = styled.div`
   padding: 20px;
+  margin-top: 50px; /* Adjust based on your header/menu height */
+  margin-bottom: 50px; /* Adjust based on your footer height */
 `;
 
+
 const App = () => {
-  const [view, setView] = useState('categories');
+  const [refresh, setRefresh] = useState(false);
+  const [view, setView] = useState('categories'); // Lisätty view-tila
+
+  const handleDatabaseCleared = () => {
+    setRefresh(!refresh); // Vaihdetaan refresh tila päivittämisen laukaisemiseksi
+  };
 
   const renderView = () => {
     switch (view) {
       case 'categories':
-        return <Categories />;
+        return <Categories refresh={refresh} />;
       case 'products':
-        return <Products />;
-      // Lisää muut näkymät
+        return <Products refresh={refresh} />;
       default:
-        return <Categories />;
+        return <Categories refresh={refresh} />;
     }
   };
 
   return (
-    <>
-      <Menu />
+    <div>
+      <Menu onDatabaseCleared={handleDatabaseCleared} />
       <Container>{renderView()}</Container>
       <Footer setView={setView} />
-    </>
+    </div>
   );
 };
 

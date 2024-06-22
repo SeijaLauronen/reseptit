@@ -4,52 +4,77 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { clearDB } from '../database';
 
-const MenuButton = styled.button`
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-`;
-
 const MenuContainer = styled.div`
   position: fixed;
   top: 0;
-  left: ${props => (props.open ? '0' : '-250px')};
-  width: 250px;
-  height: 100%;
-  background: #333;
-  color: #fff;
-  transition: left 0.3s ease;
-  z-index: 1000;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  padding: 10px 20px;
   display: flex;
-  flex-direction: column;
-  padding: 20px;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
 `;
 
-const MenuItem = styled.div`
-  margin: 10px 0;
+const MenuList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  position: fixed;
+  top: 50px; /* Alkaa menupalkin alapuolelta */
+  left: 0;
+  width: 250px;
+  height: calc(100% - 50px); /* Korkeus suhteutettu menupalkkiin */
+  background-color: white;
+  transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(-100%)')};
+  transition: transform 0.3s ease-in-out;
+  z-index: 999;
+`;
+
+const MenuItem = styled.li`
+  padding: 10px;
+  text-decoration: none;
+  color: black;
   cursor: pointer;
+
+  &:hover {
+    background-color: #ddd;
+  }
 `;
 
-const Menu = () => {
-  const [open, setOpen] = useState(false);
+const MenuIcon = styled.div`
+  cursor: pointer;
+  color: white;
+  font-size: 24px;
+`;
 
-  const handleClearDB = async () => {
-    await clearDB();
-    alert('Tietokanta tyhjennetty');
+const Menu = ({ onDatabaseCleared }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDeleteDatabase = async () => {
+    const confirmDelete = window.confirm('Are you sure you want to delete the database? This action cannot be undone.');
+    if (confirmDelete) {
+      await clearDB();
+      alert('Database cleared');
+      onDatabaseCleared();
+    }
+    setIsOpen(false); // Suljetaan menu joka tapauksessa
   };
 
   return (
     <>
-      <MenuButton onClick={() => setOpen(!open)}>
-        <FontAwesomeIcon icon={faBars} size="2x" />
-      </MenuButton>
-      <MenuContainer open={open}>
-        <MenuItem onClick={handleClearDB}>Tyhjennä tietokanta</MenuItem>
-        {/* Lisää muita menuvalintoja */}
+      <MenuContainer>
+        <MenuIcon onClick={() => setIsOpen(!isOpen)}>
+          <FontAwesomeIcon icon={faBars} />
+        </MenuIcon>
       </MenuContainer>
+      <MenuList isOpen={isOpen}>
+        <MenuItem onClick={handleDeleteDatabase}>Delete Database</MenuItem>
+        {/* Add other menu options as needed */}
+        <MenuItem>Test Menu Item</MenuItem>
+        <MenuItem>Test Menu Item 2</MenuItem>
+      </MenuList>
     </>
   );
 };

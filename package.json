@@ -1,5 +1,5 @@
 {
-  "homepage":"https://seijalauronen.github.io/reseptit",
+  "homepage": "https://seijalauronen.github.io/reseptit",
   "name": "reseptit",
   "version": "0.1.0",
   "private": true,
@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "idb": "^8.0.0",
     "react": "^18.3.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
     "styled-components": "^6.1.11",
