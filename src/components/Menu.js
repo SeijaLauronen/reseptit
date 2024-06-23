@@ -17,7 +17,12 @@ const MenuContainer = styled.div`
   z-index: 1000;
 `;
 
-const MenuList = styled.ul`
+//const MenuList = styled.ul`
+//tuli virhe: React does not recognize the `isOpen` prop on a DOM element
+//styled.ul.withConfig määrittelee, että isOpen-prop ei kuulu DOM-elementtiin, joten se ei välity sinne.
+const MenuList = styled.ul.withConfig({
+    shouldForwardProp: (prop) => prop !== 'isOpen'
+  })`
   list-style-type: none;
   padding: 0;
   margin: 0;
