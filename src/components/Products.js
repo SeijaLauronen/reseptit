@@ -62,6 +62,8 @@ const Products = ({ refresh = false }) => {
     setNewProduct('');
     const allProducts = await store.getAll();
     setProducts(allProducts);
+    setFilter(''); // Clear the filter after adding a new product
+    filterProducts(''); // Reset the filter
   };
 
   const handleDeleteProduct = async (id) => {
@@ -71,6 +73,7 @@ const Products = ({ refresh = false }) => {
     await store.delete(id);
     const allProducts = await store.getAll();
     setProducts(allProducts);
+    filterProducts(filter); // Reapply the filter after deleting a product
   };
 
   const handleEditProduct = (product) => {
@@ -88,6 +91,7 @@ const Products = ({ refresh = false }) => {
     const allProducts = await store.getAll();
     setProducts(allProducts);
     setEditingProduct(null);
+    filterProducts(filter); // Reapply the filter after saving a product
   };
 
   const handleDragEnd = async (result) => {
