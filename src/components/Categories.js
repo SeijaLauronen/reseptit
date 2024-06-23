@@ -72,12 +72,12 @@ const Categories = ({ refresh = false }) => {
   };
 
   const handleDragEnd = async (result) => {
+
     if (!result.destination) return;
     const reorderedCategories = Array.from(categories);
     const [removed] = reorderedCategories.splice(result.source.index, 1);
     reorderedCategories.splice(result.destination.index, 0, removed);
     setCategories(reorderedCategories);
-
     // Save the reordered categories to the database if needed
   };
 
