@@ -98,18 +98,26 @@ const Products = ({ refresh = false }) => {
   };
 
   const groupedProducts = categories.reduce((acc, category) => {
-    acc[category.id] = {
-      name: category.name,
-      products: products.filter(product => product.categoryId == category.id),
-    };
+    const categoryProducts = products.filter(product => product.categoryId == category.id);
+    if (categoryProducts.length > 0) {
+      acc.push({
+        id: category.id,
+        name: `${category.name} (${categoryProducts.length})`,
+        products: categoryProducts,
+      });
+    }
     return acc;
-  }, {});
+  }, []);
 
   // Add products with no category under 'Uncategorized'
-  groupedProducts['uncategorized'] = {
-    name: 'Uncategorized',
-    products: products.filter(product => !product.categoryId),
-  };
+  const uncategorizedProducts = products.filter(product => !product.categoryId);
+  if (uncategorizedProducts.length > 0) {
+    groupedProducts.unshift({
+      id: 'uncategorized',
+      name: `Uncategorized (${uncategorizedProducts.length})`,
+      products: uncategorizedProducts,
+    });
+  }
 
   return (
     <Container>
@@ -131,12 +139,12 @@ const Products = ({ refresh = false }) => {
           />
           <button onClick={handleAddProduct}>Add</button>
           <DragDropContext onDragEnd={handleDragEnd}>
-            {Object.keys(groupedProducts).map(categoryId => (
-              <Accordion key={categoryId} title={groupedProducts[categoryId].name}>
-                <Droppable droppableId={`droppable-${categoryId}`}>
+            {groupedProducts.map(category => (
+              <Accordion key={category.id} title={category.name}>
+                <Droppable droppableId={`droppable-${category.id}`}>
                   {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {groupedProducts[categoryId].products.map((product, index) => (
+                      {category.products.map((product, index) => (
                         <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
                           {(provided) => (
                             <ProductItem
