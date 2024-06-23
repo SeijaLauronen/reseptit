@@ -1,179 +1,133 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { getDB } from '../database';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { getDB } from '../database';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash, faStar, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
-const ProductsContainer = styled.div`
+const Container = styled.div`
   padding: 20px;
 `;
 
 const ProductItem = styled.div`
   padding: 10px;
+  margin: 10px 0;
   border: 1px solid #ccc;
-  margin: 5px 0;
+  border-radius: 4px;
+  background-color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-const Input = styled.input`
-  padding: 5px;
-  margin-right: 10px;
+const IconWrapper = styled.span`
+  margin-left: 10px;
+  cursor: pointer;
 `;
 
-const Button = styled.button`
-  padding: 5px 10px;
-`;
-
-const Products = ({ refresh }) => {
+const Products = ({ refresh = false }) => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [newProduct, setNewProduct] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [viewByCategory, setViewByCategory] = useState(true);
+  const [newProduct, setNewProduct] = useState('');
 
-  const fetchProducts = async () => {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const db = await getDB();
+      const tx = db.transaction('products', 'readonly');
+      const store = tx.objectStore('products');
+      const allProducts = await store.getAll();
+      setProducts(allProducts);
+    };
+
+    fetchProducts();
+  }, [refresh]);
+
+  const handleAddProduct = async () => {
     const db = await getDB();
-    const tx = db.transaction('products', 'readonly');
+    const tx = db.transaction('products', 'readwrite');
     const store = tx.objectStore('products');
+    await store.add({ name: newProduct });
+    setNewProduct('');
     const allProducts = await store.getAll();
     setProducts(allProducts);
   };
 
-  const fetchCategories = async () => {
-    const db = await getDB();
-    const tx = db.transaction('categories', 'readonly');
-    const store = tx.objectStore('categories');
-    const allCategories = await store.getAll();
-    setCategories(allCategories);
-  };
-
-  useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-  }, [refresh]); // Päivitetään, kun refresh muuttuu
-
-  const addProduct = async () => {
-    if (newProduct.trim() === "") return;
+  const handleDeleteProduct = async (id) => {
     const db = await getDB();
     const tx = db.transaction('products', 'readwrite');
     const store = tx.objectStore('products');
-    await store.add({ name: newProduct, categoryId: selectedCategory || 1 });
-    setNewProduct("");
-    fetchProducts();
+    await store.delete(id);
+    const allProducts = await store.getAll();
+    setProducts(allProducts);
   };
 
-  const updateProduct = async (id, newName, newCategoryId) => {
+  const handleEditProduct = async (id, newName) => {
     const db = await getDB();
     const tx = db.transaction('products', 'readwrite');
     const store = tx.objectStore('products');
     const product = await store.get(id);
     product.name = newName;
-    product.categoryId = newCategoryId;
     await store.put(product);
-    fetchProducts();
-  };
-
-  const deleteProduct = async (id) => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    await store.delete(id);
-    fetchProducts();
+    const allProducts = await store.getAll();
+    setProducts(allProducts);
   };
 
   const handleDragEnd = async (result) => {
     if (!result.destination) return;
+    const reorderedProducts = Array.from(products);
+    const [removed] = reorderedProducts.splice(result.source.index, 1);
+    reorderedProducts.splice(result.destination.index, 0, removed);
+    setProducts(reorderedProducts);
 
-    const items = Array.from(products);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setProducts(items);
-
-    // Päivitä järjestys tietokantaan, jos haluat tallentaa uuden järjestyksen
+    // Save the reordered products to the database if needed
   };
 
   return (
-    <ProductsContainer>
-      <div>
-        <Input
-          type="text"
-          value={newProduct}
-          onChange={(e) => setNewProduct(e.target.value)}
-          placeholder="New Product"
-        />
-        <Button onClick={addProduct}>Add</Button>
-        <Button onClick={() => setViewByCategory(!viewByCategory)}>
-          {viewByCategory ? "View Alphabetically" : "View By Category"}
-        </Button>
-      </div>
-      {viewByCategory ? (
-        <div>
-          {categories.map(category => (
-            <div key={category.id}>
-              <h3>{category.name} ({products.filter(product => product.categoryId === category.id).length})</h3>
-              <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId={`category-${category.id}`}>
+    <Container>
+      <h1>Products</h1>
+      <input
+        type="text"
+        value={newProduct}
+        onChange={(e) => setNewProduct(e.target.value)}
+        placeholder="New product name"
+      />
+      <button onClick={handleAddProduct}>Add</button>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="droppable-products">
+          {(provided) => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              {products.map((product, index) => (
+                <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
                   {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {products.filter(product => product.categoryId === category.id).map((product, index) => (
-                        <Draggable key={product.id} draggableId={String(product.id)} index={index}>
-                          {(provided) => (
-                            <ProductItem
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <input
-                                type="text"
-                                value={product.name}
-                                onChange={(e) => updateProduct(product.id, e.target.value, product.categoryId)}
-                              />
-                              <Button onClick={() => deleteProduct(product.id)}>Delete</Button>
-                            </ProductItem>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
+                    <ProductItem
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <span>{product.name}</span>
+                      <div>
+                        <IconWrapper onClick={() => handleEditProduct(product.id, prompt('New name:', product.name))}>
+                          <FontAwesomeIcon icon={faEdit} />
+                        </IconWrapper>
+                        <IconWrapper onClick={() => handleDeleteProduct(product.id)}>
+                          <FontAwesomeIcon icon={faTrash} />
+                        </IconWrapper>
+                        <IconWrapper>
+                          <FontAwesomeIcon icon={faStar} />
+                        </IconWrapper>
+                        <IconWrapper>
+                          <FontAwesomeIcon icon={faShoppingCart} />
+                        </IconWrapper>
+                      </div>
+                    </ProductItem>
                   )}
-                </Droppable>
-              </DragDropContext>
+                </Draggable>
+              ))}
+              {provided.placeholder}
             </div>
-          ))}
-        </div>
-      ) : (
-        <div>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="products">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {products.map((product, index) => (
-                    <Draggable key={product.id} draggableId={String(product.id)} index={index}>
-                      {(provided) => (
-                        <ProductItem
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <input
-                            type="text"
-                            value={product.name}
-                            onChange={(e) => updateProduct(product.id, e.target.value, product.categoryId)}
-                          />
-                          <Button onClick={() => deleteProduct(product.id)}>Delete</Button>
-                        </ProductItem>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
-      )}
-    </ProductsContainer>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </Container>
   );
 };
 

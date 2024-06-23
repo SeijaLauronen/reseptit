@@ -3,7 +3,7 @@ import Menu from './components/Menu';
 import Categories from './components/Categories';
 import Products from './components/Products';
 import Footer from './components/Footer'; // Varmista, että tämä rivi on mukana
-import styled from 'styled-components'; //containeria varten 
+import styled from 'styled-components'; // Containeria varten 
 
 // Määritellään Container-komponentti täällä, voisi myös tehdä erillisen komponentin
 const Container = styled.div`
@@ -11,7 +11,6 @@ const Container = styled.div`
   margin-top: 50px; /* Adjust based on your header/menu height */
   margin-bottom: 50px; /* Adjust based on your footer height */
 `;
-
 
 const App = () => {
   const [refresh, setRefresh] = useState(false);
