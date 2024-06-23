@@ -32,6 +32,8 @@ const Products = ({ refresh = false }) => {
   const [categories, setCategories] = useState([]);
   const [newProduct, setNewProduct] = useState('');
   const [editingProduct, setEditingProduct] = useState(null);
+  const [expandedCategories, setExpandedCategories] = useState(new Set());
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +48,7 @@ const Products = ({ refresh = false }) => {
 
       setProducts(allProducts);
       setCategories(allCategories);
+      setExpandedCategories(new Set(allCategories.map(category => category.id).concat('uncategorized')));
     };
 
     fetchData();
@@ -97,6 +100,40 @@ const Products = ({ refresh = false }) => {
     // Save the reordered products to the database if needed
   };
 
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setNewProduct(value);
+    setFilter(value.toLowerCase());
+    filterProducts(value);
+  };
+
+  const filterProducts = (filter) => {
+    if (filter === '') {
+      setExpandedCategories(new Set(categories.map(category => category.id).concat('uncategorized')));
+      return;
+    }
+
+    const lowercasedFilter = filter.toLowerCase();
+    const filteredProducts = products.filter((product) =>
+      product.name.toLowerCase().includes(lowercasedFilter)
+    );
+
+    const filteredCategories = categories.reduce((acc, category) => {
+      const categoryProducts = filteredProducts.filter((product) => product.categoryId == category.id);
+      if (categoryProducts.length > 0) {
+        acc.push(category.id);
+      }
+      return acc;
+    }, []);
+
+    const uncategorizedProducts = filteredProducts.filter((product) => !product.categoryId);
+    if (uncategorizedProducts.length > 0) {
+      filteredCategories.unshift('uncategorized');
+    }
+
+    setExpandedCategories(new Set(filteredCategories));
+  };
+
   const groupedProducts = categories.reduce((acc, category) => {
     const categoryProducts = products.filter(product => product.categoryId == category.id);
     if (categoryProducts.length > 0) {
@@ -119,6 +156,13 @@ const Products = ({ refresh = false }) => {
     });
   }
 
+  const displayedProducts = (category) => {
+    if (filter === '') {
+      return category.products;
+    }
+    return category.products.filter(product => product.name.toLowerCase().includes(filter));
+  };
+
   return (
     <Container>
       <h1>Products</h1>
@@ -134,48 +178,50 @@ const Products = ({ refresh = false }) => {
           <input
             type="text"
             value={newProduct}
-            onChange={(e) => setNewProduct(e.target.value)}
+            onChange={handleInputChange}
             placeholder="New product name"
           />
           <button onClick={handleAddProduct}>Add</button>
           <DragDropContext onDragEnd={handleDragEnd}>
             {groupedProducts.map(category => (
-              <Accordion key={category.id} title={category.name}>
-                <Droppable droppableId={`droppable-${category.id}`}>
-                  {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {category.products.map((product, index) => (
-                        <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
-                          {(provided) => (
-                            <ProductItem
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <span>{product.name}</span>
-                              <div>
-                                <IconWrapper onClick={() => handleEditProduct(product)}>
-                                  <FontAwesomeIcon icon={faEdit} />
-                                </IconWrapper>
-                                <IconWrapper onClick={() => handleDeleteProduct(product.id)}>
-                                  <FontAwesomeIcon icon={faTrash} />
-                                </IconWrapper>
-                                <IconWrapper>
-                                  <FontAwesomeIcon icon={faStar} />
-                                </IconWrapper>
-                                <IconWrapper>
-                                  <FontAwesomeIcon icon={faShoppingCart} />
-                                </IconWrapper>
-                              </div>
-                            </ProductItem>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </Accordion>
+              expandedCategories.has(category.id) && (
+                <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>
+                  <Droppable droppableId={`droppable-${category.id}`}>
+                    {(provided) => (
+                      <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {displayedProducts(category).map((product, index) => (
+                          <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
+                            {(provided) => (
+                              <ProductItem
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <span>{product.name}</span>
+                                <div>
+                                  <IconWrapper onClick={() => handleEditProduct(product)}>
+                                    <FontAwesomeIcon icon={faEdit} />
+                                  </IconWrapper>
+                                  <IconWrapper onClick={() => handleDeleteProduct(product.id)}>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </IconWrapper>
+                                  <IconWrapper>
+                                    <FontAwesomeIcon icon={faStar} />
+                                  </IconWrapper>
+                                  <IconWrapper>
+                                    <FontAwesomeIcon icon={faShoppingCart} />
+                                  </IconWrapper>
+                                </div>
+                              </ProductItem>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </Accordion>
+              )
             ))}
           </DragDropContext>
         </>

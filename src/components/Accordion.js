@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-const AccordionSection = styled.div`
+const AccordionWrapper = styled.div`
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #f9f9f9;
 `;
 
 const AccordionTitle = styled.div`
   padding: 10px;
-  background-color: #e2e2e2;
   cursor: pointer;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #ccc;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,26 +19,25 @@ const AccordionTitle = styled.div`
 
 const AccordionContent = styled.div`
   padding: 10px;
+  background-color: #fff;
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
 `;
 
-const Accordion = ({ title, children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Accordion = ({ title, children, defaultExpanded = false }) => {
+  const [isOpen, setIsOpen] = useState(defaultExpanded);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <AccordionSection>
+    <AccordionWrapper>
       <AccordionTitle onClick={toggleAccordion}>
-        <span>{title}</span>
+        {title}
         <span>{isOpen ? '-' : '+'}</span>
       </AccordionTitle>
-      <AccordionContent isOpen={isOpen}>
-        {children}
-      </AccordionContent>
-    </AccordionSection>
+      <AccordionContent isOpen={isOpen}>{children}</AccordionContent>
+    </AccordionWrapper>
   );
 };
 
