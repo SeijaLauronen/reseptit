@@ -10,19 +10,6 @@ const FormContainer = styled.div`
   margin: 20px 0;
 `;
 
-const Input = styled.input`
-  display: block;
-  margin: 10px 0;
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-`;
-
-const Button = styled.button`
-  padding: 10px 20px;
-  margin-right: 10px;
-`;
-
 const EditProductForm = ({ product, onSave, onCancel, onDelete }) => {
   const [name, setName] = useState(product.name);
   const [categoryId, setCategoryId] = useState(product.categoryId || '');
@@ -41,31 +28,35 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete }) => {
   }, []);
 
   const handleSave = () => {
-    onSave(product.id, { name, categoryId });
+    onSave(product.id, { name, categoryId: parseInt(categoryId, 10) });
   };
 
   return (
     <FormContainer>
       <h2>Edit Product</h2>
-      <Input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Product name"
-      />
-      <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-        <option value="">Select category</option>
-        {categories.map((category) => (
-          <option key={category.id} value={category.id}>
-            {category.name}
-          </option>
-        ))}
-      </select>
       <div>
-        <Button onClick={handleSave}>Save</Button>
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button onClick={() => onDelete(product.id)}>Delete</Button>
+        <label>Name</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </div>
+      <div>
+        <label>Category</label>
+        <select
+          value={categoryId}
+          onChange={(e) => setCategoryId(parseInt(e.target.value, 10))}
+        >
+          <option value=''>Uncategorized</option>
+          {categories.map(category => (
+            <option key={category.id} value={category.id}>{category.name}</option>
+          ))}
+        </select>
+      </div>
+      <button onClick={handleSave}>Save</button>
+      <button onClick={onCancel}>Cancel</button>
+      <button onClick={() => onDelete(product.id)}>Delete</button>
     </FormContainer>
   );
 };

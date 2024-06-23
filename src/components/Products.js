@@ -5,6 +5,7 @@ import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faStar, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import EditProductForm from './EditProductForm';
+import Accordion from './Accordion';
 
 const Container = styled.div`
   padding: 20px;
@@ -28,19 +29,26 @@ const IconWrapper = styled.span`
 
 const Products = ({ refresh = false }) => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [newProduct, setNewProduct] = useState('');
   const [editingProduct, setEditingProduct] = useState(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       const db = await getDB();
-      const tx = db.transaction('products', 'readonly');
-      const store = tx.objectStore('products');
-      const allProducts = await store.getAll();
+      const productTx = db.transaction('products', 'readonly');
+      const productStore = productTx.objectStore('products');
+      const allProducts = await productStore.getAll();
+
+      const categoryTx = db.transaction('categories', 'readonly');
+      const categoryStore = categoryTx.objectStore('categories');
+      const allCategories = await categoryStore.getAll();
+
       setProducts(allProducts);
+      setCategories(allCategories);
     };
 
-    fetchProducts();
+    fetchData();
   }, [refresh]);
 
   const handleAddProduct = async () => {
@@ -72,7 +80,7 @@ const Products = ({ refresh = false }) => {
     const store = tx.objectStore('products');
     const product = await store.get(id);
     product.name = updatedProduct.name;
-    product.categoryId = updatedProduct.categoryId;
+    product.categoryId = parseInt(updatedProduct.categoryId, 10);
     await store.put(product);
     const allProducts = await store.getAll();
     setProducts(allProducts);
@@ -87,6 +95,20 @@ const Products = ({ refresh = false }) => {
     setProducts(reorderedProducts);
 
     // Save the reordered products to the database if needed
+  };
+
+  const groupedProducts = categories.reduce((acc, category) => {
+    acc[category.id] = {
+      name: category.name,
+      products: products.filter(product => product.categoryId == category.id),
+    };
+    return acc;
+  }, {});
+
+  // Add products with no category under 'Uncategorized'
+  groupedProducts['uncategorized'] = {
+    name: 'Uncategorized',
+    products: products.filter(product => !product.categoryId),
   };
 
   return (
@@ -109,40 +131,44 @@ const Products = ({ refresh = false }) => {
           />
           <button onClick={handleAddProduct}>Add</button>
           <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="droppable-products">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {products.map((product, index) => (
-                    <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
-                      {(provided) => (
-                        <ProductItem
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <span>{product.name}</span>
-                          <div>
-                            <IconWrapper onClick={() => handleEditProduct(product)}>
-                              <FontAwesomeIcon icon={faEdit} />
-                            </IconWrapper>
-                            <IconWrapper onClick={() => handleDeleteProduct(product.id)}>
-                              <FontAwesomeIcon icon={faTrash} />
-                            </IconWrapper>
-                            <IconWrapper>
-                              <FontAwesomeIcon icon={faStar} />
-                            </IconWrapper>
-                            <IconWrapper>
-                              <FontAwesomeIcon icon={faShoppingCart} />
-                            </IconWrapper>
-                          </div>
-                        </ProductItem>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
+            {Object.keys(groupedProducts).map(categoryId => (
+              <Accordion key={categoryId} title={groupedProducts[categoryId].name}>
+                <Droppable droppableId={`droppable-${categoryId}`}>
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {groupedProducts[categoryId].products.map((product, index) => (
+                        <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
+                          {(provided) => (
+                            <ProductItem
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <span>{product.name}</span>
+                              <div>
+                                <IconWrapper onClick={() => handleEditProduct(product)}>
+                                  <FontAwesomeIcon icon={faEdit} />
+                                </IconWrapper>
+                                <IconWrapper onClick={() => handleDeleteProduct(product.id)}>
+                                  <FontAwesomeIcon icon={faTrash} />
+                                </IconWrapper>
+                                <IconWrapper>
+                                  <FontAwesomeIcon icon={faStar} />
+                                </IconWrapper>
+                                <IconWrapper>
+                                  <FontAwesomeIcon icon={faShoppingCart} />
+                                </IconWrapper>
+                              </div>
+                            </ProductItem>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </Accordion>
+            ))}
           </DragDropContext>
         </>
       )}
