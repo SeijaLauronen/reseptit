@@ -58,8 +58,11 @@ const ShoppingList = ({ refresh = false }) => {
 
       const shoppingListProducts = allProducts.filter(product => product.onShoppingList);
 
+      // Sort categories based on the "order" value
+      const sortedCategories = allCategories.sort((a, b) => a.order - b.order);
+
       setProducts(shoppingListProducts);
-      setCategories(allCategories);
+      setCategories(sortedCategories);
     };
 
     fetchData();
