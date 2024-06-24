@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Menu from './components/Menu';
 import Categories from './components/Categories';
 import Products from './components/Products';
+import ShoppingList from './components/ShoppingList';
 import Footer from './components/Footer'; 
 import Container from './components/Container';
 
@@ -19,6 +20,8 @@ const App = () => {
         return <Categories refresh={refresh} />;
       case 'products':
         return <Products refresh={refresh} />;
+      case 'shoppingList':
+        return <ShoppingList refresh={refresh} />;
       default:
         return <Categories refresh={refresh} />;
     }
