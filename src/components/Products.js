@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faStar, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faStar, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import EditProductForm from './EditProductForm';
 import Accordion from './Accordion';
 
@@ -64,16 +64,6 @@ const Products = ({ refresh = false }) => {
     setProducts(allProducts);
     setFilter(''); // Clear the filter after adding a new product
     filterProducts(''); // Reset the filter
-  };
-
-  const handleDeleteProduct = async (id) => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    await store.delete(id);
-    const allProducts = await store.getAll();
-    setProducts(allProducts);
-    filterProducts(filter); // Reapply the filter after deleting a product
   };
 
   const handleEditProduct = (product) => {
@@ -138,6 +128,30 @@ const Products = ({ refresh = false }) => {
     setExpandedCategories(new Set(filteredCategories));
   };
 
+  const handleToggleFavorite = async (id) => {
+    const db = await getDB();
+    const tx = db.transaction('products', 'readwrite');
+    const store = tx.objectStore('products');
+    const product = await store.get(id);
+    product.isFavorite = !product.isFavorite;
+    await store.put(product);
+    const allProducts = await store.getAll();
+    setProducts(allProducts);
+    filterProducts(filter); // Reapply the filter after toggling favorite
+  };
+
+  const handleToggleShoppingList = async (id) => {
+    const db = await getDB();
+    const tx = db.transaction('products', 'readwrite');
+    const store = tx.objectStore('products');
+    const product = await store.get(id);
+    product.onShoppingList = !product.onShoppingList;
+    await store.put(product);
+    const allProducts = await store.getAll();
+    setProducts(allProducts);
+    filterProducts(filter); // Reapply the filter after toggling shopping list
+  };
+
   // Group products by category and sort by order
   const groupedProducts = categories
     .sort((a, b) => a.order - b.order)
@@ -178,7 +192,6 @@ const Products = ({ refresh = false }) => {
           product={editingProduct}
           onSave={handleSaveProduct}
           onCancel={() => setEditingProduct(null)}
-          onDelete={handleDeleteProduct}
         />
       ) : (
         <>
@@ -209,14 +222,11 @@ const Products = ({ refresh = false }) => {
                                   <IconWrapper onClick={() => handleEditProduct(product)}>
                                     <FontAwesomeIcon icon={faEdit} />
                                   </IconWrapper>
-                                  <IconWrapper onClick={() => handleDeleteProduct(product.id)}>
-                                    <FontAwesomeIcon icon={faTrash} />
+                                  <IconWrapper onClick={() => handleToggleFavorite(product.id)}>
+                                    <FontAwesomeIcon icon={faStar} style={{ color: product.isFavorite ? 'gold' : 'gray' }} />
                                   </IconWrapper>
-                                  <IconWrapper>
-                                    <FontAwesomeIcon icon={faStar} />
-                                  </IconWrapper>
-                                  <IconWrapper>
-                                    <FontAwesomeIcon icon={faShoppingCart} />
+                                  <IconWrapper onClick={() => handleToggleShoppingList(product.id)}>
+                                    <FontAwesomeIcon icon={faShoppingCart} style={{ color: product.onShoppingList ? 'green' : 'gray' }} />
                                   </IconWrapper>
                                 </div>
                               </ProductItem>
