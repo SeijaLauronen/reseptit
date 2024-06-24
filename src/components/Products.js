@@ -138,19 +138,22 @@ const Products = ({ refresh = false }) => {
     setExpandedCategories(new Set(filteredCategories));
   };
 
-  const groupedProducts = categories.reduce((acc, category) => {
-    const categoryProducts = products.filter(product => product.categoryId == category.id);
-    if (categoryProducts.length > 0) {
-      acc.push({
-        id: category.id,
-        name: `${category.name} (${categoryProducts.length})`,
-        products: categoryProducts,
-      });
-    }
-    return acc;
-  }, []);
+  // Group products by category and sort by order
+  const groupedProducts = categories
+    .sort((a, b) => a.order - b.order)
+    .reduce((acc, category) => {
+      const categoryProducts = products.filter(product => product.categoryId == category.id);
+      if (categoryProducts.length > 0) {
+        acc.push({
+          id: category.id,
+          name: `${category.name} (${categoryProducts.length})`,
+          products: categoryProducts,
+        });
+      }
+      return acc;
+    }, []);
 
-  // Add products with no category under 'Uncategorized'
+  // Add products with no category under 'Uncategorized' at the top
   const uncategorizedProducts = products.filter(product => !product.categoryId);
   if (uncategorizedProducts.length > 0) {
     groupedProducts.unshift({
