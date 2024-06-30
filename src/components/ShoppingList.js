@@ -4,6 +4,7 @@ import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Accordion from './Accordion';
+import { PrimaryButton } from './Button';
 
 const Container = styled.div`
   padding: 20px;
@@ -43,6 +44,7 @@ const ButtonContainer = styled.div`
   box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1); /* Add some shadow for better visibility */
 `;
 
+// TODO tämä pois
 const Button = styled.button`
   background-color: ${props => (props.disabled ? '#ccc' : '#007BFF')};
   color: white;
@@ -52,6 +54,7 @@ const Button = styled.button`
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
   opacity: 1; /* Ensure background is not transparent */
 `;
+
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]);
@@ -199,15 +202,15 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         </Accordion>
       ))}
       <ButtonContainer>
-        <Button
+        <PrimaryButton
           disabled={selectedProducts.size === 0}
           onClick={handleRemoveSelected}
         >
           <FontAwesomeIcon icon={faTrash} /> Remove Selected
-        </Button>
+        </PrimaryButton>
         {/* Reserve space for two more buttons */}
-        <Button disabled>Button 1</Button>
-        <Button disabled>Button 2</Button>
+        <PrimaryButton disabled>Button 1</PrimaryButton>
+        <PrimaryButton disabled>Button 2</PrimaryButton>
       </ButtonContainer>
     </Container>
   );

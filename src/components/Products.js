@@ -5,6 +5,7 @@ import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import EditProductForm from './EditProductForm';
+import { PrimaryButton } from './Button';
 
 const Container = styled.div`
   padding: 20px;
@@ -120,7 +121,7 @@ const Products = ({ refresh = false, isMenuOpen }) => {
             onChange={(e) => setNewProduct(e.target.value)}
             placeholder="New product name"
           />
-          <button onClick={handleAddProduct}>Add</button>
+          <PrimaryButton onClick={handleAddProduct}>Add</PrimaryButton>
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="droppable-products">
               {(provided) => (

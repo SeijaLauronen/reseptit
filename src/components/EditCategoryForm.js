@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { SaveButton, CancelButton, DeleteButton } from './Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const FormContainer = styled.div`
   padding: 20px;
@@ -32,28 +35,6 @@ const ButtonGroup = styled.div`
   justify-content: space-between;
 `;
 
-const Button = styled.button`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
-
-const SaveButton = styled(Button)`
-  background-color: #4caf50;
-  color: white;
-`;
-
-const CancelButton = styled(Button)`
-  background-color: #f44336;
-  color: white;
-`;
-
-const DeleteButton = styled(Button)`
-  background-color: #f44336;
-  color: white;
-  margin-left: auto;
-`;
 
 const EditCategoryForm = ({ category, onSave, onCancel, onDelete }) => {
   const [name, setName] = useState(category.name);
@@ -79,7 +60,9 @@ const EditCategoryForm = ({ category, onSave, onCancel, onDelete }) => {
       <ButtonGroup>
         <SaveButton onClick={handleSave}>Save</SaveButton>
         <CancelButton onClick={onCancel}>Cancel</CancelButton>
-        <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
+        <DeleteButton onClick={handleDelete}>
+          <FontAwesomeIcon icon={faTrash} /> Delete
+        </DeleteButton>
       </ButtonGroup>
     </FormContainer>
   );
