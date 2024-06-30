@@ -63,12 +63,15 @@ const ShoppingList = ({ refresh = false }) => {
 
       setProducts(shoppingListProducts);
       setCategories(sortedCategories);
+
+      const selected = new Set(shoppingListProducts.filter(product => product.selected).map(product => product.id));
+      setSelectedProducts(selected);
     };
 
     fetchData();
   }, [refresh]);
 
-  const handleToggleSelect = (id) => {
+  const handleToggleSelect = async (id) => {
     setSelectedProducts(prevState => {
       const newSet = new Set(prevState);
       if (newSet.has(id)) {
@@ -78,6 +81,13 @@ const ShoppingList = ({ refresh = false }) => {
       }
       return newSet;
     });
+
+    const db = await getDB();
+    const tx = db.transaction('products', 'readwrite');
+    const store = tx.objectStore('products');
+    const product = await store.get(id);
+    product.selected = !product.selected;
+    await store.put(product);
   };
 
   const handleRemoveSelected = async () => {
@@ -88,6 +98,7 @@ const ShoppingList = ({ refresh = false }) => {
     for (let id of selectedProducts) {
       const product = await store.get(id);
       product.onShoppingList = false;
+      product.selected = false;  // Also unselect the product when removing from the shopping list
       await store.put(product);
     }
 
