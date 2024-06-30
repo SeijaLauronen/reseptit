@@ -9,27 +9,32 @@ import Container from './components/Container';
 const App = () => {
   const [refresh, setRefresh] = useState(false);
   const [view, setView] = useState('categories'); // Lisätty view-tila
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleDatabaseCleared = () => {
     setRefresh(!refresh); // Vaihdetaan refresh tila päivittämisen laukaisemiseksi
   };
 
+  const toggleMenu = (isOpen) => {
+    setIsMenuOpen(isOpen);
+  };
+
   const renderView = () => {
     switch (view) {
       case 'categories':
-        return <Categories refresh={refresh} />;
+        return <Categories refresh={refresh} isMenuOpen={isMenuOpen} />;
       case 'products':
-        return <Products refresh={refresh} />;
+        return <Products refresh={refresh} isMenuOpen={isMenuOpen} />;
       case 'shoppingList':
-        return <ShoppingList refresh={refresh} />;
+        return <ShoppingList refresh={refresh} isMenuOpen={isMenuOpen} />;
       default:
-        return <Categories refresh={refresh} />;
+        return <Categories refresh={refresh} isMenuOpen={isMenuOpen} />;
     }
   };
 
   return (
     <div>
-      <Menu onDatabaseCleared={handleDatabaseCleared} />
+      <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} />
       <Container>{renderView()}</Container>
       <Footer setView={setView} />
     </div>

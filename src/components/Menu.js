@@ -17,9 +17,6 @@ const MenuContainer = styled.div`
   z-index: 1000;
 `;
 
-//const MenuList = styled.ul`
-//tuli virhe: React does not recognize the `isOpen` prop on a DOM element
-//styled.ul.withConfig määrittelee, että isOpen-prop ei kuulu DOM-elementtiin, joten se ei välity sinne.
 const MenuList = styled.ul.withConfig({
     shouldForwardProp: (prop) => prop !== 'isOpen'
   })`
@@ -54,7 +51,7 @@ const MenuIcon = styled.div`
   font-size: 24px;
 `;
 
-const Menu = ({ onDatabaseCleared }) => {
+const Menu = ({ onDatabaseCleared, onToggleMenu }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDeleteDatabase = async () => {
@@ -65,19 +62,25 @@ const Menu = ({ onDatabaseCleared }) => {
       onDatabaseCleared();
     }
     setIsOpen(false); // Suljetaan menu joka tapauksessa
+    onToggleMenu(false);
+  };
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+    onToggleMenu(!isOpen);
   };
 
   return (
     <>
       <MenuContainer>
-        <MenuIcon onClick={() => setIsOpen(!isOpen)}>
+        <MenuIcon onClick={toggleMenu}>
           <FontAwesomeIcon icon={faBars} />
         </MenuIcon>
       </MenuContainer>
       <MenuList isOpen={isOpen}>
         <MenuItem onClick={handleDeleteDatabase}>Delete Database</MenuItem>
         {/* Add other menu options as needed */}
-        <MenuItem>Test Menu Item</MenuItem>
+        <MenuItem>Testiii Menu Item</MenuItem>
         <MenuItem>Test Menu Item 2</MenuItem>
       </MenuList>
     </>

@@ -8,6 +8,9 @@ import EditCategoryForm from './EditCategoryForm';
 
 const Container = styled.div`
   padding: 20px;
+  opacity: ${({ isMenuOpen }) => (isMenuOpen ? 0.5 : 1)};
+  pointer-events: ${({ isMenuOpen }) => (isMenuOpen ? 'none' : 'auto')};
+  transition: opacity 0.3s ease-in-out;
 `;
 
 const CategoryItem = styled.div`
@@ -26,7 +29,7 @@ const IconWrapper = styled.span`
   cursor: pointer;
 `;
 
-const Categories = ({ refresh = false }) => {
+const Categories = ({ refresh = false, isMenuOpen }) => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState('');
   const [editingCategory, setEditingCategory] = useState(null);
@@ -100,7 +103,7 @@ const Categories = ({ refresh = false }) => {
   };
 
   return (
-    <Container>
+    <Container isMenuOpen={isMenuOpen}>
       <h1>Categories</h1>
       {editingCategory ? (
         <EditCategoryForm

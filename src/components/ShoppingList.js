@@ -7,6 +7,9 @@ import Accordion from './Accordion';
 
 const Container = styled.div`
   padding: 20px;
+  opacity: ${({ isMenuOpen }) => (isMenuOpen ? 0.5 : 1)};
+  pointer-events: ${({ isMenuOpen }) => (isMenuOpen ? 'none' : 'auto')};
+  transition: opacity 0.3s ease-in-out;
 `;
 
 const ShoppingListItem = styled.div`
@@ -20,6 +23,7 @@ const ShoppingListItem = styled.div`
   align-items: center;
 `;
 
+/* Warnig:  never used */
 const IconWrapper = styled.span`
   margin-left: 10px;
   cursor: pointer;
@@ -49,7 +53,7 @@ const Button = styled.button`
   opacity: 1; /* Ensure background is not transparent */
 `;
 
-const ShoppingList = ({ refresh = false }) => {
+const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState(new Set());
@@ -166,7 +170,7 @@ const ShoppingList = ({ refresh = false }) => {
   }
 
   return (
-    <Container>
+    <Container isMenuOpen={isMenuOpen}>
       <h1>Shopping List</h1>
       {groupedProducts.map(category => (
         <Accordion key={category.id} title={category.name} defaultExpanded={true}>
