@@ -25,19 +25,28 @@ const IconWrapper = styled.span`
   cursor: pointer;
 `;
 
-const RemoveButton = styled.button`
+const ButtonContainer = styled.div`
   position: fixed;
   bottom: 60px; /* Adjusted to be above the footer */
   left: 50%;
   transform: translateX(-50%);
-  background-color: red;
+  display: flex;
+  justify-content: space-around;
+  width: 90%; /* Adjust as needed */
+  z-index: 1000;
+  background-color: #f8f8f8; /* Ensure background is not transparent */
+  padding: 10px;
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1); /* Add some shadow for better visibility */
+`;
+
+const Button = styled.button`
+  background-color: ${props => (props.disabled ? '#ccc' : '#007BFF')};
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
-  z-index: 1000;
-  opacity: ${props => (props.disabled ? 0.5 : 1)};
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+  opacity: 1; /* Ensure background is not transparent */
 `;
 
 const ShoppingList = ({ refresh = false }) => {
@@ -185,12 +194,17 @@ const ShoppingList = ({ refresh = false }) => {
           ))}
         </Accordion>
       ))}
-      <RemoveButton
-        disabled={selectedProducts.size === 0}
-        onClick={handleRemoveSelected}
-      >
-        <FontAwesomeIcon icon={faTrash} /> Remove Selected
-      </RemoveButton>
+      <ButtonContainer>
+        <Button
+          disabled={selectedProducts.size === 0}
+          onClick={handleRemoveSelected}
+        >
+          <FontAwesomeIcon icon={faTrash} /> Remove Selected
+        </Button>
+        {/* Reserve space for two more buttons */}
+        <Button disabled>Button 1</Button>
+        <Button disabled>Button 2</Button>
+      </ButtonContainer>
     </Container>
   );
 };
