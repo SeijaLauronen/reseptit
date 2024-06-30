@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { clearDB } from '../database';
 
 const MenuContainer = styled.div`
@@ -17,9 +17,20 @@ const MenuContainer = styled.div`
   z-index: 1000;
 `;
 
+const MenuOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  z-index: 998;
+`;
+
 const MenuList = styled.ul.withConfig({
-    shouldForwardProp: (prop) => prop !== 'isOpen'
-  })`
+  shouldForwardProp: (prop) => prop !== 'isOpen',
+})`
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -51,9 +62,14 @@ const MenuIcon = styled.div`
   font-size: 24px;
 `;
 
-const Menu = ({ onDatabaseCleared, onToggleMenu }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const CloseButton = styled.div`
+  padding: 10px;
+  text-align: right;
+  cursor: pointer;
+  background-color: white;
+`;
 
+const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
   const handleDeleteDatabase = async () => {
     const confirmDelete = window.confirm('Are you sure you want to delete the database? This action cannot be undone.');
     if (confirmDelete) {
@@ -61,12 +77,10 @@ const Menu = ({ onDatabaseCleared, onToggleMenu }) => {
       alert('Database cleared');
       onDatabaseCleared();
     }
-    setIsOpen(false); // Suljetaan menu joka tapauksessa
-    onToggleMenu(false);
+    onToggleMenu(false); // Suljetaan menu joka tapauksessa
   };
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
     onToggleMenu(!isOpen);
   };
 
@@ -77,10 +91,13 @@ const Menu = ({ onDatabaseCleared, onToggleMenu }) => {
           <FontAwesomeIcon icon={faBars} />
         </MenuIcon>
       </MenuContainer>
+      <MenuOverlay isOpen={isOpen} onClick={toggleMenu} />
       <MenuList isOpen={isOpen}>
+        <CloseButton onClick={toggleMenu}>
+          <FontAwesomeIcon icon={faTimes} size="2x" />
+        </CloseButton>
         <MenuItem onClick={handleDeleteDatabase}>Delete Database</MenuItem>
-        {/* Add other menu options as needed */}
-        <MenuItem>Testiii Menu Item</MenuItem>
+        <MenuItem>Test Menu Item</MenuItem>
         <MenuItem>Test Menu Item 2</MenuItem>
       </MenuList>
     </>

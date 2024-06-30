@@ -5,6 +5,12 @@ import Products from './components/Products';
 import ShoppingList from './components/ShoppingList';
 import Footer from './components/Footer'; 
 import Container from './components/Container';
+import styled from 'styled-components';
+
+const DisabledOverlay = styled.div`
+  pointer-events: ${({ isDisabled }) => (isDisabled ? 'none' : 'auto')};
+  opacity: ${({ isDisabled }) => (isDisabled ? 0.5 : 1)};
+`;
 
 const App = () => {
   const [refresh, setRefresh] = useState(false);
@@ -22,21 +28,23 @@ const App = () => {
   const renderView = () => {
     switch (view) {
       case 'categories':
-        return <Categories refresh={refresh} isMenuOpen={isMenuOpen} />;
+        return <Categories refresh={refresh} />;
       case 'products':
-        return <Products refresh={refresh} isMenuOpen={isMenuOpen} />;
+        return <Products refresh={refresh} />;
       case 'shoppingList':
-        return <ShoppingList refresh={refresh} isMenuOpen={isMenuOpen} />;
+        return <ShoppingList refresh={refresh} />;
       default:
-        return <Categories refresh={refresh} isMenuOpen={isMenuOpen} />;
+        return <Categories refresh={refresh} />;
     }
   };
 
   return (
     <div>
-      <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} />
-      <Container>{renderView()}</Container>
-      <Footer setView={setView} />
+      <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} isOpen={isMenuOpen} />
+      <DisabledOverlay isDisabled={isMenuOpen}>
+        <Container>{renderView()}</Container>
+        <Footer setView={setView} />
+      </DisabledOverlay>
     </div>
   );
 };
