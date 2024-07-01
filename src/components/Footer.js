@@ -21,9 +21,6 @@ const Footer = ({ setView }) => {
     <FooterContainer>
       <FooterItem onClick={() => setView('categories')}>Kategoriat</FooterItem>
       <FooterItem onClick={() => setView('products')}>Tuotteet</FooterItem>
-      <FooterItem onClick={() => setView('recipes')}>Reseptit</FooterItem>
-      <FooterItem onClick={() => setView('days')}>Päivänäkymä</FooterItem>
-      <FooterItem onClick={() => setView('weeks')}>Viikkonäkymä</FooterItem>
       <FooterItem onClick={() => setView('shoppingList')}>Ostoslista</FooterItem>
     </FooterContainer>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faSave, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'; // Importing default icons
+import { faTrash, faSave, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Button = styled.button`
   background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#007BFF')};
@@ -36,7 +36,6 @@ const ButtonComponent = ({ icon, children, defaultText, ...props }) => (
 
 export default ButtonComponent;
 
-
 export const SaveButton = styled(props => (
   <ButtonComponent icon={faSave} defaultText="Tallenna" {...props} />
 ))`
@@ -66,16 +65,14 @@ export const DeleteButton = styled(props => (
   margin-left: auto;
 `;
 
-
 export const AddButton = styled(props => (
-    <ButtonComponent icon={faPlus} defaultText="Lisää" {...props} />
-  ))`
-    background-color: ${props => (props.disabled ? '#ccc' : '#4caf50')};
-    &:hover {
-      background-color: ${props => (props.disabled ? '#ccc' : '#388e3c')};
-    }
-  `;
-
+  <ButtonComponent icon={faPlus} defaultText="Lisää" {...props} />
+))`
+  background-color: ${props => (props.disabled ? '#ccc' : '#4caf50')};
+  &:hover {
+    background-color: ${props => (props.disabled ? '#ccc' : '#388e3c')};
+  }
+`;
 
 export const PrimaryButton = styled(ButtonComponent)`
   background-color: ${props => (props.disabled ? '#ccc' : '#007BFF')};

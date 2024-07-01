@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import EditForm from './EditForm';
 import { getDB } from '../database';
 
-const FormContainer = styled.div`
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  margin: 20px 0;
-`;
-
-const EditProductForm = ({ product, onSave, onCancel, onDelete }) => {
+const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen }) => {
   const [name, setName] = useState(product.name);
   const [categoryId, setCategoryId] = useState(product.categoryId || '');
   const [categories, setCategories] = useState([]);
@@ -32,8 +24,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete }) => {
   };
 
   return (
-    <FormContainer>
-      <h2>Edit Product</h2>
+    <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(product.id)}>
       <div>
         <label>Name</label>
         <input
@@ -54,10 +45,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete }) => {
           ))}
         </select>
       </div>
-      <button onClick={handleSave}>Save</button>
-      <button onClick={onCancel}>Cancel</button>
-      <button onClick={() => onDelete(product.id)}>Delete</button>
-    </FormContainer>
+    </EditForm>
   );
 };
 

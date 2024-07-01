@@ -84,6 +84,17 @@ const Products = ({ refresh = false }) => {
     filterProducts(filter); // Reapply the filter after saving a product
   };
 
+  const handleDeleteProduct = async (id) => {
+    const db = await getDB();
+    const tx = db.transaction('products', 'readwrite');
+    const store = tx.objectStore('products');
+    await store.delete(id);
+    const allProducts = await store.getAll();
+    setProducts(allProducts);
+    setEditingProduct(null);
+    filterProducts(filter); // Reapply the filter after deleting a product
+  };
+
   const handleDragEnd = async (result) => {
     if (!result.destination) return;
     const reorderedProducts = Array.from(products);
@@ -113,7 +124,7 @@ const Products = ({ refresh = false }) => {
     );
 
     const filteredCategories = categories.reduce((acc, category) => {
-      const categoryProducts = filteredProducts.filter((product) => product.categoryId == category.id);
+      const categoryProducts = filteredProducts.filter((product) => product.categoryId === category.id);
       if (categoryProducts.length > 0) {
         acc.push(category.id);
       }
@@ -156,7 +167,7 @@ const Products = ({ refresh = false }) => {
   const groupedProducts = categories
     .sort((a, b) => a.order - b.order)
     .reduce((acc, category) => {
-      const categoryProducts = products.filter(product => product.categoryId == category.id);
+      const categoryProducts = products.filter(product => product.categoryId === category.id);
       if (categoryProducts.length > 0) {
         acc.push({
           id: category.id,
@@ -192,6 +203,8 @@ const Products = ({ refresh = false }) => {
           product={editingProduct}
           onSave={handleSaveProduct}
           onCancel={() => setEditingProduct(null)}
+          onDelete={handleDeleteProduct}
+          isOpen={!!editingProduct}
         />
       ) : (
         <>

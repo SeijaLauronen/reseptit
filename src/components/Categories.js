@@ -33,6 +33,7 @@ const Categories = ({ refresh = false, isMenuOpen }) => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState('');
   const [editingCategory, setEditingCategory] = useState(null);
+  const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -50,7 +51,7 @@ const Categories = ({ refresh = false, isMenuOpen }) => {
     const db = await getDB();
     const tx = db.transaction('categories', 'readwrite');
     const store = tx.objectStore('categories');
-    const newOrder = categories.length ? Math.max(categories.map(cat => cat.order)) + 1 : 1;
+    const newOrder = categories.length ? Math.max(...categories.map(cat => cat.order)) + 1 : 1;
     await store.add({ name: newCategory, order: newOrder });
     setNewCategory('');
     const allCategories = await store.getAll();
@@ -64,9 +65,12 @@ const Categories = ({ refresh = false, isMenuOpen }) => {
     await store.delete(id);
     const allCategories = await store.getAll();
     setCategories(allCategories.sort((a, b) => a.order - b.order));
+    setEditingCategory(null);
+    setIsCategoryFormOpen(false);
   };
 
   const handleEditCategory = (category) => {
+    setIsCategoryFormOpen(true);
     setEditingCategory(category);
   };
 
@@ -80,6 +84,7 @@ const Categories = ({ refresh = false, isMenuOpen }) => {
     const allCategories = await store.getAll();
     setCategories(allCategories.sort((a, b) => a.order - b.order));
     setEditingCategory(null);
+    setIsCategoryFormOpen(false);
   };
 
   const handleDragEnd = async (result) => {
@@ -90,7 +95,6 @@ const Categories = ({ refresh = false, isMenuOpen }) => {
 
     setCategories(reorderedCategories);
 
-    // Save the reordered categories to the database
     const db = await getDB();
     const tx = db.transaction('categories', 'readwrite');
     const store = tx.objectStore('categories');
@@ -105,12 +109,16 @@ const Categories = ({ refresh = false, isMenuOpen }) => {
   return (
     <Container isMenuOpen={isMenuOpen}>
       <h1>Categories</h1>
-      {editingCategory ? (
+      {isCategoryFormOpen && editingCategory ? (
         <EditCategoryForm
           category={editingCategory}
           onSave={handleSaveCategory}
-          onCancel={() => setEditingCategory(null)}
+          onCancel={() => {
+            setEditingCategory(null);
+            setIsCategoryFormOpen(false);
+          }}
           onDelete={handleDeleteCategory}
+          isOpen={isCategoryFormOpen}
         />
       ) : (
         <>
