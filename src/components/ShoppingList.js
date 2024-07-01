@@ -7,13 +7,16 @@ import Accordion from './Accordion';
 import { DeleteButton } from './Button'; // Import DeleteButton
 import { PrimaryButton } from './Button';
 
+// Container for the main content
 const Container = styled.div`
   padding: 20px;
+  padding-bottom: 100px; /* Add space for ButtonContainer and footer */
   opacity: ${({ isMenuOpen }) => (isMenuOpen ? 0.5 : 1)};
   pointer-events: ${({ isMenuOpen }) => (isMenuOpen ? 'none' : 'auto')};
   transition: opacity 0.3s ease-in-out;
 `;
 
+// Shopping list item style
 const ShoppingListItem = styled.div`
   padding: 10px;
   margin: 10px 0;
@@ -21,44 +24,47 @@ const ShoppingListItem = styled.div`
   border-radius: 4px;
   background-color: #fff;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+
+  @media (min-width: 600px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 `;
 
-/* Warnig:  never used */
-const IconWrapper = styled.span`
-  margin-left: 10px;
-  cursor: pointer;
-`;
-
-const ButtonContainerXYZ = styled.div`
-  position: fixed;
-  bottom: 60px; /* Adjusted to be above the footer */
-  left: 50%;
-  transform: translateX(-50%);
+// Wrapper for quantity and unit inputs
+const InputWrapper = styled.div`
   display: flex;
-  justify-content: space-around;
-  width: 90%; /* Adjust as needed */
-  z-index: 1000;
-  background-color: #f8f8f8; /* Ensure background is not transparent */
-  padding: 10px;
-  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1); /* Add some shadow for better visibility */
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+
+  @media (min-width: 600px) {
+    flex-direction: row;
+    margin-top: 0;
+  }
 `;
 
+// Container for action buttons
 const ButtonContainer = styled.div`
   position: fixed;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 40px; /* Position above the footer */
+  left: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  width: 90%;
-  z-index: 1000;
-  background-color: #f8f8f8;
   padding: 10px;
+  background-color: #ffffe0; /*#f8f8f8;*/
   box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  box-sizing: border-box; /* Ensure padding is included in width */
+  overflow-x: auto; /* Enable horizontal scrolling if needed */
 `;
 
+
+// Button group styles
 const ButtonGroupLeft = styled.div`
   display: flex;
 `;
@@ -66,12 +72,10 @@ const ButtonGroupLeft = styled.div`
 const ButtonGroupRight = styled.div`
   display: flex;
   justify-content: flex-end;
-  gap: 10px; /* Optional: adds space between buttons */
+  gap: 10px;
   flex: 1;
+  min-width: 0; /* Allow flex items to shrink to fit */
 `;
-
-
-
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]);
@@ -190,49 +194,54 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   }
 
   return (
-    <Container isMenuOpen={isMenuOpen}>
-      <h1>Shopping List</h1>
-      {groupedProducts.map(category => (
-        <Accordion key={category.id} title={category.name} defaultExpanded={true}>
-          {category.products.map(product => (
-            <ShoppingListItem key={product.id}>
-              <input
-                type="checkbox"
-                checked={selectedProducts.has(product.id)}
-                onChange={() => handleToggleSelect(product.id)}
-              />
-              <span>{product.name}</span>
-              <input
-                type="number"
-                value={product.quantity || ''}
-                onChange={(e) => handleQuantityChange(product.id, e.target.value)}
-                placeholder="Quantity"
-              />
-              <input
-                type="text"
-                value={product.unit || ''}
-                onChange={(e) => handleUnitChange(product.id, e.target.value)}
-                placeholder="Unit"
-              />
-            </ShoppingListItem>
-          ))}
-        </Accordion>
-      ))}
-      <ButtonContainer>
-        <ButtonGroupLeft>
-          <DeleteButton
-            disabled={selectedProducts.size === 0}
-            onClick={handleRemoveSelected}
-          >
-            Poista valitut listalta
-          </DeleteButton>
-        </ButtonGroupLeft>
-        <ButtonGroupRight>
-          <PrimaryButton disabled>Button 1</PrimaryButton>
-          <PrimaryButton disabled>Button 2</PrimaryButton>
-        </ButtonGroupRight>
-      </ButtonContainer>
-    </Container>
+    <>
+      <Container isMenuOpen={isMenuOpen}>
+        <h1>Shopping List</h1>
+        {groupedProducts.map(category => (
+          <Accordion key={category.id} title={category.name} defaultExpanded={true}>
+            {category.products.map(product => (
+              <ShoppingListItem key={product.id}>
+                <input
+                  type="checkbox"
+                  checked={selectedProducts.has(product.id)}
+                  onChange={() => handleToggleSelect(product.id)}
+                />
+                <span>{product.name}</span>
+                <InputWrapper>
+                  <input
+                    type="number"
+                    value={product.quantity || ''}
+                    onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                    placeholder="Quantity"
+                  />
+                  <input
+                    type="text"
+                    value={product.unit || ''}
+                    onChange={(e) => handleUnitChange(product.id, e.target.value)}
+                    placeholder="Unit"
+                  />
+                </InputWrapper>
+              </ShoppingListItem>
+            ))}
+          </Accordion>
+        ))}
+        <ButtonContainer>
+          <ButtonGroupLeft>
+            <DeleteButton
+              disabled={selectedProducts.size === 0}
+              onClick={handleRemoveSelected}
+            >
+              Poista valitut listalta
+            </DeleteButton>
+          </ButtonGroupLeft>
+          <ButtonGroupRight>
+            <PrimaryButton disabled>Button 1</PrimaryButton>
+            <PrimaryButton disabled>Button 2</PrimaryButton>
+          </ButtonGroupRight>
+        </ButtonContainer>
+      </Container>
+ 
+    </>
   );
 };
 
