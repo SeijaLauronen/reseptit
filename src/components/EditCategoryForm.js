@@ -58,11 +58,9 @@ const EditCategoryForm = ({ category, onSave, onCancel, onDelete }) => {
         />
       </FormGroup>
       <ButtonGroup>
-        <SaveButton onClick={handleSave}>Save</SaveButton>
-        <CancelButton onClick={onCancel}>Cancel</CancelButton>
-        <DeleteButton onClick={handleDelete}>
-          <FontAwesomeIcon icon={faTrash} /> Delete
-        </DeleteButton>
+        <SaveButton onClick={handleSave}/>
+        <CancelButton onClick={onCancel}/>
+        <DeleteButton onClick={handleDelete}/>
       </ButtonGroup>
     </FormContainer>
   );

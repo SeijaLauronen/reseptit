@@ -4,6 +4,7 @@ import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Accordion from './Accordion';
+import { DeleteButton } from './Button'; // Import DeleteButton
 import { PrimaryButton } from './Button';
 
 const Container = styled.div`
@@ -30,7 +31,7 @@ const IconWrapper = styled.span`
   cursor: pointer;
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainerXYZ = styled.div`
   position: fixed;
   bottom: 60px; /* Adjusted to be above the footer */
   left: 50%;
@@ -44,16 +45,32 @@ const ButtonContainer = styled.div`
   box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1); /* Add some shadow for better visibility */
 `;
 
-// TODO tämä pois
-const Button = styled.button`
-  background-color: ${props => (props.disabled ? '#ccc' : '#007BFF')};
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-  opacity: 1; /* Ensure background is not transparent */
+const ButtonContainer = styled.div`
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  z-index: 1000;
+  background-color: #f8f8f8;
+  padding: 10px;
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
 `;
+
+const ButtonGroupLeft = styled.div`
+  display: flex;
+`;
+
+const ButtonGroupRight = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* Optional: adds space between buttons */
+  flex: 1;
+`;
+
+
 
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
@@ -202,15 +219,18 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         </Accordion>
       ))}
       <ButtonContainer>
-        <PrimaryButton
-          disabled={selectedProducts.size === 0}
-          onClick={handleRemoveSelected}
-        >
-          <FontAwesomeIcon icon={faTrash} /> Remove Selected
-        </PrimaryButton>
-        {/* Reserve space for two more buttons */}
-        <PrimaryButton disabled>Button 1</PrimaryButton>
-        <PrimaryButton disabled>Button 2</PrimaryButton>
+        <ButtonGroupLeft>
+          <DeleteButton
+            disabled={selectedProducts.size === 0}
+            onClick={handleRemoveSelected}
+          >
+            Poista valitut listalta
+          </DeleteButton>
+        </ButtonGroupLeft>
+        <ButtonGroupRight>
+          <PrimaryButton disabled>Button 1</PrimaryButton>
+          <PrimaryButton disabled>Button 2</PrimaryButton>
+        </ButtonGroupRight>
       </ButtonContainer>
     </Container>
   );
