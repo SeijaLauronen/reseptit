@@ -46,8 +46,8 @@ background-color: white;
 `;
 
 export const CloseButtonComponent =({...props}) => (
-    <CloseButton onClick={props.onClick}>
-          <FontAwesomeIcon icon={faTimes} size="1x" />
+    <CloseButton >      
+          <FontAwesomeIcon icon={faTimes} size="1x" onClick={props.onClick} />
     </CloseButton>
 );
 
