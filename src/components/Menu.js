@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { CloseButtonComponent } from './Button';
 import { clearDB } from '../database';
 
 const MenuContainer = styled.div`
@@ -62,7 +63,7 @@ const MenuIcon = styled.div`
   font-size: 24px;
 `;
 
-const CloseButton = styled.div`
+const CloseButtonXYZ = styled.div`
   padding: 10px;
   text-align: right;
   cursor: pointer;
@@ -80,7 +81,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
     onToggleMenu(false); // Suljetaan menu joka tapauksessa
   };
 
-  const toggleMenu = () => {
+  const toggleMenu = () => {    
     onToggleMenu(!isOpen);
   };
 
@@ -93,9 +94,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
       </MenuContainer>
       <MenuOverlay isOpen={isOpen} onClick={toggleMenu} />
       <MenuList isOpen={isOpen}>
-        <CloseButton onClick={toggleMenu}>
-          <FontAwesomeIcon icon={faTimes} size="2x" />
-        </CloseButton>
+        <CloseButtonComponent onClick={toggleMenu}/>
         <MenuItem onClick={handleDeleteDatabase}>Delete Database</MenuItem>
         <MenuItem>Test Menu Item</MenuItem>
         <MenuItem>Test Menu Item 2</MenuItem>

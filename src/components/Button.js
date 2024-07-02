@@ -1,17 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faSave, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTrash, faSave, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Button = styled.button`
   background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#007BFF')};
   color: ${props => (props.disabled ? '#666' : props.color || 'white')};
-  padding: 10px 20px;
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
   opacity: 1;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,9 +23,10 @@ const Button = styled.button`
   }
 
   svg {
-    font-size: 20px;
+    font-size: 14px;
   }
 `;
+
 
 const ButtonComponent = ({ icon, children, defaultText, ...props }) => (
   <Button {...props}>
@@ -36,6 +37,22 @@ const ButtonComponent = ({ icon, children, defaultText, ...props }) => (
 
 export default ButtonComponent;
 
+
+const CloseButton = styled.div`
+padding: 10px;
+text-align: right;
+cursor: pointer;
+background-color: white;
+`;
+
+export const CloseButtonComponent =({...props}) => (
+    <CloseButton onClick={props.onClick}>
+          <FontAwesomeIcon icon={faTimes} size="1x" />
+    </CloseButton>
+);
+
+
+
 export const SaveButton = styled(props => (
   <ButtonComponent icon={faSave} defaultText="Tallenna" {...props} />
 ))`
@@ -44,6 +61,15 @@ export const SaveButton = styled(props => (
     background-color: #388e3c;
   }
 `;
+
+export const OkButton = styled(props => (
+    <ButtonComponent icon={faCheck} defaultText="OK" {...props} />
+  ))`
+    background-color: #4caf50;
+    &:hover {
+      background-color: #388e3c;
+    }
+  `;
 
 export const CancelButton = styled(props => (
   <ButtonComponent icon={faTimes} defaultText="Peruuta" {...props} />

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { SaveButton, CancelButton, DeleteButton } from './Button';
+import { OkButton, CancelButton, DeleteButton } from './Button';
 
 const SlideInContainer = styled.div`
   position: fixed;
@@ -48,7 +48,7 @@ const EditForm = ({ isOpen, onSave, onCancel, onDelete, children }) => {
       <FormContainer>
         {children}
         <ButtonGroup>
-          <SaveButton onClick={onSave} />
+          <OkButton onClick={onSave} />
           <CancelButton onClick={onCancel} />
           <DeleteButton onClick={onDelete} />
         </ButtonGroup>
