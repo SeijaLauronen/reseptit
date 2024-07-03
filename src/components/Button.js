@@ -92,7 +92,7 @@ export const DeleteButton = styled(props => (
 `;
 
 export const AddButton = styled(props => (
-  <ButtonComponent icon={faPlus} defaultText="Lisää" {...props} />
+  <ButtonComponent icon={faPlus} defaultText="" {...props} />
 ))`
   background-color: ${props => (props.disabled ? '#ccc' : '#4caf50')};
   &:hover {

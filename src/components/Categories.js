@@ -5,6 +5,10 @@ import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import EditCategoryForm from './EditCategoryForm';
+import HeaderContainer from './ViewTop';
+import {HeaderInput} from './ViewTop';
+import {AddButton} from './Button';
+
 
 const Container = styled.div`
   padding: 20px;
@@ -25,8 +29,8 @@ const CategoryItem = styled.div`
 `;
 
 const IconWrapper = styled.span`
-  margin-left: 10px;
-  cursor: pointer;
+  margin-left: 30px;
+  cursor: pointer;    
 `;
 
 const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
@@ -108,7 +112,7 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
 
   return (
     <>   
-      <h1>Categories</h1>
+    
       {isCategoryFormOpen && editingCategory && (
         <EditCategoryForm
           category={editingCategory}
@@ -122,14 +126,17 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
         />
       )}
         
-      <Container className ='kontaineri' isMenuOpen={isMenuOpen} isCategoryFormOpen={isCategoryFormOpen}>
-            <input
+      <Container isMenuOpen={isMenuOpen} isCategoryFormOpen={isCategoryFormOpen}>
+            <HeaderContainer> 
+            <HeaderInput            
               type="text"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              placeholder="New category name"
-            />
-            <button onClick={handleAddCategory}>Add</button>
+              placeholder="Uusi kategoria"
+            />        
+            <AddButton onClick={handleAddCategory}/>
+            </HeaderContainer>
+            <h1/>
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="droppable-categories">
                 {(provided) => (
@@ -145,7 +152,7 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
                             <span>{category.name}</span>
                             <div>
                               <IconWrapper onClick={() => handleEditCategory(category)}>
-                                <FontAwesomeIcon icon={faEdit} />
+                                <FontAwesomeIcon icon={faEdit}/>
                               </IconWrapper>
                               <IconWrapper onClick={() => onCategorySelect(category.id)}>
                                 <FontAwesomeIcon icon={faArrowRight} />

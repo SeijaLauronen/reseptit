@@ -18,6 +18,7 @@ const App = () => {
   const [view, setView] = useState('categories'); // Lisätty view-tila
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null); // Lisätty tila valitulle kategorian ID:lle
+  const [viewHeader, setViewHeader] = useState('Kategoriat');
 
   const handleDatabaseCleared = () => {
     setRefresh(!refresh); // Vaihdetaan refresh tila päivittämisen laukaisemiseksi
@@ -39,6 +40,7 @@ const App = () => {
     setView(view);
   };
 
+
   const renderView = () => {
     switch (view) {
       case 'categories':
@@ -54,7 +56,7 @@ const App = () => {
 
   return (
     <div>
-      <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} isOpen={isMenuOpen} />
+      <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} isOpen={isMenuOpen}/>
       <DisabledOverlay isDisabled={isMenuOpen}>
         <Container>{renderView()}</Container>
         <Footer setView={handleViewChange} />

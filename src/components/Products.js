@@ -6,6 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faStar, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import EditProductForm from './EditProductForm';
 import Accordion from './Accordion';
+import HeaderContainer from './ViewTop';
+import {HeaderInput} from './ViewTop';
+import {AddButton} from './Button';
 
 const Container = styled.div`
   padding: 20px;
@@ -224,7 +227,6 @@ const Products = ({ refresh = false, categoryId }) => {
   return (
     <>
     
-      <h1>Products</h1>
       {editingProduct && (
         <EditProductForm
           product={editingProduct}
@@ -235,13 +237,16 @@ const Products = ({ refresh = false, categoryId }) => {
         />
       )}
       <Container isEditFormOpen={editingProduct}>
-          <input
-            type="text"
-            value={newProduct}
-            onChange={handleInputChange}
-            placeholder="New product name"
-          />
-          <button onClick={handleAddProduct}>Add</button>
+          <HeaderContainer> 
+            <HeaderInput            
+              type="text"
+              value={newProduct}
+              onChange={handleInputChange}
+              placeholder="Suodata tai lisää tuote"
+            />        
+            <AddButton onClick={handleAddProduct}/>
+          </HeaderContainer>     
+          <h1/>     
           <DragDropContext onDragEnd={handleDragEnd}>
             {groupedProducts.map(category => (
               expandedCategories.has(category.id) && (

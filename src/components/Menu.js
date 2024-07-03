@@ -18,6 +18,7 @@ const MenuContainer = styled.div`
   z-index: 1000;
 `;
 
+
 const MenuOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -63,19 +64,13 @@ const MenuIcon = styled.div`
   font-size: 24px;
 `;
 
-const CloseButtonXYZ = styled.div`
-  padding: 10px;
-  text-align: right;
-  cursor: pointer;
-  background-color: white;
-`;
 
 const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
   const handleDeleteDatabase = async () => {
-    const confirmDelete = window.confirm('Are you sure you want to delete the database? This action cannot be undone.');
+    const confirmDelete = window.confirm('Haluatko varmasti poistaa kaikki sovelluksen tiedot?');
     if (confirmDelete) {
       await clearDB();
-      alert('Database cleared');
+      alert('Tiedot poistettu');
       onDatabaseCleared();
     }
     onToggleMenu(false); // Suljetaan menu joka tapauksessa
@@ -90,7 +85,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
       <MenuContainer>
         <MenuIcon onClick={toggleMenu}>
           <FontAwesomeIcon icon={faBars} />
-        </MenuIcon>
+        </MenuIcon>        
       </MenuContainer>
       <MenuOverlay isOpen={isOpen} onClick={toggleMenu} />
       <MenuList isOpen={isOpen}>
