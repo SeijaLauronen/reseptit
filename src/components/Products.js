@@ -30,15 +30,18 @@ const IconWrapper = styled.span`
   cursor: pointer;
 `;
 
-const Products = ({ refresh = false }) => {
+const Products = ({ refresh = false, categoryId }) => {
+  console.log("categoryId",categoryId);
+
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [newProduct, setNewProduct] = useState('');
   const [editingProduct, setEditingProduct] = useState(null);
   const [expandedCategories, setExpandedCategories] = useState(new Set());
   const [filter, setFilter] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState(categoryId); //Lisäsin tämän
 
-  useEffect(() => {
+  useEffect(() => {    
     const fetchData = async () => {
       const db = await getDB();
       const productTx = db.transaction('products', 'readonly');
@@ -51,17 +54,26 @@ const Products = ({ refresh = false }) => {
 
       setProducts(allProducts);
       setCategories(allCategories);
-      setExpandedCategories(new Set(allCategories.map(category => category.id).concat('uncategorized')));
+      
+
+      // Expand only the selected category
+      if (categoryId) {
+        setExpandedCategories(new Set([parseInt(categoryId, 10)]));
+      } else {
+        setExpandedCategories(new Set(allCategories.map(category => category.id).concat('uncategorized')));
+      }
+   
+
     };
 
     fetchData();
-  }, [refresh]);
+  }, [refresh, categoryId]);
 
   const handleAddProduct = async () => {
     const db = await getDB();
     const tx = db.transaction('products', 'readwrite');
     const store = tx.objectStore('products');
-    await store.add({ name: newProduct });
+    await store.add({ name: newProduct, categoryId: selectedCategoryId }); //Lisäsin tuon kategorian
     setNewProduct('');
     const allProducts = await store.getAll();
     setProducts(allProducts);
@@ -118,6 +130,13 @@ const Products = ({ refresh = false }) => {
   const filterProducts = (filter) => {
     if (filter === '') {
       setExpandedCategories(new Set(categories.map(category => category.id).concat('uncategorized')));
+
+      // Expand only the selected category
+      if (selectedCategoryId) {
+        setExpandedCategories(new Set([parseInt(selectedCategoryId, 10)]));
+      } else {
+        setExpandedCategories(new Set(categories.map(category => category.id).concat('uncategorized')));
+      }
       return;
     }
 
@@ -126,16 +145,20 @@ const Products = ({ refresh = false }) => {
       product.name.toLowerCase().includes(lowercasedFilter)
     );
 
+    //Lisätty vielä rajaus jos on  selectedCategoryId
     const filteredCategories = categories.reduce((acc, category) => {
       const categoryProducts = filteredProducts.filter((product) => product.categoryId === category.id);
-      if (categoryProducts.length > 0) {
+      if (categoryProducts.length > 0 && (selectedCategoryId === null || category.id === selectedCategoryId)) {
+        acc.push(category.id);
+      } else if (categoryProducts.length === 0 && category.id === selectedCategoryId) {
         acc.push(category.id);
       }
+
       return acc;
     }, []);
 
     const uncategorizedProducts = filteredProducts.filter((product) => !product.categoryId);
-    if (uncategorizedProducts.length > 0) {
+    if (uncategorizedProducts.length > 0 && selectedCategoryId === null) {
       filteredCategories.unshift('uncategorized');
     }
 

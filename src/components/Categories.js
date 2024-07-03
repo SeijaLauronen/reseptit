@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import EditCategoryForm from './EditCategoryForm';
 
 const Container = styled.div`
@@ -29,7 +29,7 @@ const IconWrapper = styled.span`
   cursor: pointer;
 `;
 
-const Categories = ({ refresh = false, isMenuOpen }) => {
+const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState('');
   const [editingCategory, setEditingCategory] = useState(null);
@@ -146,6 +146,9 @@ const Categories = ({ refresh = false, isMenuOpen }) => {
                             <div>
                               <IconWrapper onClick={() => handleEditCategory(category)}>
                                 <FontAwesomeIcon icon={faEdit} />
+                              </IconWrapper>
+                              <IconWrapper onClick={() => onCategorySelect(category.id)}>
+                                <FontAwesomeIcon icon={faArrowRight} />
                               </IconWrapper>
                             </div>
                           </CategoryItem>
