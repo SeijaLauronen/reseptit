@@ -6,8 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import EditCategoryForm from './EditCategoryForm';
 import HeaderContainer from './ViewTop';
-import {HeaderInput} from './ViewTop';
 import {AddButton} from './Button';
+import BottomContainer from './ViewBottom';
+import InputAdd from './Input';
 
 
 const Container = styled.div`
@@ -128,15 +129,8 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
         
       <Container isMenuOpen={isMenuOpen} isCategoryFormOpen={isCategoryFormOpen}>
             <HeaderContainer> 
-            <HeaderInput            
-              type="text"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              placeholder="Uusi kategoria"
-            />        
-            <AddButton onClick={handleAddCategory}/>
-            </HeaderContainer>
-            <h1/>
+            <b>Kategoriat</b>
+            </HeaderContainer>            
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="droppable-categories">
                 {(provided) => (
@@ -168,6 +162,14 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
               </Droppable>
             </DragDropContext>
       </Container>
+      <BottomContainer><InputAdd            
+              type="text"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              placeholder="Uusi kategoria"
+            />        
+            <AddButton onClick={handleAddCategory}/>
+      </BottomContainer>
       
     </>
   );

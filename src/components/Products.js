@@ -7,8 +7,9 @@ import { faEdit, faStar, faShoppingCart } from '@fortawesome/free-solid-svg-icon
 import EditProductForm from './EditProductForm';
 import Accordion from './Accordion';
 import HeaderContainer from './ViewTop';
-import {HeaderInput} from './ViewTop';
 import {AddButton} from './Button';
+import BottomContainer from './ViewBottom';
+import InputAdd from './Input';
 
 const Container = styled.div`
   padding: 20px;
@@ -29,7 +30,7 @@ const ProductItem = styled.div`
 `;
 
 const IconWrapper = styled.span`
-  margin-left: 10px;
+  margin-left: 30px;
   cursor: pointer;
 `;
 
@@ -212,7 +213,7 @@ const Products = ({ refresh = false, categoryId }) => {
   if (uncategorizedProducts.length > 0) {
     groupedProducts.unshift({
       id: 'uncategorized',
-      name: `Uncategorized (${uncategorizedProducts.length})`,
+      name: `Ei kategoriaa (${uncategorizedProducts.length})`,
       products: uncategorizedProducts,
     });
   }
@@ -238,13 +239,7 @@ const Products = ({ refresh = false, categoryId }) => {
       )}
       <Container isEditFormOpen={editingProduct}>
           <HeaderContainer> 
-            <HeaderInput            
-              type="text"
-              value={newProduct}
-              onChange={handleInputChange}
-              placeholder="Suodata tai lisää tuote"
-            />        
-            <AddButton onClick={handleAddProduct}/>
+            <b>Tuotteet</b>
           </HeaderContainer>     
           <h1/>     
           <DragDropContext onDragEnd={handleDragEnd}>
@@ -286,7 +281,16 @@ const Products = ({ refresh = false, categoryId }) => {
               )
             ))}
           </DragDropContext>
-        </Container>          
+        </Container> 
+        <BottomContainer>
+        <InputAdd            
+              type="text"
+              value={newProduct}
+              onChange={handleInputChange}
+              placeholder="Suodata tai lisää tuote"
+            />        
+            <AddButton onClick={handleAddProduct}/>
+        </BottomContainer>         
     </>
   );
 };

@@ -5,9 +5,7 @@ const HeaderContainer = styled.div`
     top: 52px;
     left: 0;
     width: -webkit-fill-available;
-    //width: 100%; // Korjattu leveyden määrittely
     background-color: #f0f5ed;
-    //background-color: white;
     padding: 6px 40px;
     display: flex;
     justify-content: space-between;
@@ -17,11 +15,4 @@ const HeaderContainer = styled.div`
 
 export default HeaderContainer;
 
-export const HeaderInput = styled.input`
-    //
-    //width: 100%; // Korjattu leveyden määrittely
-    width: -webkit-fill-available;
-    padding-left: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;        
-`;
+

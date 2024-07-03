@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { getDB } from '../database';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Accordion from './Accordion';
-import { DeleteButton } from './Button'; // Import DeleteButton
+import { OkButton } from './Button'; // Import DeleteButton
 import { PrimaryButton } from './Button';
+import BottomContainer from './ViewBottom';
+import HeaderContainer from './ViewTop';
+import {InputQuantity, InputUnit} from './Input';
 
 // Container for the main content
 const Container = styled.div`
@@ -27,7 +28,7 @@ const ShoppingListItem = styled.div`
   flex-direction: column;
   align-items: flex-start;
 
-  @media (min-width: 600px) {
+  @media (min-width: 400px) {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -41,26 +42,10 @@ const InputWrapper = styled.div`
   gap: 10px;
   margin-top: 10px;
 
-  @media (min-width: 600px) {
+  @media (min-width: 400px) {
     flex-direction: row;
     margin-top: 0;
   }
-`;
-
-// Container for action buttons
-const ButtonContainer = styled.div`
-  position: fixed;
-  bottom: 40px; /* Position above the footer */
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  background-color: #ffffe0; /*#f8f8f8;*/
-  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  box-sizing: border-box; /* Ensure padding is included in width */
-  overflow-x: auto; /* Enable horizontal scrolling if needed */
 `;
 
 
@@ -188,7 +173,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   if (uncategorizedProducts.length > 0) {
     groupedProducts.unshift({
       id: 'uncategorized',
-      name: 'Uncategorized',
+      name: 'Ei kategoriaa',
       products: uncategorizedProducts,
     });
   }
@@ -196,7 +181,9 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   return (
     <>
       <Container isMenuOpen={isMenuOpen}>
-        <h1>Shopping List</h1>
+         <HeaderContainer> 
+            <b>Ostoslista</b>
+         </HeaderContainer> 
         {groupedProducts.map(category => (
           <Accordion key={category.id} title={category.name} defaultExpanded={true}>
             {category.products.map(product => (
@@ -208,37 +195,36 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                 />
                 <span>{product.name}</span>
                 <InputWrapper>
-                  <input
+                  <InputQuantity
                     type="number"
                     value={product.quantity || ''}
                     onChange={(e) => handleQuantityChange(product.id, e.target.value)}
-                    placeholder="Quantity"
+                    placeholder="Määrä"
                   />
-                  <input
+                  <InputUnit
                     type="text"
                     value={product.unit || ''}
                     onChange={(e) => handleUnitChange(product.id, e.target.value)}
-                    placeholder="Unit"
+                    placeholder="Yksikkö"
                   />
                 </InputWrapper>
               </ShoppingListItem>
             ))}
           </Accordion>
         ))}
-        <ButtonContainer>
+        <BottomContainer>
           <ButtonGroupLeft>
-            <DeleteButton
+            <OkButton
               disabled={selectedProducts.size === 0}
               onClick={handleRemoveSelected}
             >
               Poista valitut listalta
-            </DeleteButton>
+            </OkButton>
           </ButtonGroupLeft>
           <ButtonGroupRight>
-            <PrimaryButton disabled>Button 1</PrimaryButton>
-            <PrimaryButton disabled>Button 2</PrimaryButton>
+            <PrimaryButton disabled>Tulosta lista</PrimaryButton>            
           </ButtonGroupRight>
-        </ButtonContainer>
+        </BottomContainer>
       </Container>
  
     </>

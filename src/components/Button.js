@@ -65,9 +65,9 @@ export const SaveButton = styled(props => (
 export const OkButton = styled(props => (
     <ButtonComponent icon={faCheck} defaultText="OK" {...props} />
   ))`
-    background-color: #4caf50;
+    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
     &:hover {
-      background-color: #388e3c;
+      background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
     }
   `;
 
