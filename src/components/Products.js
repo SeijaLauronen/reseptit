@@ -9,6 +9,9 @@ import Accordion from './Accordion';
 
 const Container = styled.div`
   padding: 20px;
+  opacity: ${({ isEditFormOpen }) => (isEditFormOpen ? 0.5 : 1)};
+  pointer-events: ${({ isEditFormOpen }) => (isEditFormOpen ? 'none' : 'auto')};
+  transition: opacity 0.3s ease-in-out;
 `;
 
 const ProductItem = styled.div`
@@ -196,18 +199,19 @@ const Products = ({ refresh = false }) => {
   };
 
   return (
-    <Container>
+    <>
+    
       <h1>Products</h1>
-      {editingProduct ? (
+      {editingProduct && (
         <EditProductForm
           product={editingProduct}
           onSave={handleSaveProduct}
           onCancel={() => setEditingProduct(null)}
           onDelete={handleDeleteProduct}
-          isOpen={!!editingProduct}
+          isOpen={editingProduct}
         />
-      ) : (
-        <>
+      )}
+      <Container isEditFormOpen={editingProduct}>
           <input
             type="text"
             value={newProduct}
@@ -254,9 +258,8 @@ const Products = ({ refresh = false }) => {
               )
             ))}
           </DragDropContext>
-        </>
-      )}
-    </Container>
+        </Container>          
+    </>
   );
 };
 
