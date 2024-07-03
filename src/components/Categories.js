@@ -8,8 +8,8 @@ import EditCategoryForm from './EditCategoryForm';
 
 const Container = styled.div`
   padding: 20px;
-  opacity: ${({ isMenuOpen }) => (isMenuOpen ? 0.5 : 1)};
-  pointer-events: ${({ isMenuOpen }) => (isMenuOpen ? 'none' : 'auto')};
+  opacity: ${({ isMenuOpen, isCategoryFormOpen }) => (isMenuOpen || isCategoryFormOpen ? 0.5 : 1)};
+  pointer-events: ${({ isMenuOpen, isCategoryFormOpen }) => (isMenuOpen || isCategoryFormOpen ? 'none' : 'auto')};
   transition: opacity 0.3s ease-in-out;
 `;
 
@@ -107,9 +107,9 @@ const Categories = ({ refresh = false, isMenuOpen }) => {
   };
 
   return (
-    <Container isMenuOpen={isMenuOpen}>
+    <>   
       <h1>Categories</h1>
-      {isCategoryFormOpen && editingCategory ? (
+      {isCategoryFormOpen && editingCategory && (
         <EditCategoryForm
           category={editingCategory}
           onSave={handleSaveCategory}
@@ -120,45 +120,46 @@ const Categories = ({ refresh = false, isMenuOpen }) => {
           onDelete={handleDeleteCategory}
           isOpen={isCategoryFormOpen}
         />
-      ) : (
-        <>
-          <input
-            type="text"
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-            placeholder="New category name"
-          />
-          <button onClick={handleAddCategory}>Add</button>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="droppable-categories">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {categories.map((category, index) => (
-                    <Draggable key={category.id.toString()} draggableId={category.id.toString()} index={index}>
-                      {(provided) => (
-                        <CategoryItem
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <span>{category.name}</span>
-                          <div>
-                            <IconWrapper onClick={() => handleEditCategory(category)}>
-                              <FontAwesomeIcon icon={faEdit} />
-                            </IconWrapper>
-                          </div>
-                        </CategoryItem>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </>
       )}
-    </Container>
+        
+      <Container className ='kontaineri' isMenuOpen={isMenuOpen} isCategoryFormOpen={isCategoryFormOpen}>
+            <input
+              type="text"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              placeholder="New category name"
+            />
+            <button onClick={handleAddCategory}>Add</button>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="droppable-categories">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {categories.map((category, index) => (
+                      <Draggable key={category.id.toString()} draggableId={category.id.toString()} index={index}>
+                        {(provided) => (
+                          <CategoryItem
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <span>{category.name}</span>
+                            <div>
+                              <IconWrapper onClick={() => handleEditCategory(category)}>
+                                <FontAwesomeIcon icon={faEdit} />
+                              </IconWrapper>
+                            </div>
+                          </CategoryItem>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+      </Container>
+      
+    </>
   );
 };
 
