@@ -26,7 +26,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen }) => {
   return (
     <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(product.id)}>
       <div>
-        <label>Name</label>
+        <label>Nimi </label>
         <input
           type="text"
           value={name}
@@ -34,7 +34,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen }) => {
         />
       </div>
       <div>
-        <label>Category</label>
+        <label>Kategoria </label>
         <select
           value={categoryId}
           onChange={(e) => setCategoryId(parseInt(e.target.value, 10))}

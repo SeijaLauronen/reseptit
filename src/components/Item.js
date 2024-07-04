@@ -32,7 +32,7 @@ export const ShoppingListItem = styled(Item)`
   align-items: flex-start;
   //background-color: red;
 
-  @media (min-width: 400px) {
+  @media (min-width: 300px) {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;

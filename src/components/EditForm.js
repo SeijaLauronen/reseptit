@@ -4,7 +4,7 @@ import { OkButton, CancelButton, DeleteButton, CloseButtonComponent } from './Bu
 
 const SlideInContainer = styled.div`
   position: fixed;
-  top: 50px;
+  top: 200px;
   right: 0;
   width: 90%;
   max-width: 400px;

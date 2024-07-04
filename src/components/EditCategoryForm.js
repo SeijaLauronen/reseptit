@@ -11,7 +11,7 @@ const EditCategoryForm = ({ category, onSave, onCancel, onDelete, isOpen }) => {
   return (
     <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(category.id)}>
       <div>
-        <label>Category Name</label>
+        <label>Kategorian nimi</label>
         <input
           type="text"
           value={name}
