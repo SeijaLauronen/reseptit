@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faStar, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import EditProductForm from './EditProductForm';
 import Accordion from './Accordion';
 import HeaderContainer from './ViewTop';
@@ -242,10 +244,16 @@ const Products = ({ refresh = false, categoryId }) => {
                                       <FontAwesomeIcon icon={faEdit} />
                                     </IconWrapper>
                                     <IconWrapper onClick={() => handleToggleFavorite(product.id)}>
-                                      <FontAwesomeIcon icon={faStar} style={{ color: product.isFavorite ? 'gold' : 'gray' }} />
+                                      <FontAwesomeIcon 
+                                        icon={ product.isFavorite ? faStarSolid : faStarRegular } 
+                                        style={{ color: product.isFavorite ? 'gold' : 'gray' }} 
+                                      />
                                     </IconWrapper>
                                     <IconWrapper onClick={() => handleToggleShoppingList(product.id)}>
-                                      <FontAwesomeIcon icon={faShoppingCart} style={{ color: product.onShoppingList ? 'green' : 'gray' }} />
+                                      <FontAwesomeIcon 
+                                        icon={faShoppingCart}                                        
+                                        style={{ color: product.onShoppingList ? 'green' : 'lightgrey' }} 
+                                      />
                                     </IconWrapper>
                                   </IconContainer>
                                 </div>
