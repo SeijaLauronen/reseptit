@@ -1,66 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { getDB } from '../database';
 import Accordion from './Accordion';
-import { OkButton } from './Button'; // Import DeleteButton
-import { PrimaryButton } from './Button';
 import BottomContainer from './ViewBottom';
 import HeaderContainer from './ViewTop';
-import {InputQuantity, InputUnit} from './Input';
-
-// Container for the main content
-const Container = styled.div`
-  padding: 20px;
-  padding-bottom: 100px; /* Add space for ButtonContainer and footer */
-  opacity: ${({ isMenuOpen }) => (isMenuOpen ? 0.5 : 1)};
-  pointer-events: ${({ isMenuOpen }) => (isMenuOpen ? 'none' : 'auto')};
-  transition: opacity 0.3s ease-in-out;
-`;
-
-// Shopping list item style
-const ShoppingListItem = styled.div`
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  @media (min-width: 400px) {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-`;
-
-// Wrapper for quantity and unit inputs
-const InputWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-
-  @media (min-width: 400px) {
-    flex-direction: row;
-    margin-top: 0;
-  }
-`;
-
-
-// Button group styles
-const ButtonGroupLeft = styled.div`
-  display: flex;
-`;
-
-const ButtonGroupRight = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  flex: 1;
-  min-width: 0; /* Allow flex items to shrink to fit */
-`;
+import { OkButton, PrimaryButton } from './Button'; 
+import { ShoppingListItem } from './Item';
+import Container from './Container';
+import { InputWrapper, ButtonGroupLeft, ButtonGroupRight } from './Container';
+import { InputQuantity, InputUnit } from './Input';
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]);

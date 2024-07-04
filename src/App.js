@@ -18,7 +18,6 @@ const App = () => {
   const [view, setView] = useState('categories'); // Lisätty view-tila
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null); // Lisätty tila valitulle kategorian ID:lle
-  const [viewHeader, setViewHeader] = useState('Kategoriat');
 
   const handleDatabaseCleared = () => {
     setRefresh(!refresh); // Vaihdetaan refresh tila päivittämisen laukaisemiseksi

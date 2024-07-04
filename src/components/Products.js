@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,32 +6,11 @@ import { faEdit, faStar, faShoppingCart } from '@fortawesome/free-solid-svg-icon
 import EditProductForm from './EditProductForm';
 import Accordion from './Accordion';
 import HeaderContainer from './ViewTop';
-import {AddButton} from './Button';
 import BottomContainer from './ViewBottom';
 import InputAdd from './Input';
-
-const Container = styled.div`
-  padding: 20px;
-  opacity: ${({ isEditFormOpen }) => (isEditFormOpen ? 0.5 : 1)};
-  pointer-events: ${({ isEditFormOpen }) => (isEditFormOpen ? 'none' : 'auto')};
-  transition: opacity 0.3s ease-in-out;
-`;
-
-const ProductItem = styled.div`
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const IconWrapper = styled.span`
-  margin-left: 30px;
-  cursor: pointer;
-`;
+import {AddButton} from './Button';
+import Container, { IconContainer, IconWrapper } from './Container';
+import {ProductItem} from './Item';
 
 const Products = ({ refresh = false, categoryId }) => {
   console.log("categoryId",categoryId);
@@ -259,15 +237,17 @@ const Products = ({ refresh = false, categoryId }) => {
                               >
                                 <span>{product.name}</span>
                                 <div>
-                                  <IconWrapper onClick={() => handleEditProduct(product)}>
-                                    <FontAwesomeIcon icon={faEdit} />
-                                  </IconWrapper>
-                                  <IconWrapper onClick={() => handleToggleFavorite(product.id)}>
-                                    <FontAwesomeIcon icon={faStar} style={{ color: product.isFavorite ? 'gold' : 'gray' }} />
-                                  </IconWrapper>
-                                  <IconWrapper onClick={() => handleToggleShoppingList(product.id)}>
-                                    <FontAwesomeIcon icon={faShoppingCart} style={{ color: product.onShoppingList ? 'green' : 'gray' }} />
-                                  </IconWrapper>
+                                <IconContainer>
+                                    <IconWrapper onClick={() => handleEditProduct(product)}>
+                                      <FontAwesomeIcon icon={faEdit} />
+                                    </IconWrapper>
+                                    <IconWrapper onClick={() => handleToggleFavorite(product.id)}>
+                                      <FontAwesomeIcon icon={faStar} style={{ color: product.isFavorite ? 'gold' : 'gray' }} />
+                                    </IconWrapper>
+                                    <IconWrapper onClick={() => handleToggleShoppingList(product.id)}>
+                                      <FontAwesomeIcon icon={faShoppingCart} style={{ color: product.onShoppingList ? 'green' : 'gray' }} />
+                                    </IconWrapper>
+                                  </IconContainer>
                                 </div>
                               </ProductItem>
                             )}
