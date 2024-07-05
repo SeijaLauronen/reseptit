@@ -9,6 +9,11 @@ const Container = styled.div`
 `;
 export default Container;
 
+export const FormContainer = styled.div`
+padding: 20px;
+background-color: #fff;
+margin: 20px 0;
+`;
 
 export const IconContainer = styled.span`
   display: inline-flex;
@@ -45,6 +50,13 @@ export const InputWrapper = styled.div`
   }
 `;
 
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+`;
+
 // Button group styles
 export const ButtonGroupLeft = styled.div`
   display: flex;
@@ -57,3 +69,4 @@ export const ButtonGroupRight = styled.div`
   flex: 1;
   min-width: 0; /* Allow flex items to shrink to fit */
 `;
+

@@ -1,27 +1,35 @@
 import styled from "styled-components";
-const InputAdd = styled.input`
-    width: -webkit-fill-available;
+
+const Input = styled.input`
     padding-left: 10px;
     padding-top: 5px;
     padding-bottom: 5px;        
+`;
+
+const InputAdd = styled(Input)`
+    width: -webkit-fill-available;       
 `;
 export default InputAdd;
 
-export const InputQuantity = styled.input`
-    width: 60px;
-    padding-left: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;        
+export const InputQuantity = styled(Input)`
+    width: 60px;      
 `;
 
-export const InputUnitXYZ = styled.input`
-    width: 50px;
-    padding-left: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;        
-`;
-
-export const InputUnit = styled(InputQuantity)`
+export const InputUnit = styled(Input)`
     width: 50px;      
 `;
+
+export const InputName = styled(Input)`
+   margin-left: 10px;
+   width: 200px;   
+`;
+
+export const Select = styled.select`
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-left: 10px;
+  width: 180px;
+`;
+
 

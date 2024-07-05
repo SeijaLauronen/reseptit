@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import EditForm from './EditForm';
+import { InputName } from './Input';
 
 const EditCategoryForm = ({ category, onSave, onCancel, onDelete, isOpen }) => {
   const [name, setName] = useState(category.name);
@@ -12,7 +13,7 @@ const EditCategoryForm = ({ category, onSave, onCancel, onDelete, isOpen }) => {
     <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(category.id)}>
       <div>
         <label>Kategorian nimi</label>
-        <input
+        <InputName
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}

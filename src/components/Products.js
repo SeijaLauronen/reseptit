@@ -252,14 +252,12 @@ const Products = ({ refresh = false, categoryId }) => {
                 Kategorioittain
               </label>
             )}
-              <label>
-                <input
-                  type="checkbox"
-                  checked={showFavorites}
-                  onChange={() => setShowFavorites(!showFavorites)}
-                />
-                Vain suosikit
-              </label>
+              <IconWrapper onClick={() => setShowFavorites(!showFavorites)}>
+              <FontAwesomeIcon 
+                icon={showFavorites ? faStarSolid : faStarRegular} 
+                style={{ color: showFavorites ? 'gold' : 'gray' }} 
+              />
+              </IconWrapper>
             </div>
           </StickyTop>    
           <h1/>     

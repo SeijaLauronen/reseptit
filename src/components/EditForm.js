@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { OkButton, CancelButton, DeleteButton, CloseButtonComponent } from './Button';
+import { OkButton, DeleteButton, CloseButtonComponent } from './Button';
+import { FormContainer, ButtonGroup, ButtonGroupLeft, ButtonGroupRight } from './Container';
 
 const SlideInContainer = styled.div`
   position: fixed;
@@ -17,31 +18,6 @@ const SlideInContainer = styled.div`
   overflow-y: auto;
 `;
 
-const FormContainer = styled.div`
-  padding: 20px;
-  background-color: #fff;
-  margin: 20px 0;
-`;
-
-//TODO nämä button komponentiiin? toistoa shoppinglistalla
-const ButtonGroup = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-`;
-
-// Button group styles
-const ButtonGroupLeft = styled.div`
-  display: flex;
-`;
-
-const ButtonGroupRight = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  flex: 1;
-  min-width: 0; /* Allow flex items to shrink to fit */
-`;
 
 const EditForm = ({ isOpen, onSave, onCancel, onDelete, children }) => {
   useEffect(() => {
