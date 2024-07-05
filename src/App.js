@@ -41,7 +41,7 @@ const App = () => {
 
 
   const renderView = () => {
-    switch (view) {
+    switch (view) {     
       case 'categories':
         return <Categories refresh={refresh} onCategorySelect={handleCategorySelect} />;
       case 'products':
