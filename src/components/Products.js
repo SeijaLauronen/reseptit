@@ -23,6 +23,7 @@ const Products = ({ refresh = false, categoryId }) => {
   const [expandedCategories, setExpandedCategories] = useState(new Set());
   const [filter, setFilter] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(categoryId); //Lisäsin tämän
+  const [selectedCategoryName, setSelectedCategoryName] = useState(''); //tämä lisätty
   const [showByCategory, setShowByCategory] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
 
@@ -45,11 +46,14 @@ const Products = ({ refresh = false, categoryId }) => {
       if (categoryId) {
         setExpandedCategories(new Set([parseInt(categoryId, 10)]));
         setShowByCategory(true); // Set showByCategory to true if a category is selected
+        // Find and set the selected category name
+        const selectedCategory = allCategories.find(category => category.id === parseInt(categoryId, 10));
+        setSelectedCategoryName(selectedCategory ? selectedCategory.name : '');
       } else {
         setExpandedCategories(new Set(allCategories.map(category => category.id).concat('uncategorized')));
         setShowByCategory(false); // Reset showByCategory to false if no category is selected
         setSelectedCategoryId(null); // Reset selectedCategoryId to null if no category is selected
-    
+        setSelectedCategoryName(''); // Reset the selected category name
       }
    
 
@@ -203,13 +207,6 @@ const Products = ({ refresh = false, categoryId }) => {
     });
   }
 
-  const displayedProductsXYZ = (category) => {
-    if (filter === '') {
-      return category.products;
-    }
-    return category.products.filter(product => product.name.toLowerCase().includes(filter));
-  };
-
   const displayedProducts = (category) => {
     let filteredProducts = category.products;
     if (showFavorites) {
@@ -243,8 +240,9 @@ const Products = ({ refresh = false, categoryId }) => {
       )}
       <Container isEditFormOpen={editingProduct}>
         <StickyTop>
-            <b>Tuotteet</b>
+            <b>{selectedCategoryName && `${selectedCategoryName}:`}Tuotteet</b>
             <div>
+            {!selectedCategoryId && (
               <label>
                 <input
                   type="checkbox"
@@ -253,6 +251,7 @@ const Products = ({ refresh = false, categoryId }) => {
                 />
                 Kategorioittain
               </label>
+            )}
               <label>
                 <input
                   type="checkbox"
