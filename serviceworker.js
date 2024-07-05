@@ -1,6 +1,6 @@
-const programVersion = '2024-07-05: 1';
-const staticCacheName = 'recipe-static-1'; 
-const dynamicCacheName = 'recipe-dynamic-1'; // Ei välttämätön
+const programVersion = '2024-07-05: 1.1';
+const staticCacheName = 'recipe-static-1.1'; 
+const dynamicCacheName = 'recipe-dynamic-1.1'; // Ei välttämätön
 
 const assets = [
   '/',
@@ -52,22 +52,22 @@ self.addEventListener('activate', evt => {
 //https://www.youtube.com/watch?v=ChXgikdQJR8&list=PL4cUxeGkcC9gTxqJBcDmoi5Q2pzDusSL7&index=18
 //responsea ei voi käyttää/ottaa kiinni useampaan kertaan, siksi otetaan siitä kopio cachetta varten!
 self.addEventListener('fetch', evt => {
-  //console.log('fetch event', evt);
+  console.log('fetch event', evt);
   evt.respondWith(
     caches.match(evt.request).then(cacheRes => {
-      return cacheRes || fetch(evt.request).then(fetchRes => {
-        return caches.open(dynamicCacheName).then(cache => {
+      return cacheRes || fetch(evt.request).then(async fetchRes => {
+        const cache = await caches.open(dynamicCacheName);
+          cosole.log(fetchRes.clone().status); //TEMP
           if (fetchRes.clone().status == 404) { //oma iffi
-              if(evt.request.url.indexOf('.html') > -1) {
-                return (caches.match('fallback.html')) //alkup
+              if (evt.request.url.indexOf('.html') > -1) {
+                  return (caches.match('fallback.html')); //alkup
               }
           } else {
-            cache.put(evt.request.url, fetchRes.clone()); //alkup
-            // check cached items size
-            limitCacheSize(dynamicCacheName, 25);
+              cache.put(evt.request.url, fetchRes.clone()); //alkup
+              // check cached items size
+              limitCacheSize(dynamicCacheName, 25);
           }
           return fetchRes;
-        })
       });
     }).catch(() => {
       if(evt.request.url.indexOf('.html') > -1){
