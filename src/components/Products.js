@@ -23,6 +23,8 @@ const Products = ({ refresh = false, categoryId }) => {
   const [expandedCategories, setExpandedCategories] = useState(new Set());
   const [filter, setFilter] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(categoryId); //Lisäsin tämän
+  const [showByCategory, setShowByCategory] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
 
   useEffect(() => {    
     const fetchData = async () => {
@@ -42,8 +44,12 @@ const Products = ({ refresh = false, categoryId }) => {
       // Expand only the selected category
       if (categoryId) {
         setExpandedCategories(new Set([parseInt(categoryId, 10)]));
+        setShowByCategory(true); // Set showByCategory to true if a category is selected
       } else {
         setExpandedCategories(new Set(allCategories.map(category => category.id).concat('uncategorized')));
+        setShowByCategory(false); // Reset showByCategory to false if no category is selected
+        setSelectedCategoryId(null); // Reset selectedCategoryId to null if no category is selected
+    
       }
    
 
@@ -197,11 +203,30 @@ const Products = ({ refresh = false, categoryId }) => {
     });
   }
 
-  const displayedProducts = (category) => {
+  const displayedProductsXYZ = (category) => {
     if (filter === '') {
       return category.products;
     }
     return category.products.filter(product => product.name.toLowerCase().includes(filter));
+  };
+
+  const displayedProducts = (category) => {
+    let filteredProducts = category.products;
+    if (showFavorites) {
+      filteredProducts = filteredProducts.filter(product => product.isFavorite);
+    }
+    if (filter !== '') {
+      filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(filter));
+    }
+    return filteredProducts;
+  };
+
+  const sortedProducts = () => {
+    let sorted = [...products];
+    if (showFavorites) {
+      sorted = sorted.filter(product => product.isFavorite);
+    }
+    return sorted.sort((a, b) => a.name.localeCompare(b.name));
   };
 
   return (
@@ -217,67 +242,129 @@ const Products = ({ refresh = false, categoryId }) => {
         />
       )}
       <Container isEditFormOpen={editingProduct}>
-          <StickyTop> 
+        <StickyTop>
             <b>Tuotteet</b>
-          </StickyTop>     
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={showByCategory}
+                  onChange={() => setShowByCategory(!showByCategory)}
+                />
+                Kategorioittain
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={showFavorites}
+                  onChange={() => setShowFavorites(!showFavorites)}
+                />
+                Vain suosikit
+              </label>
+            </div>
+          </StickyTop>    
           <h1/>     
           <DragDropContext onDragEnd={handleDragEnd}>
-            {groupedProducts.map(category => (
-              expandedCategories.has(category.id) && (
-                <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>
-                  <Droppable droppableId={`droppable-${category.id}`}>
-                    {(provided) => (
-                      <div {...provided.droppableProps} ref={provided.innerRef}>
-                        {displayedProducts(category).map((product, index) => (
-                          <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
-                            {(provided) => (
-                              <ProductItem
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                <span>{product.name}</span>
-                                <div>
-                                <IconContainer>
-                                    <IconWrapper onClick={() => handleEditProduct(product)}>
-                                      <FontAwesomeIcon icon={faEdit} />
-                                    </IconWrapper>
-                                    <IconWrapper onClick={() => handleToggleFavorite(product.id)}>
-                                      <FontAwesomeIcon 
-                                        icon={ product.isFavorite ? faStarSolid : faStarRegular } 
-                                        style={{ color: product.isFavorite ? 'gold' : 'gray' }} 
-                                      />
-                                    </IconWrapper>
-                                    <IconWrapper onClick={() => handleToggleShoppingList(product.id)}>
-                                      <FontAwesomeIcon 
-                                        icon={faShoppingCart}                                        
-                                        style={{ color: product.onShoppingList ? 'green' : 'lightgrey' }} 
-                                      />
-                                    </IconWrapper>
-                                  </IconContainer>
-                                </div>
-                              </ProductItem>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </Accordion>
-              )
-            ))}
-          </DragDropContext>
-        </Container> 
-        <StickyBottom>
-        <InputAdd            
-              type="text"
-              value={newProduct}
-              onChange={handleInputChange}
-              placeholder="Suodata tai lisää tuote"
-            />        
-            <AddButton onClick={handleAddProduct}/>
-        </StickyBottom>         
+          {showByCategory ? (
+            groupedProducts              
+              .filter(category => selectedCategoryId === null || category.id === selectedCategoryId)
+              .map(category => (
+                expandedCategories.has(category.id) && (
+                  <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>
+                    <Droppable droppableId={`droppable-${category.id}`}>
+                      {(provided) => (
+                        <div {...provided.droppableProps} ref={provided.innerRef}>
+                          {displayedProducts(category).map((product, index) => (
+                            <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
+                              {(provided) => (
+                                <ProductItem
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <span>{product.name}</span>
+                                  <div>
+                                    <IconContainer>
+                                      <IconWrapper onClick={() => handleEditProduct(product)}>
+                                        <FontAwesomeIcon icon={faEdit} />
+                                      </IconWrapper>
+                                      <IconWrapper onClick={() => handleToggleFavorite(product.id)}>
+                                        <FontAwesomeIcon
+                                          icon={product.isFavorite ? faStarSolid : faStarRegular}
+                                          style={{ color: product.isFavorite ? 'gold' : 'gray' }}
+                                        />
+                                      </IconWrapper>
+                                      <IconWrapper onClick={() => handleToggleShoppingList(product.id)}>
+                                        <FontAwesomeIcon
+                                          icon={faShoppingCart}
+                                          style={{ color: product.onShoppingList ? 'green' : 'lightgrey' }}
+                                        />
+                                      </IconWrapper>
+                                    </IconContainer>
+                                  </div>
+                                </ProductItem>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </Accordion>
+                )
+              ))
+          ) : (
+            <Droppable droppableId="droppable-all">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {sortedProducts().map((product, index) => (
+                    <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
+                      {(provided) => (
+                        <ProductItem
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <span>{product.name}</span>
+                          <div>
+                            <IconContainer>
+                              <IconWrapper onClick={() => handleEditProduct(product)}>
+                                <FontAwesomeIcon icon={faEdit} />
+                              </IconWrapper>
+                              <IconWrapper onClick={() => handleToggleFavorite(product.id)}>
+                                <FontAwesomeIcon
+                                  icon={product.isFavorite ? faStarSolid : faStarRegular}
+                                  style={{ color: product.isFavorite ? 'gold' : 'gray' }}
+                                />
+                              </IconWrapper>
+                              <IconWrapper onClick={() => handleToggleShoppingList(product.id)}>
+                                <FontAwesomeIcon
+                                  icon={faShoppingCart}
+                                  style={{ color: product.onShoppingList ? 'green' : 'lightgrey' }}
+                                />
+                              </IconWrapper>
+                            </IconContainer>
+                          </div>
+                        </ProductItem>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          )}
+        </DragDropContext>
+      </Container>
+      <StickyBottom>
+        <InputAdd
+          type="text"
+          value={newProduct}
+          onChange={handleInputChange}
+          placeholder="Suodata tai lisää tuote"
+        />
+        <AddButton onClick={handleAddProduct} />
+      </StickyBottom>
     </>
   );
 };
