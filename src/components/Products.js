@@ -15,7 +15,6 @@ import Container, { IconContainer, IconWrapper } from './Container';
 import {ProductItem} from './Item';
 
 const Products = ({ refresh = false, categoryId }) => {
-  console.log("categoryId",categoryId);
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
