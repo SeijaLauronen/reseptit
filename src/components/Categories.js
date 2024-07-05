@@ -4,8 +4,8 @@ import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import EditCategoryForm from './EditCategoryForm';
-import HeaderContainer from './ViewTop';
-import BottomContainer from './ViewBottom';
+import StickyTop from './StickyTop';
+import StickyBottom from './StickyBottom';
 import InputAdd from './Input';
 import {AddButton} from './Button';
 import Container, { IconContainer, IconWrapper } from './Container';
@@ -105,9 +105,9 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
       )}
         
       <Container isMenuOpen={isMenuOpen} isCategoryFormOpen={isCategoryFormOpen}>
-            <HeaderContainer> 
+            <StickyTop> 
             <b>Kategoriat</b>
-            </HeaderContainer>            
+            </StickyTop>            
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="droppable-categories">
                 {(provided) => (
@@ -141,14 +141,14 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
               </Droppable>
             </DragDropContext>
       </Container>
-      <BottomContainer><InputAdd            
+      <StickyBottom><InputAdd            
               type="text"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
               placeholder="Uusi kategoria"
             />        
             <AddButton onClick={handleAddCategory}/>
-      </BottomContainer>
+      </StickyBottom>
       
     </>
   );

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const HeaderContainer = styled.div`
+const StickyTop = styled.div`
     position: fixed;
     top: 52px;
     left: 0;
@@ -13,6 +13,6 @@ const HeaderContainer = styled.div`
     z-index: 999;
 `;
 
-export default HeaderContainer;
+export default StickyTop;
 
 

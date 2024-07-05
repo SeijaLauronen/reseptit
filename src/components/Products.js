@@ -7,8 +7,8 @@ import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import EditProductForm from './EditProductForm';
 import Accordion from './Accordion';
-import HeaderContainer from './ViewTop';
-import BottomContainer from './ViewBottom';
+import StickyTop from './StickyTop';
+import StickyBottom from './StickyBottom';
 import InputAdd from './Input';
 import {AddButton} from './Button';
 import Container, { IconContainer, IconWrapper } from './Container';
@@ -217,9 +217,9 @@ const Products = ({ refresh = false, categoryId }) => {
         />
       )}
       <Container isEditFormOpen={editingProduct}>
-          <HeaderContainer> 
+          <StickyTop> 
             <b>Tuotteet</b>
-          </HeaderContainer>     
+          </StickyTop>     
           <h1/>     
           <DragDropContext onDragEnd={handleDragEnd}>
             {groupedProducts.map(category => (
@@ -269,7 +269,7 @@ const Products = ({ refresh = false, categoryId }) => {
             ))}
           </DragDropContext>
         </Container> 
-        <BottomContainer>
+        <StickyBottom>
         <InputAdd            
               type="text"
               value={newProduct}
@@ -277,7 +277,7 @@ const Products = ({ refresh = false, categoryId }) => {
               placeholder="Suodata tai lisää tuote"
             />        
             <AddButton onClick={handleAddProduct}/>
-        </BottomContainer>         
+        </StickyBottom>         
     </>
   );
 };

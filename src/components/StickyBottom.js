@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const BottomContainer = styled.div`
+const StickyBottom = styled.div`
   position: fixed;
   bottom: 40px; /* Position above the footer */
   left: 0;
@@ -15,4 +15,4 @@ const BottomContainer = styled.div`
   overflow-x: auto; /* Enable horizontal scrolling if needed */
 `;
 
-export default BottomContainer;
+export default StickyBottom;

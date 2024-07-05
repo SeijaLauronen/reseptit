@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getDB } from '../database';
 import Accordion from './Accordion';
-import BottomContainer from './ViewBottom';
-import HeaderContainer from './ViewTop';
+import StickyBottom from './StickyBottom';
+import StickyTop from './StickyTop';
 import { OkButton, PrimaryButton } from './Button'; 
 import { ShoppingListItem } from './Item';
 import Container from './Container';
@@ -128,9 +128,9 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   return (
     <>
       <Container isMenuOpen={isMenuOpen}>
-         <HeaderContainer> 
+         <StickyTop> 
             <b>Ostoslista</b>
-         </HeaderContainer> 
+         </StickyTop> 
         {groupedProducts.map(category => (
           <Accordion key={category.id} title={category.name} defaultExpanded={true}>
             {category.products.map(product => (
@@ -159,7 +159,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             ))}
           </Accordion>
         ))}
-        <BottomContainer>
+        <StickyBottom>
           <ButtonGroupLeft>
             <OkButton
               disabled={selectedProducts.size === 0}
@@ -171,7 +171,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
           <ButtonGroupRight>
             <PrimaryButton disabled>Tulosta lista</PrimaryButton>            
           </ButtonGroupRight>
-        </BottomContainer>
+        </StickyBottom>
       </Container>
  
     </>
