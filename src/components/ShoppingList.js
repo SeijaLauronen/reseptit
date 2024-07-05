@@ -108,7 +108,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     if (categoryProducts.length > 0) {
       acc.push({
         id: category.id,
-        name: category.name,
+        name: `${category.name} (${categoryProducts.length})`,
         products: categoryProducts,
       });
     }
@@ -120,7 +120,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   if (uncategorizedProducts.length > 0) {
     groupedProducts.unshift({
       id: 'uncategorized',
-      name: 'Ei kategoriaa',
+      name: `Ei kategoriaa (${uncategorizedProducts.length})`,
       products: uncategorizedProducts,
     });
   }
