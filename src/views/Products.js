@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'; 
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
@@ -10,9 +10,9 @@ import Accordion from '../components/Accordion';
 import StickyTop from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
-import {AddButton} from '../components/Button';
+import { AddButton } from '../components/Button';
 import Container, { IconContainer, IconWrapper } from '../components/Container';
-import {ProductItem} from '../components/Item';
+import { ProductItem } from '../components/Item';
 
 const Products = ({ refresh = false, categoryId }) => {
 

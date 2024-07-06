@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +7,7 @@ import EditCategoryForm from './forms/EditCategoryForm';
 import StickyTop from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
-import {AddButton} from '../components/Button';
+import { AddButton } from '../components/Button';
 import Container, { IconContainer, IconWrapper } from '../components/Container';
 import { CategoryItem } from '../components/Item';
 
@@ -125,7 +125,7 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
                             <div>
                               <IconContainer>
                                 <IconWrapper onClick={() => handleEditCategory(category)}>
-                                  <FontAwesomeIcon icon={faEdit}/>
+                                  <FontAwesomeIcon icon={faEdit} />
                                 </IconWrapper>
                                 <IconWrapper onClick={() => onCategorySelect(category.id)}>
                                   <FontAwesomeIcon icon={faArrowRight} />
