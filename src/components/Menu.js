@@ -10,7 +10,7 @@ const MenuContainer = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #333;
+  background-color: #673ab7;
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;

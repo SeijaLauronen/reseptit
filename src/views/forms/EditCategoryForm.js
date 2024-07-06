@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import EditForm from './EditForm';
-import { InputName } from './Input';
+import { InputName } from '../../components/Input';
 
 const EditCategoryForm = ({ category, onSave, onCancel, onDelete, isOpen }) => {
   const [name, setName] = useState(category.name);

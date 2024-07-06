@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { OkButton, DeleteButton, CloseButtonComponent } from './Button';
-import { FormContainer, ButtonGroup, ButtonGroupLeft, ButtonGroupRight } from './Container';
+import { OkButton, DeleteButton, CloseButtonComponent } from '../../components/Button';
+import { FormContainer, ButtonGroup, GroupLeft, GroupRight } from '../../components/Container';
 
 const SlideInContainer = styled.div`
   position: fixed;
@@ -37,12 +37,12 @@ const EditForm = ({ isOpen, onSave, onCancel, onDelete, children }) => {
       <FormContainer>      
         {children}
         <ButtonGroup>
-          <ButtonGroupLeft>
+          <GroupLeft>
             <DeleteButton onClick={onDelete} />
-          </ButtonGroupLeft>
-          <ButtonGroupRight>
+          </GroupLeft>
+          <GroupRight>
             <OkButton onClick={onSave} />                    
-          </ButtonGroupRight>
+          </GroupRight>
         </ButtonGroup>
       </FormContainer>
     </SlideInContainer>

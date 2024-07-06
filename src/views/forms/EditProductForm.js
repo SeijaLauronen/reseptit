@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EditForm from './EditForm';
-import { getDB } from '../database';
-import { InputName, Select } from './Input';
+import { getDB } from '../../database';
+import { InputName, Select } from '../../components/Input';
 
 const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen }) => {
   const [name, setName] = useState(product.name);

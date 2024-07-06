@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getDB } from '../database';
-import Accordion from './Accordion';
-import StickyBottom from './StickyBottom';
-import StickyTop from './StickyTop';
-import { OkButton, PrimaryButton } from './Button'; 
-import { ShoppingListItem } from './Item';
-import Container from './Container';
-import { InputWrapper, ButtonGroupLeft, ButtonGroupRight } from './Container';
-import { InputQuantity, InputUnit } from './Input';
+import Accordion from '../components/Accordion';
+import StickyBottom from '../components/StickyBottom';
+import StickyTop from '../components/StickyTop';
+import { OkButton, PrimaryButton } from '../components/Button'; 
+import { ShoppingListItem } from '../components/Item';
+import Container from '../components/Container';
+import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
+import { InputQuantity, InputUnit } from '../components/Input';
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]);
@@ -160,17 +160,17 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
           </Accordion>
         ))}
         <StickyBottom>
-          <ButtonGroupLeft>
+          <GroupLeft>
             <OkButton
               disabled={selectedProducts.size === 0}
               onClick={handleRemoveSelected}
             >
               Poista valitut listalta
             </OkButton>
-          </ButtonGroupLeft>
-          <ButtonGroupRight>
+          </GroupLeft>
+          <GroupRight>
             <PrimaryButton disabled>Tulosta lista</PrimaryButton>            
-          </ButtonGroupRight>
+          </GroupRight>
         </StickyBottom>
       </Container>
  

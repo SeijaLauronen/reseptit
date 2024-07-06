@@ -50,19 +50,17 @@ export const InputWrapper = styled.div`
   }
 `;
 
-
 export const ButtonGroup = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
 `;
 
-// Button group styles
-export const ButtonGroupLeft = styled.div`
+export const GroupLeft = styled.div`
   display: flex;
 `;
 
-export const ButtonGroupRight = styled.div`
+export const GroupRight = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 10px;

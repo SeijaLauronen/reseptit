@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Menu from './components/Menu';
-import Categories from './components/Categories';
-import Products from './components/Products';
-import ShoppingList from './components/ShoppingList';
+import Categories from './views/Categories';
+import Products from './views/Products';
+import ShoppingList from './views/ShoppingList';
 import Footer from './components/Footer'; 
 import Container from './components/Container';
 import styled from 'styled-components';

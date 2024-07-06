@@ -5,14 +5,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
-import EditProductForm from './EditProductForm';
-import Accordion from './Accordion';
-import StickyTop from './StickyTop';
-import StickyBottom from './StickyBottom';
-import InputAdd from './Input';
-import {AddButton} from './Button';
-import Container, { IconContainer, IconWrapper } from './Container';
-import {ProductItem} from './Item';
+import EditProductForm from './forms/EditProductForm';
+import Accordion from '../components/Accordion';
+import StickyTop from '../components/StickyTop';
+import StickyBottom from '../components/StickyBottom';
+import InputAdd from '../components/Input';
+import {AddButton} from '../components/Button';
+import Container, { IconContainer, IconWrapper } from '../components/Container';
+import {ProductItem} from '../components/Item';
 
 const Products = ({ refresh = false, categoryId }) => {
 

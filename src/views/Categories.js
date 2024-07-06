@@ -3,13 +3,13 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import EditCategoryForm from './EditCategoryForm';
-import StickyTop from './StickyTop';
-import StickyBottom from './StickyBottom';
-import InputAdd from './Input';
-import {AddButton} from './Button';
-import Container, { IconContainer, IconWrapper } from './Container';
-import { CategoryItem } from './Item';
+import EditCategoryForm from './forms/EditCategoryForm';
+import StickyTop from '../components/StickyTop';
+import StickyBottom from '../components/StickyBottom';
+import InputAdd from '../components/Input';
+import {AddButton} from '../components/Button';
+import Container, { IconContainer, IconWrapper } from '../components/Container';
+import { CategoryItem } from '../components/Item';
 
 const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
   const [categories, setCategories] = useState([]);
