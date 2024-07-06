@@ -7,9 +7,10 @@ import Footer from './components/Footer';
 import Container from './components/Container';
 import styled from 'styled-components';
 
+ // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
 const DisabledOverlay = styled.div`
-  pointer-events: ${({ isDisabled }) => (isDisabled ? 'none' : 'auto')};
-  opacity: ${({ isDisabled }) => (isDisabled ? 0.5 : 1)};
+  pointer-events: ${({ $isDisabled }) => ($isDisabled ? 'none' : 'auto')};
+  opacity: ${({ $isDisabled }) => ($isDisabled ? 0.5 : 1)};
 `;
 
 
@@ -53,10 +54,11 @@ const App = () => {
     }
   };
 
+   // Huom, Menu:uun ei transientti props, koska se ei ole styledKOmponentti
   return (
     <div>
       <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} isOpen={isMenuOpen}/>
-      <DisabledOverlay isDisabled={isMenuOpen}>
+      <DisabledOverlay $isDisabled={isMenuOpen}>
         <Container>{renderView()}</Container>
         <Footer setView={handleViewChange} />
       </DisabledOverlay>

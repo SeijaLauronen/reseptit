@@ -17,10 +17,11 @@ const AccordionTitle = styled.div`
   align-items: center;
 `;
 
+// transientti props $isOpen, koska styled komponentti ja isJotain
 const AccordionContent = styled.div`
   padding: 10px;
   background-color: #fff;
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
 `;
 
 const Accordion = ({ title, children, defaultExpanded = false }) => {
@@ -36,7 +37,7 @@ const Accordion = ({ title, children, defaultExpanded = false }) => {
         {title}
         <span>{isOpen ? '-' : '+'}</span>
       </AccordionTitle>
-      <AccordionContent isOpen={isOpen}>{children}</AccordionContent>
+      <AccordionContent $isOpen={isOpen}>{children}</AccordionContent>
     </AccordionWrapper>
   );
 };

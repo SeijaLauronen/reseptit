@@ -24,6 +24,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen }) => {
     onSave(product.id, { name, categoryId: parseInt(categoryId, 10) });
   };
 
+  // transientti props $isOpen ei käytetä, koska EditForm ei ole styled komponentti
   return (
     <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(product.id)}>
       <div>

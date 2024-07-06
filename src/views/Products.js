@@ -226,6 +226,8 @@ const Products = ({ refresh = false, categoryId }) => {
     return sorted.sort((a, b) => a.name.localeCompare(b.name));
   };
 
+  // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
+  // EditProductForm ei ole styled komponentti, ei käytetä transienttia propsia
   return (
     <>
     
@@ -238,7 +240,7 @@ const Products = ({ refresh = false, categoryId }) => {
           isOpen={editingProduct}
         />
       )}
-      <Container isEditFormOpen={editingProduct}>
+      <Container $isEditFormOpen={editingProduct}>
         <StickyTop>
             <b>{selectedCategoryName && `${selectedCategoryName}:`}Tuotteet</b>
             <div>

@@ -18,7 +18,7 @@ const MenuContainer = styled.div`
   z-index: 1000;
 `;
 
-
+// transientti props $isOpen eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
 const MenuOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -26,13 +26,11 @@ const MenuOverlay = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
   z-index: 998;
 `;
 
-const MenuList = styled.ul.withConfig({
-  shouldForwardProp: (prop) => prop !== 'isOpen',
-})`
+const MenuList = styled.ul`
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -42,7 +40,7 @@ const MenuList = styled.ul.withConfig({
   width: 250px;
   height: calc(100% - 50px); /* Korkeus suhteutettu menupalkkiin */
   background-color: white;
-  transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(-100%)')};
+  transform: ${({ $isOpen }) => ($isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   transition: transform 0.3s ease-in-out;
   z-index: 999;
 `;
@@ -64,7 +62,7 @@ const MenuIcon = styled.div`
   font-size: 24px;
 `;
 
-
+//Huom tähän ei transienttia $isOpenia, koska ei ole styled komponentti
 const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
   const handleDeleteDatabase = async () => {
     const confirmDelete = window.confirm('Haluatko varmasti poistaa kaikki sovelluksen tiedot?');
@@ -80,6 +78,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
     onToggleMenu(!isOpen);
   };
 
+  // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
     <>
       <MenuContainer>
@@ -87,8 +86,8 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
           <FontAwesomeIcon icon={faBars} />
         </MenuIcon>        
       </MenuContainer>
-      <MenuOverlay isOpen={isOpen} onClick={toggleMenu} />
-      <MenuList isOpen={isOpen}>
+      <MenuOverlay $isOpen={isOpen} onClick={toggleMenu} />
+      <MenuList $isOpen={isOpen}>
         <CloseButtonComponent onClick={toggleMenu}/>
         <MenuItem></MenuItem>
         <MenuItem onClick={handleDeleteDatabase}>Poista kaikki tiedot</MenuItem>

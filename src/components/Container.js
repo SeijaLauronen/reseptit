@@ -1,13 +1,16 @@
 import styled from 'styled-components'; 
 
+
+//DOM-elementtiin liittyvä styled-component: Käytetään transientteja propseja, eli $ "isJotain" eteen, jotta ne eivät välity tuntemattomina DOM:lle
 const Container = styled.div`
   padding: 45px 5px;
-  opacity: ${({ isMenuOpen, isCategoryFormOpen, isEditFormOpen }) => (isMenuOpen || isCategoryFormOpen || isEditFormOpen ? 0.5 : 1)};
-  pointer-events: ${({ isMenuOpen, isCategoryFormOpen, isEditFormOpen }) => (isMenuOpen || isCategoryFormOpen || isEditFormOpen ? 'none' : 'auto')};
+  opacity: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen ? 0.5 : 1)};
+  pointer-events: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen ? 'none' : 'auto')};
   transition: opacity 0.3s ease-in-out;
   //background-color: green;
 `;
 export default Container;
+
 
 export const FormContainer = styled.div`
 padding: 20px;

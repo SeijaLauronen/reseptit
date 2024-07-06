@@ -125,9 +125,10 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     });
   }
 
+  // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
     <>
-      <Container isMenuOpen={isMenuOpen}>
+      <Container $isMenuOpen={isMenuOpen}>
          <StickyTop> 
             <b>Ostoslista</b>
          </StickyTop> 

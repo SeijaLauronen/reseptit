@@ -88,9 +88,10 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
     }
   };
 
+  // Container in styled komponentti, käytetään transientti props $isJotain...
+  // transientti props $isOpen ei käytetä, koska EditCategoryForm ei ole styled komponentti
   return (
-    <>   
-    
+    <>       
       {isCategoryFormOpen && editingCategory && (
         <EditCategoryForm
           category={editingCategory}
@@ -104,7 +105,7 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
         />
       )}
         
-      <Container isMenuOpen={isMenuOpen} isCategoryFormOpen={isCategoryFormOpen}>
+      <Container $isMenuOpen={isMenuOpen} $isCategoryFormOpen={isCategoryFormOpen}>
             <StickyTop> 
             <b>Kategoriat</b>
             </StickyTop>            
