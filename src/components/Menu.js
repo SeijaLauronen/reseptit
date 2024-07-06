@@ -90,9 +90,10 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
       <MenuOverlay isOpen={isOpen} onClick={toggleMenu} />
       <MenuList isOpen={isOpen}>
         <CloseButtonComponent onClick={toggleMenu}/>
-        <MenuItem onClick={handleDeleteDatabase}>Delete Database</MenuItem>
-        <MenuItem>Test Menu Item</MenuItem>
-        <MenuItem>Test Menu Item 2</MenuItem>
+        <MenuItem></MenuItem>
+        <MenuItem onClick={handleDeleteDatabase}>Poista kaikki tiedot</MenuItem>
+        <MenuItem></MenuItem>
+        <MenuItem></MenuItem>
       </MenuList>
     </>
   );

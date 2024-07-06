@@ -1,6 +1,6 @@
 {
-  "short_name": "Reseptit",
-  "name": "Reseptit PWA",
+  "short_name": "Ostokset",
+  "name": "Ostokset",
   "icons": [
     {
       "src": "./images/slist.ico",
