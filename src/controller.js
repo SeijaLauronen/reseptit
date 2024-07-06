@@ -1,0 +1,44 @@
+import { fetchCategories, addCategory as dbAddCategory, updateCategory as dbUpdateCategory, deleteCategory as dbDeleteCategory } from './dbUtils';
+
+const validateCategory = (category) => { 
+  if (!category.name || category.name.trim() === '') {
+    return 'Category name cannot be empty';
+  }
+  return null;
+};
+
+export const getCategories = async (sortByOrder = true) => {
+    const categories = await fetchCategories();
+    if (sortByOrder) {
+      return categories.sort((a, b) => a.order - b.order);
+    }
+    return categories;
+};
+
+export const addCategory = async (category) => {
+  const error = validateCategory(category);
+  if (error) {
+    throw new Error(error);
+  }
+  await dbAddCategory(category);
+};
+
+export const updateCategory = async (id, updatedCategory) => {
+  const error = validateCategory(updatedCategory);
+  if (error) {
+    throw new Error(error);
+  }
+  await dbUpdateCategory(id, updatedCategory);
+};
+
+export const updateCategoriesOrder = async (categories) => {
+    for (let category of categories) {
+      await dbUpdateCategory(category.id, category);
+    }
+};
+  
+export const deleteCategory = async (id) => {
+  await dbDeleteCategory(id);
+};
+
+// Similar functions for products can be added here
