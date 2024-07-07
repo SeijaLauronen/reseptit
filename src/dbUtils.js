@@ -47,8 +47,10 @@ export const addProduct = async (product) => {
     const db = await getDB();
     const tx = db.transaction('products', 'readwrite');
     const store = tx.objectStore('products');
-    await store.add(product);
+    const addedId = await store.add(product);
+    return addedId;
 };
+
 
 //TODO ei luetella yksittäisiä päivitettäviä kenttiä, niitä tulee lisää...
 export const updateProduct = async (id, updatedProduct) => {

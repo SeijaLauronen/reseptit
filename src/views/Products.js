@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'; 
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,6 +28,9 @@ const Products = ({ refresh = false, categoryId }) => {
   const [showByCategory, setShowByCategory] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [error, setError] = useState('');
+  const [handledProductId, setHandledProductId] = useState(null); // ID of the newly added or edited product
+
+  const productRefs = useRef({}); // Ref object to hold references to product items
 
   const fetchAndSetProductsAndCategories = async () => {
     try {
@@ -60,7 +63,8 @@ const Products = ({ refresh = false, categoryId }) => {
 
   const handleAddProduct = async () => {
     try {
-      await addProduct({ name: newProduct, categoryId: selectedCategoryId });
+      const addedProdId = await addProduct({ name: newProduct, categoryId: selectedCategoryId });
+      setHandledProductId(addedProdId);
       setNewProduct('');
       fetchAndSetProductsAndCategories();
       setFilter(''); // Clear the filter after adding a new product
@@ -237,6 +241,26 @@ const Products = ({ refresh = false, categoryId }) => {
     filterProducts('');
   }
 
+
+  // Add an effect to scroll to the top when the filter changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [filter]);
+
+  
+  // Tämä ei ole suositeltava tapa Reactissa, mutta
+  // ei onnistunut ref:llä, kun se meni ristiin droppable-draggable provided.innerRef:n kanssa
+  useEffect(() => {    
+    if (handledProductId) {
+      const element = document.getElementsByClassName('ProdID-' + handledProductId)[0];
+      if (element) {
+        const elementPosition = element.getBoundingClientRect().top; // Elementin yläreunan sijainti suhteessa näkyvään ikkunaan
+        const offsetPosition = elementPosition + window.scrollY - 100; // Vieritysasento, joka jättää 100px marginaalin yläreunaan
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      }
+    }
+  }, [handledProductId, products]);
+
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   // EditProductForm ei ole styled komponentti, ei käytetä transienttia propsia
   return (
@@ -290,8 +314,9 @@ const Products = ({ refresh = false, categoryId }) => {
                           {displayedProducts(category).map((product, index) => (
                             <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
                               {(provided) => (
-                                <ProductItem
+                                <ProductItem className={`ProdID-${product.id.toString()}`}                                
                                   ref={provided.innerRef}
+                                  //ref={(el) => productRefs.current[product.id] = el}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                 >
@@ -333,8 +358,9 @@ const Products = ({ refresh = false, categoryId }) => {
                   {sortedProducts().map((product, index) => (
                     <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
                       {(provided) => (
-                        <ProductItem
+                        <ProductItem className={`ProdID-${product.id.toString()}`} 
                           ref={provided.innerRef}
+                          //ref={(el) => productRefs.current[product.id] = el}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                         >

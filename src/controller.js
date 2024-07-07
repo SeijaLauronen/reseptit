@@ -60,7 +60,8 @@ export const addProduct = async (product) => {
     if (error) {
       throw new Error(error);
     }
-    await dbAddProduct(product);
+    const addedId = await dbAddProduct(product);
+    return addedId;
 };
 
 export const updateProduct = async (id, updatedProduct) => {
