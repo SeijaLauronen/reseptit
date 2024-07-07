@@ -13,6 +13,7 @@ import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
 import Container, { IconContainer, IconWrapper } from '../components/Container';
 import { ProductItem } from '../components/Item';
+import { getProducts, getCategories, addProduct,  updateProduct, deleteProduct } from '../controller';
 
 const Products = ({ refresh = false, categoryId }) => {
 
@@ -26,21 +27,14 @@ const Products = ({ refresh = false, categoryId }) => {
   const [selectedCategoryName, setSelectedCategoryName] = useState(''); //tämä lisätty
   const [showByCategory, setShowByCategory] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [error, setError] = useState('');
 
-  useEffect(() => {    
-    const fetchData = async () => {
-      const db = await getDB();
-      const productTx = db.transaction('products', 'readonly');
-      const productStore = productTx.objectStore('products');
-      const allProducts = await productStore.getAll();
-
-      const categoryTx = db.transaction('categories', 'readonly');
-      const categoryStore = categoryTx.objectStore('categories');
-      const allCategories = await categoryStore.getAll();
-
+  const fetchAndSetProductsAndCategories = async () => {
+    try {
+      const allProducts = await getProducts();
+      const allCategories = await getCategories();
       setProducts(allProducts);
       setCategories(allCategories);
-      
 
       // Expand only the selected category
       if (categoryId) {
@@ -55,23 +49,25 @@ const Products = ({ refresh = false, categoryId }) => {
         setSelectedCategoryId(null); // Reset selectedCategoryId to null if no category is selected
         setSelectedCategoryName(''); // Reset the selected category name
       }
-   
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-    };
-
-    fetchData();
+  useEffect(() => {
+    fetchAndSetProductsAndCategories();
   }, [refresh, categoryId]);
 
   const handleAddProduct = async () => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    await store.add({ name: newProduct, categoryId: selectedCategoryId }); //Lisäsin tuon kategorian
-    setNewProduct('');
-    const allProducts = await store.getAll();
-    setProducts(allProducts);
-    setFilter(''); // Clear the filter after adding a new product
-    filterProducts(''); // Reset the filter
+    try {
+      await addProduct({ name: newProduct, categoryId: selectedCategoryId });
+      setNewProduct('');
+      fetchAndSetProductsAndCategories();
+      setFilter(''); // Clear the filter after adding a new product
+      filterProducts(''); // Reset the filter
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleEditProduct = (product) => {
@@ -79,30 +75,24 @@ const Products = ({ refresh = false, categoryId }) => {
   };
 
   const handleSaveProduct = async (id, updatedProduct) => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    const product = await store.get(id);
-    product.name = updatedProduct.name;
-    product.categoryId = parseInt(updatedProduct.categoryId, 10);
-    await store.put(product);
-    const allProducts = await store.getAll();
-    setProducts(allProducts);
-    setEditingProduct(null);
-    filterProducts(filter); // Reapply the filter after saving a product
+    try {
+      await updateProduct (id, updatedProduct);
+      fetchAndSetProductsAndCategories();
+      setEditingProduct(null);
+      filterProducts(filter); // Reapply the filter after saving a product
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleDeleteProduct = async (id) => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    await store.delete(id);
-    const allProducts = await store.getAll();
-    setProducts(allProducts);
+    await deleteProduct(id);
+    fetchAndSetProductsAndCategories();
     setEditingProduct(null);
     filterProducts(filter); // Reapply the filter after deleting a product
   };
 
+  //TODO tämä ei vielä tallenna
   const handleDragEnd = async (result) => {
     if (!result.destination) return;
     const reorderedProducts = Array.from(products);
@@ -118,6 +108,7 @@ const Products = ({ refresh = false, categoryId }) => {
     setNewProduct(value);
     setFilter(value.toLowerCase());
     filterProducts(value);
+    setError(null);
   };
 
   const filterProducts = (filter) => {
@@ -252,7 +243,7 @@ const Products = ({ refresh = false, categoryId }) => {
                   onChange={() => setShowByCategory(!showByCategory)}
                 />
                 Kategorioittain
-              </label>
+              </label>              
             )}
               <IconWrapper onClick={() => setShowFavorites(!showFavorites)}>
               <FontAwesomeIcon 
@@ -261,6 +252,7 @@ const Products = ({ refresh = false, categoryId }) => {
               />
               </IconWrapper>
             </div>
+            {error && <div style={{ color: 'red' }}>{error}</div>}
           </StickyTop>    
           <h1/>     
           <DragDropContext onDragEnd={handleDragEnd}>

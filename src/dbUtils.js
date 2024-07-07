@@ -34,3 +34,36 @@ export const deleteCategory = async (id) => {
 };
 
 // Similar functions for products can be added here
+
+// Product DB operations
+export const fetchProducts = async () => {
+    const db = await getDB();
+    const tx = db.transaction('products', 'readonly');
+    const store = tx.objectStore('products');
+    return await store.getAll();
+};
+
+export const addProduct = async (product) => {
+    const db = await getDB();
+    const tx = db.transaction('products', 'readwrite');
+    const store = tx.objectStore('products');
+    await store.add(product);
+};
+
+//TODO ei luetella yksittäisiä päivitettäviä kenttiä, niitä tulee lisää...
+export const updateProduct = async (id, updatedProduct) => {
+    const db = await getDB();
+    const tx = db.transaction('products', 'readwrite');
+    const store = tx.objectStore('products');
+    const product = await store.get(id);
+    product.name = updatedProduct.name;
+    product.categoryId = updatedProduct.categoryId;
+    await store.put(product);
+};
+
+  export const deleteProduct = async (id) => {
+    const db = await getDB();
+    const tx = db.transaction('products', 'readwrite');
+    const store = tx.objectStore('products');
+    await store.delete(id);
+  };

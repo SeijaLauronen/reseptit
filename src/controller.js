@@ -1,4 +1,5 @@
 import { fetchCategories, addCategory as dbAddCategory, updateCategory as dbUpdateCategory, deleteCategory as dbDeleteCategory } from './dbUtils';
+import { fetchProducts, addProduct as dbAddProduct, updateProduct as dbUpdateProduct, deleteProduct as dbDeleteProduct } from './dbUtils';
 
 const validateCategory = (category) => { 
   if (!category.name || category.name.trim() === '') {
@@ -42,3 +43,34 @@ export const deleteCategory = async (id) => {
 };
 
 // Similar functions for products can be added here
+
+const validateProduct = (product) => { 
+    if (!product.name || product.name.trim() === '') {
+      return 'Product name cannot be empty';
+    }
+    return null;
+};
+
+export const getProducts = async () => {
+    return await fetchProducts();
+};
+
+export const addProduct = async (product) => {
+    const error = validateProduct(product);
+    if (error) {
+      throw new Error(error);
+    }
+    await dbAddProduct(product);
+};
+
+export const updateProduct = async (id, updatedProduct) => {
+    const error = validateProduct(updatedProduct);
+    if (error) {
+      throw new Error(error);
+    }
+await dbUpdateProduct(id, updatedProduct);
+};
+
+export const deleteProduct = async (id) => {
+    await dbDeleteProduct(id);
+};

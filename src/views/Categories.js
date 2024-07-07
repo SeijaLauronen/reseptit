@@ -87,6 +87,9 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
   };
 
 
+// TODO johonkin sopivaan kohtaan tämä
+// setError(null);
+
   // Container in styled komponentti, käytetään transientti props $isJotain...
   // transientti props $isOpen ei käytetä, koska EditCategoryForm ei ole styled komponentti
   return (
