@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'; 
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
-import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faShoppingCart, faStar as faStarSolid, faTimes, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import EditProductForm from './forms/EditProductForm';
 import Accordion from '../components/Accordion';
@@ -14,6 +13,7 @@ import { AddButton } from '../components/Button';
 import Container, { IconContainer, IconWrapper } from '../components/Container';
 import { ProductItem } from '../components/Item';
 import { getProducts, getCategories, addProduct,  updateProduct, deleteProduct } from '../controller';
+import Toast from '../components/Toast'; 
 
 const Products = ({ refresh = false, categoryId }) => {
 
@@ -102,6 +102,16 @@ const Products = ({ refresh = false, categoryId }) => {
 
     // Save the reordered products to the database if needed
   };
+
+  const handleShowByCategory = () => {
+    setShowByCategory(!showByCategory);
+    setError(null);
+  };
+
+  const handleShowFavorites = () => {
+    setShowFavorites(!showFavorites);
+    setError(null);
+  }
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -214,14 +224,27 @@ const Products = ({ refresh = false, categoryId }) => {
     if (showFavorites) {
       sorted = sorted.filter(product => product.isFavorite);
     }
+    if (filter !== '') {
+      sorted = sorted.filter(product => product.name.toLowerCase().includes(filter));
+    }
     return sorted.sort((a, b) => a.name.localeCompare(b.name));
   };
+
+
+  const handleClearFilter = () => {
+    setFilter('');
+    setNewProduct('');
+    filterProducts('');
+  }
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   // EditProductForm ei ole styled komponentti, ei käytetä transienttia propsia
   return (
     <>
-    
+      { error && (
+        <Toast message={error} onClose={() => setError('')} />
+      )}
+
       {editingProduct && (
         <EditProductForm
           product={editingProduct}
@@ -240,19 +263,18 @@ const Products = ({ refresh = false, categoryId }) => {
                 <input
                   type="checkbox"
                   checked={showByCategory}
-                  onChange={() => setShowByCategory(!showByCategory)}
+                  onChange={handleShowByCategory}
                 />
                 Kategorioittain
               </label>              
             )}
-              <IconWrapper onClick={() => setShowFavorites(!showFavorites)}>
+              <IconWrapper onClick={handleShowFavorites}>
               <FontAwesomeIcon 
                 icon={showFavorites ? faStarSolid : faStarRegular} 
                 style={{ color: showFavorites ? 'gold' : 'gray' }} 
               />
               </IconWrapper>
-            </div>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
+            </div>            
           </StickyTop>    
           <h1/>     
           <DragDropContext onDragEnd={handleDragEnd}>
@@ -348,6 +370,19 @@ const Products = ({ refresh = false, categoryId }) => {
         </DragDropContext>
       </Container>
       <StickyBottom>
+                
+        <IconWrapper >
+          {newProduct ? (
+          <FontAwesomeIcon onClick={handleClearFilter}
+          icon={faTimes}
+          />
+          ) : (
+          <FontAwesomeIcon 
+          icon={faMagnifyingGlass } 
+          />
+          )}
+        </IconWrapper>
+        
         <InputAdd
           type="text"
           value={newProduct}

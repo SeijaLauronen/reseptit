@@ -3,7 +3,7 @@ import { fetchProducts, addProduct as dbAddProduct, updateProduct as dbUpdatePro
 
 const validateCategory = (category) => { 
   if (!category.name || category.name.trim() === '') {
-    return 'Category name cannot be empty';
+    return 'Nimi on pakollinen tieto';
   }
   return null;
 };
@@ -46,7 +46,7 @@ export const deleteCategory = async (id) => {
 
 const validateProduct = (product) => { 
     if (!product.name || product.name.trim() === '') {
-      return 'Product name cannot be empty';
+      return 'Nimi on pakollinen tieto';
     }
     return null;
 };

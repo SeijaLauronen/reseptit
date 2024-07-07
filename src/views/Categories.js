@@ -10,6 +10,7 @@ import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
 import Container, { IconContainer, IconWrapper } from '../components/Container';
 import { CategoryItem } from '../components/Item';
+import Toast from '../components/Toast'; 
 
 const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
   const [categories, setCategories] = useState([]);
@@ -87,13 +88,14 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
   };
 
 
-// TODO johonkin sopivaan kohtaan tämä
-// setError(null);
-
   // Container in styled komponentti, käytetään transientti props $isJotain...
   // transientti props $isOpen ei käytetä, koska EditCategoryForm ei ole styled komponentti
   return (
-    <>       
+    <>  
+      { error && (
+        <Toast message={error} onClose={() => setError('')} />
+      )}
+
       {isCategoryFormOpen && editingCategory && (
         <EditCategoryForm
           category={editingCategory}
@@ -107,10 +109,9 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
         />
       )}
         
-      <Container $isMenuOpen={isMenuOpen} $isCategoryFormOpen={isCategoryFormOpen}>
+      <Container $isMenuOpen={isMenuOpen} $isCategoryFormOpen={isCategoryFormOpen}>            
             <StickyTop> 
-            <b>Kategoriat</b>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
+            <b>Kategoriat</b>            
             </StickyTop>            
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="droppable-categories">
