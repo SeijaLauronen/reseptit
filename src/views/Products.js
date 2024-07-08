@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'; 
 import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faShoppingCart, faStar as faStarSolid, faTimes, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -247,19 +246,16 @@ const Products = ({ refresh = false, categoryId }) => {
     window.scrollTo(0, 0);
   }, [filter]);
 
-  
-  // Tämä ei ole suositeltava tapa Reactissa, mutta
-  // ei onnistunut ref:llä, kun se meni ristiin droppable-draggable provided.innerRef:n kanssa
-  useEffect(() => {    
-    if (handledProductId) {
-      const element = document.getElementsByClassName('ProdID-' + handledProductId)[0];
-      if (element) {
-        const elementPosition = element.getBoundingClientRect().top; // Elementin yläreunan sijainti suhteessa näkyvään ikkunaan
-        const offsetPosition = elementPosition + window.scrollY - 100; // Vieritysasento, joka jättää 100px marginaalin yläreunaan
-        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-      }
+
+  useEffect(() => {
+    if (handledProductId && productRefs.current[handledProductId]) {
+      const element = productRefs.current[handledProductId];
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - 100; // Adjust 100px for the top margin
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
   }, [handledProductId, products]);
+
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   // EditProductForm ei ole styled komponentti, ei käytetä transienttia propsia
@@ -301,24 +297,17 @@ const Products = ({ refresh = false, categoryId }) => {
             </div>            
           </StickyTop>    
           <h1/>     
-          <DragDropContext onDragEnd={handleDragEnd}>
+          
           {showByCategory ? (
             groupedProducts              
               .filter(category => selectedCategoryId === null || category.id === selectedCategoryId)
               .map(category => (
                 expandedCategories.has(category.id) && (
-                  <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>
-                    <Droppable droppableId={`droppable-${category.id}`}>
-                      {(provided) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef}>
-                          {displayedProducts(category).map((product, index) => (
-                            <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
-                              {(provided) => (
+                  <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>                    
+                        <div>
+                          {displayedProducts(category).map((product, index) => (                                                          
                                 <ProductItem className={`ProdID-${product.id.toString()}`}                                
-                                  ref={provided.innerRef}
-                                  //ref={(el) => productRefs.current[product.id] = el}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
+                                    ref={(el) => productRefs.current[product.id] = el}                                 
                                 >
                                   <span>{product.name}</span>
                                   <div>
@@ -341,28 +330,19 @@ const Products = ({ refresh = false, categoryId }) => {
                                     </IconContainer>
                                   </div>
                                 </ProductItem>
-                              )}
-                            </Draggable>
+                             
                           ))}
-                          {provided.placeholder}
+                          
                         </div>
-                      )}
-                    </Droppable>
+                      
                   </Accordion>
                 )
               ))
-          ) : (
-            <Droppable droppableId="droppable-all">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {sortedProducts().map((product, index) => (
-                    <Draggable key={product.id.toString()} draggableId={product.id.toString()} index={index}>
-                      {(provided) => (
-                        <ProductItem className={`ProdID-${product.id.toString()}`} 
-                          ref={provided.innerRef}
-                          //ref={(el) => productRefs.current[product.id] = el}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
+          ) : (                          
+                <div>
+                  {sortedProducts().map((product, index) => (                    
+                        <ProductItem className={`ProdID-${product.id.toString()}`}                           
+                          ref={(el) => productRefs.current[product.id] = el}                          
                         >
                           <span>{product.name}</span>
                           <div>
@@ -384,16 +364,10 @@ const Products = ({ refresh = false, categoryId }) => {
                               </IconWrapper>
                             </IconContainer>
                           </div>
-                        </ProductItem>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          )}
-        </DragDropContext>
+                        </ProductItem>                      
+                  ))}                  
+                </div>                          
+          )}        
       </Container>
       <StickyBottom>
                 
