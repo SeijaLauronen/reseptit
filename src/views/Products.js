@@ -243,15 +243,16 @@ const Products = ({ refresh = false, categoryId }) => {
 
   // Add an effect to scroll to the top when the filter changes
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [filter]);
 
-
+  const offset = 100; 
+  
   useEffect(() => {
     if (handledProductId && productRefs.current[handledProductId]) {
       const element = productRefs.current[handledProductId];
       const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - 100; // Adjust 100px for the top margin
+      const offsetPosition = elementPosition + window.scrollY - offset; // Adjust 100px for the top margin
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
   }, [handledProductId, products]);
