@@ -247,7 +247,7 @@ const Products = ({ refresh = false, categoryId }) => {
   }, [filter]);
 
   const offset = 100; 
-  
+
   useEffect(() => {
     if (handledProductId && productRefs.current[handledProductId]) {
       const element = productRefs.current[handledProductId];
@@ -307,8 +307,9 @@ const Products = ({ refresh = false, categoryId }) => {
                   <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>                    
                         <div>
                           {displayedProducts(category).map((product, index) => (                                                          
-                                <ProductItem className={`ProdID-${product.id.toString()}`}                                
-                                    ref={(el) => productRefs.current[product.id] = el}                                 
+                                <ProductItem 
+                                  key={product.id}                                
+                                  ref={(el) => productRefs.current[product.id] = el}                                 
                                 >
                                   <span>{product.name}</span>
                                   <div>
@@ -342,7 +343,8 @@ const Products = ({ refresh = false, categoryId }) => {
           ) : (                          
                 <div>
                   {sortedProducts().map((product, index) => (                    
-                        <ProductItem className={`ProdID-${product.id.toString()}`}                           
+                        <ProductItem 
+                          key={product.id}                           
                           ref={(el) => productRefs.current[product.id] = el}                          
                         >
                           <span>{product.name}</span>
