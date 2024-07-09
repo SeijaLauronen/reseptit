@@ -8,11 +8,23 @@ import { ShoppingListItem } from '../components/Item';
 import Container from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
+import Info from '../components/Info';
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState(new Set());
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
+
+  const handleOpenInfo = (message) => {
+    setInfoMessage(message);
+    setIsInfoOpen(true);
+  };
+
+  const handleCloseInfo = () => {
+    setIsInfoOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -170,10 +182,13 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             </OkButton>
           </GroupLeft>
           <GroupRight>
-            <PrimaryButton disabled>Tulosta lista</PrimaryButton>            
+            <PrimaryButton onClick ={() => handleOpenInfo('Tulostusta ei ole vielä toteutettu.')}>Tulosta lista</PrimaryButton>                          
           </GroupRight>
         </StickyBottom>
       </Container>
+      <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
+        {infoMessage}
+      </Info>
  
     </>
   );

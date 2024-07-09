@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { OkButton, DeleteButton, CloseButtonComponent } from '../../components/Button';
 import { FormContainer, ButtonGroup, GroupLeft, GroupRight } from '../../components/Container';
 
+// TODO: Tässä ei jostain syystä liukuminen toteudu, vaikka Info-komponentissa samanlainen toteutuu
 const SlideInContainer = styled.div`
   position: fixed;
   top: 200px;

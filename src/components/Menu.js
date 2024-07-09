@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { CloseButtonComponent } from './Button';
+import { CloseButtonComponent, DeleteButton, HelpButton, PrimaryButton } from './Button';
 import { clearDB } from '../database';
+import Info from './Info';
+import { ButtonGroup, GroupLeft, GroupRight } from './Container';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -45,14 +47,20 @@ const MenuList = styled.ul`
   z-index: 999;
 `;
 
+
 const MenuItem = styled.li`
   padding: 10px;
   text-decoration: none;
   color: black;
   cursor: pointer;
+  border-bottom: 1px solid #ddd;
 
   &:hover {
     background-color: #ddd;
+  }
+
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
@@ -62,13 +70,26 @@ const MenuIcon = styled.div`
   font-size: 24px;
 `;
 
+
+
+
 //Huom tähän ei transienttia $isOpenia, koska ei ole styled komponentti
 const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
+
+  
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
+
+  const handleOpenInfo = (message) => {
+    setInfoMessage(message);
+    setIsInfoOpen(true);
+  };
+
   const handleDeleteDatabase = async () => {
     const confirmDelete = window.confirm('Haluatko varmasti poistaa kaikki sovelluksen tiedot?');
     if (confirmDelete) {
       await clearDB();
-      alert('Tiedot poistettu');
+      handleOpenInfo('Tiedot poistettu');
       onDatabaseCleared();
     }
     onToggleMenu(false); // Suljetaan menu joka tapauksessa
@@ -77,6 +98,28 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
   const toggleMenu = () => {    
     onToggleMenu(!isOpen);
   };
+
+
+  const handleCloseInfo = () => {
+    setIsInfoOpen(false);
+  };
+
+  const deleteInfo = (
+    <>
+      <b>
+      Poista tiedot...
+      </b>
+      <br />
+      
+      Sovelluksen kaikki data on tallennettu selaimesi muistiin.
+      <br />
+      Tiedot poistetaan selaimesi muistista ja niitä ei voi palauttaa. 
+      <br />
+      Ennen poistamista kysytään vielä varmistus, haluatko varmasti poistaa.
+      <br />     
+      
+    </>
+  );
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
@@ -90,10 +133,29 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
       <MenuList $isOpen={isOpen}>
         <CloseButtonComponent onClick={toggleMenu}/>
         <MenuItem></MenuItem>
-        <MenuItem onClick={handleDeleteDatabase}>Poista kaikki tiedot</MenuItem>
-        <MenuItem></MenuItem>
-        <MenuItem></MenuItem>
+        <MenuItem>
+          <ButtonGroup>
+            <GroupLeft>
+              <DeleteButton onClick={handleDeleteDatabase}>            
+              Poista tiedot...
+              </DeleteButton>
+            </GroupLeft>
+            <GroupRight>
+              <HelpButton onClick={() => handleOpenInfo(deleteInfo)}/>      
+            </GroupRight>
+          </ButtonGroup>    
+          </MenuItem>
+        <MenuItem> 
+          <PrimaryButton onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Tuo tiedot...</PrimaryButton>            
+        </MenuItem>
+        <MenuItem>
+          <PrimaryButton onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Vie tiedot...</PrimaryButton>            
+        </MenuItem>        
+        <MenuItem>Versio: 2024-07-09: 125</MenuItem>
       </MenuList>
+      <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
+        {infoMessage}
+      </Info>
     </>
   );
 };

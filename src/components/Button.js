@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTrash, faSave, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
 
 const Button = styled.button`
   background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#007BFF')};
@@ -99,6 +99,17 @@ export const AddButton = styled(props => (
     background-color: ${props => (props.disabled ? '#ccc' : '#388e3c')};
   }
 `;
+
+export const HelpButton = styled(props => (
+    <ButtonComponent icon={faQuestion} defaultText="" {...props} />
+  ))`
+    background-color: #2196f3;
+    &:hover {
+      background-color: #1976d2;
+    }
+    margin-left: auto;
+  `;
+
 
 export const PrimaryButton = styled(ButtonComponent)`
   background-color: ${props => (props.disabled ? '#ccc' : '#007BFF')};
