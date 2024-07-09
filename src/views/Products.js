@@ -243,9 +243,9 @@ const Products = ({ refresh = false, categoryId }) => {
 
   const offset = 100; 
 
-  // Add an effect to scroll to the top when the filter changes
+  // Add an effect to scroll to the bottom when the filter changes
   useEffect(() => {
-    window.scrollTo({ top: 0 - offset, behavior: 'smooth' });
+    window.scrollTo({ bottom: 0, behavior: 'smooth' });    
   }, [filter]);
 
 
