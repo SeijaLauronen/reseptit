@@ -43,12 +43,15 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
     }
   };
 
-
   const handleDeleteCategory = async (id) => {
-    await deleteCategory(id);
-    fetchAndSetCategories();
-    setEditingCategory(null);
-    setIsCategoryFormOpen(false);
+    try {
+      await deleteCategory(id);
+      fetchAndSetCategories();
+      setEditingCategory(null);
+      setIsCategoryFormOpen(false);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleEditCategory = (category) => {
@@ -146,13 +149,14 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
               </Droppable>
             </DragDropContext>
       </Container>
-      <StickyBottom><InputAdd            
-              type="text"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              placeholder="Uusi kategoria"
-            />        
-            <AddButton onClick={handleAddCategory}/>
+      <StickyBottom>
+        <InputAdd            
+            type="text"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            placeholder="Uusi kategoria"
+        />        
+        <AddButton onClick={handleAddCategory}/>
       </StickyBottom>      
     </>
   );
