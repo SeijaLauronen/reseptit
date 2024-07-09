@@ -7,7 +7,7 @@ import { clearDB } from '../database';
 import Info from './Info';
 import { ButtonGroup, GroupLeft, GroupRight } from './Container';
 
-const programVersion = '2024-07-09: 126';
+const programVersion = '2024-07-09: 128';
 
 const MenuContainer = styled.div`
   position: fixed;

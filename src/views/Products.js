@@ -95,17 +95,6 @@ const Products = ({ refresh = false, categoryId }) => {
     filterProducts(filter); // Reapply the filter after deleting a product
   };
 
-  //TODO tämä ei vielä tallenna
-  const handleDragEnd = async (result) => {
-    if (!result.destination) return;
-    const reorderedProducts = Array.from(products);
-    const [removed] = reorderedProducts.splice(result.source.index, 1);
-    reorderedProducts.splice(result.destination.index, 0, removed);
-    setProducts(reorderedProducts);
-
-    // Save the reordered products to the database if needed
-  };
-
   const handleShowByCategory = () => {
     setShowByCategory(!showByCategory);
     setError(null);
@@ -123,6 +112,8 @@ const Products = ({ refresh = false, categoryId }) => {
     filterProducts(value);
     setError(null);
   };
+
+  const offset = 100; 
 
   const filterProducts = (filter) => {
     if (filter === '') {
@@ -160,6 +151,18 @@ const Products = ({ refresh = false, categoryId }) => {
     }
 
     setExpandedCategories(new Set(filteredCategories));
+
+     // Scroll to the first filtered product
+     if (filteredProducts.length > 0) {
+      const firstFilteredProduct = filteredProducts[0].id;
+      if (productRefs.current[firstFilteredProduct]) {
+        const element = productRefs.current[firstFilteredProduct];
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - offset; // Adjust 100px for the top margin
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      }
+    }
+
   };
 
   const handleToggleFavorite = async (id) => {
@@ -241,12 +244,31 @@ const Products = ({ refresh = false, categoryId }) => {
   }
 
 
-  const offset = 100; 
 
-  // Add an effect to scroll to the bottom when the filter changes
+  // Add an effect to scroll to the top when the filter changes
+  /*
   useEffect(() => {
-    window.scrollTo({ bottom: 0, behavior: 'smooth' });    
+    window.scrollTo({ top: 0, behavior: 'smooth' });    
   }, [filter]);
+  */
+
+  useEffect(() => {
+    if (filter !== '') {
+      const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(filter)
+      );
+      if (filteredProducts.length > 0) {
+        const firstFilteredProductId = filteredProducts[0].id;
+        if (productRefs.current[firstFilteredProductId]) {
+          const element = productRefs.current[firstFilteredProductId];
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.scrollY - offset; // Adjust 100px for the top margin
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+      }
+    }
+  }, [filter, products]);
+
 
 
   useEffect(() => {
