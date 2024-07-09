@@ -241,12 +241,13 @@ const Products = ({ refresh = false, categoryId }) => {
   }
 
 
+  const offset = 100; 
+
   // Add an effect to scroll to the top when the filter changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0 - offset, behavior: 'smooth' });
   }, [filter]);
 
-  const offset = 100; 
 
   useEffect(() => {
     if (handledProductId && productRefs.current[handledProductId]) {

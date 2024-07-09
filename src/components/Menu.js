@@ -7,6 +7,8 @@ import { clearDB } from '../database';
 import Info from './Info';
 import { ButtonGroup, GroupLeft, GroupRight } from './Container';
 
+const programVersion = '2024-07-09: 126';
+
 const MenuContainer = styled.div`
   position: fixed;
   top: 0;
@@ -151,7 +153,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
         <MenuItem>
           <PrimaryButton onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Vie tiedot...</PrimaryButton>            
         </MenuItem>        
-        <MenuItem>Versio: 2024-07-09: 125</MenuItem>
+        <MenuItem>Versio: {programVersion}</MenuItem>
       </MenuList>
       <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
         {infoMessage}
