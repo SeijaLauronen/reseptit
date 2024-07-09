@@ -1,5 +1,5 @@
 import { fetchCategories, addCategory as dbAddCategory, updateCategory as dbUpdateCategory, deleteCategory as dbDeleteCategory } from './dbUtils';
-import { fetchProducts, addProduct as dbAddProduct, updateProduct as dbUpdateProduct, deleteProduct as dbDeleteProduct } from './dbUtils';
+import { fetchProducts, getProductById as dbGetProductById, addProduct as dbAddProduct, updateProduct as dbUpdateProduct, deleteProduct as dbDeleteProduct } from './dbUtils';
 
 const validateCategory = (category) => { 
   if (!category.name || category.name.trim() === '') {
@@ -69,8 +69,13 @@ export const updateProduct = async (id, updatedProduct) => {
     if (error) {
       throw new Error(error);
     }
-await dbUpdateProduct(id, updatedProduct);
+    await dbUpdateProduct(id, updatedProduct);
 };
+
+export const getProductById = async (id) => {
+  return await dbGetProductById(id);  
+};
+
 
 export const deleteProduct = async (id) => {
     await dbDeleteProduct(id);

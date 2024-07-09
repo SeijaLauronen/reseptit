@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getDB } from '../database';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faShoppingCart, faStar as faStarSolid, faTimes, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
@@ -11,7 +10,7 @@ import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
 import Container, { IconContainer, IconWrapper } from '../components/Container';
 import { ProductItem } from '../components/Item';
-import { getProducts, getCategories, addProduct,  updateProduct, deleteProduct } from '../controller';
+import { getCategories,getProducts, getProductById, addProduct,  updateProduct, deleteProduct } from '../controller';
 import Toast from '../components/Toast'; 
 
 const Products = ({ refresh = false, categoryId }) => {
@@ -89,23 +88,17 @@ const Products = ({ refresh = false, categoryId }) => {
   };
 
   const handleDeleteProduct = async (id) => {
-    await deleteProduct(id);
-    fetchAndSetProductsAndCategories();
-    setEditingProduct(null);
-    filterProducts(filter); // Reapply the filter after deleting a product
+    try {
+      await deleteProduct(id);
+      fetchAndSetProductsAndCategories();
+      setEditingProduct(null);
+      filterProducts(filter); // Reapply the filter after deleting a product
+    }  catch (err) {
+      setError(err.message);
+    }
   };
 
-  //TODO tämä ei vielä tallenna
-  const handleDragEnd = async (result) => {
-    if (!result.destination) return;
-    const reorderedProducts = Array.from(products);
-    const [removed] = reorderedProducts.splice(result.source.index, 1);
-    reorderedProducts.splice(result.destination.index, 0, removed);
-    setProducts(reorderedProducts);
-
-    // Save the reordered products to the database if needed
-  };
-
+  
   const handleShowByCategory = () => {
     setShowByCategory(!showByCategory);
     setError(null);
@@ -163,27 +156,32 @@ const Products = ({ refresh = false, categoryId }) => {
   };
 
   const handleToggleFavorite = async (id) => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    const product = await store.get(id);
-    product.isFavorite = !product.isFavorite;
-    await store.put(product);
-    const allProducts = await store.getAll();
-    setProducts(allProducts);
-    filterProducts(filter); // Reapply the filter after toggling favorite
+    try {
+      const product = await getProductById(id);
+      product.isFavorite = !product.isFavorite;
+      await updateProduct(id, product);
+      const allProducts = await getProducts();
+      setProducts(allProducts);
+      filterProducts(filter); // Reapply the filter after toggling favorite
+    } catch (err) {
+      console.error('Error toggling favorite:', err);
+      setError(err.message);
+    }
   };
 
+
   const handleToggleShoppingList = async (id) => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    const product = await store.get(id);
-    product.onShoppingList = !product.onShoppingList;
-    await store.put(product);
-    const allProducts = await store.getAll();
-    setProducts(allProducts);
-    filterProducts(filter); // Reapply the filter after toggling shopping list
+    try {
+      const product = await getProductById(id);
+      product.onShoppingList = !product.onShoppingList;
+      await updateProduct(id, product);
+      const allProducts = await getProducts();
+      setProducts(allProducts);
+      filterProducts(filter); // Reapply the filter after toggling shopping list
+    } catch (err) {
+      console.error('Error toggling shopping list:', err);
+      setError(err.message);
+    }
   };
 
   // Group products by category and sort by order

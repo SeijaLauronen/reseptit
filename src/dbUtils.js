@@ -67,6 +67,19 @@ export const fetchProducts = async () => {
   }
 };
 
+export const getProductById = async (id) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('products', 'readonly');
+    const store = tx.objectStore('products');
+    return await store.get(id);
+  } catch (err) {
+    console.error('Error fetching product by ID:', err);
+    throw new Error('Virhe haettaessa tuotetta ID:llä: ' + err);
+  }
+};
+
+
 export const addProduct = async (product) => {
   try {
     const db = await getDB();
@@ -80,16 +93,20 @@ export const addProduct = async (product) => {
   }
 };
 
-
-//TODO ei luetella yksittäisiä päivitettäviä kenttiä, niitä tulee lisää...
 export const updateProduct = async (id, updatedProduct) => {
   try {
     const db = await getDB();
     const tx = db.transaction('products', 'readwrite');
     const store = tx.objectStore('products');
     const product = await store.get(id);
-    product.name = updatedProduct.name;
-    product.categoryId = updatedProduct.categoryId;
+
+    // Päivitetään kaikki annetut kentät
+    for (const key in updatedProduct) {
+      if (updatedProduct.hasOwnProperty(key)) {
+        product[key] = updatedProduct[key];
+      }
+    }
+
     await store.put(product);
   } catch (err) {
     console.error('Error updating product:', err);

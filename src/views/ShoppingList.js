@@ -8,7 +8,9 @@ import { ShoppingListItem } from '../components/Item';
 import Container from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
+import { getProducts, getCategories,  updateProduct } from '../controller';
 import Info from '../components/Info';
+import Toast from '../components/Toast'; 
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]);
@@ -16,6 +18,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [selectedProducts, setSelectedProducts] = useState(new Set());
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleOpenInfo = (message) => {
     setInfoMessage(message);
@@ -26,31 +29,26 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     setIsInfoOpen(false);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const db = await getDB();
-      const productTx = db.transaction('products', 'readonly');
-      const productStore = productTx.objectStore('products');
-      const allProducts = await productStore.getAll();
+  const fetchData = async () => {
+    try {        
+      const allProducts = await getProducts();
+      const allCategories = await getCategories();
 
-      const categoryTx = db.transaction('categories', 'readonly');
-      const categoryStore = categoryTx.objectStore('categories');
-      const allCategories = await categoryStore.getAll();
-
-      const shoppingListProducts = allProducts.filter(product => product.onShoppingList);
-
-      // Sort categories based on the "order" value
-      const sortedCategories = allCategories.sort((a, b) => a.order - b.order);
-
+      const shoppingListProducts = allProducts.filter(product => product.onShoppingList);     
       setProducts(shoppingListProducts);
-      setCategories(sortedCategories);
+      setCategories(allCategories);
 
       const selected = new Set(shoppingListProducts.filter(product => product.selected).map(product => product.id));
       setSelectedProducts(selected);
-    };
+      }  catch (err) {
+        setError(err.message);
+      }
+  };
 
+  useEffect(() => { 
     fetchData();
   }, [refresh]);
+
 
   const handleToggleSelect = async (id) => {
     setSelectedProducts(prevState => {
@@ -140,6 +138,10 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
     <>
+    { error && (
+        <Toast message={error} onClose={() => setError('')} />
+      )}
+
       <Container $isMenuOpen={isMenuOpen}>
          <StickyTop> 
             <b>Ostoslista</b>
