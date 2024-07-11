@@ -100,7 +100,7 @@ export const updateProduct = async (id, updatedProduct) => {
     const store = tx.objectStore('products');
     const product = await store.get(id);
 
-    // Päivitetään kaikki annetut kentät
+    // Päivitetään kaikki annetut kentät, TODO menisikö put käskyllä kuten alempana product päivityksessä...
     for (const key in updatedProduct) {
       if (updatedProduct.hasOwnProperty(key)) {
         product[key] = updatedProduct[key];
@@ -111,6 +111,21 @@ export const updateProduct = async (id, updatedProduct) => {
   } catch (err) {
     console.error('Error updating product:', err);
     throw new Error('Virhe päivitettäessä tuotetta: ' + err);
+  }
+};
+
+export const updateProducts = async (products) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('products', 'readwrite');
+    const store = tx.objectStore('products');
+
+    for (let product of products) {
+      await store.put(product);
+    }
+  } catch (err) {
+    console.error('Error updating products:', err);
+    throw new Error('Virhe päivitettäessä tuotteita: ' + err);
   }
 };
 

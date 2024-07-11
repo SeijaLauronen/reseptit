@@ -1,5 +1,5 @@
 import { fetchCategories, addCategory as dbAddCategory, updateCategory as dbUpdateCategory, deleteCategory as dbDeleteCategory } from './dbUtils';
-import { fetchProducts, getProductById as dbGetProductById, addProduct as dbAddProduct, updateProduct as dbUpdateProduct, deleteProduct as dbDeleteProduct } from './dbUtils';
+import { fetchProducts, getProductById as dbGetProductById, addProduct as dbAddProduct, updateProduct as dbUpdateProduct, updateProducts as dbUpdateProducts, deleteProduct as dbDeleteProduct } from './dbUtils';
 
 const validateCategory = (category) => { 
   if (!category.name || category.name.trim() === '') {
@@ -72,6 +72,11 @@ export const updateProduct = async (id, updatedProduct) => {
     await dbUpdateProduct(id, updatedProduct);
 };
 
+//TODO validointi tarvittaessa
+export const updateProducts = async (products) => {
+  await dbUpdateProducts(products);
+};
+
 export const getProductById = async (id) => {
   return await dbGetProductById(id);  
 };
@@ -79,4 +84,19 @@ export const getProductById = async (id) => {
 
 export const deleteProduct = async (id) => {
     await dbDeleteProduct(id);
+};
+
+export const getProductsOnShoppingList = async () => {
+  const products = await fetchProducts();
+  return products.filter(product => product.onShoppingList);
+};
+
+export const updateProductField = async (id, field, value) => {
+  const product = await getProductById(id);
+  if (!product) {
+    throw new Error('Product not found');
+  }
+  
+  product[field] = value;
+  await dbUpdateProduct(id, product);
 };

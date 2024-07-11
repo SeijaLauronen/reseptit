@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getDB } from '../database';
 import Accordion from '../components/Accordion';
 import StickyBottom from '../components/StickyBottom';
 import StickyTop from '../components/StickyTop';
@@ -8,7 +7,7 @@ import { ShoppingListItem } from '../components/Item';
 import Container from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
-import { getProducts, getCategories,  updateProduct } from '../controller';
+import { getProducts, getProductById, getCategories,  updateProduct, updateProducts, getProductsOnShoppingList, updateProductField } from '../controller';
 import Info from '../components/Info';
 import Toast from '../components/Toast'; 
 
@@ -51,67 +50,69 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
 
   const handleToggleSelect = async (id) => {
-    setSelectedProducts(prevState => {
-      const newSet = new Set(prevState);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
+    try {
+      /* Kopioidaan nykyinen tila newSet:iin, johon muutokset ja jolla korvataan selectedProducts  */
+      setSelectedProducts(prevState => {
+        const newSet = new Set(prevState);
+        if (newSet.has(id)) {
+          newSet.delete(id);
+        } else {
+          newSet.add(id);
+        }
+        return newSet;
+      });
 
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    const product = await store.get(id);
-    product.selected = !product.selected;
-    await store.put(product);
+      const product = await getProductById(id);
+      product.selected = !product.selected;
+      await updateProduct(id, product);  
+    }
+    catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleRemoveSelected = async () => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-
-    for (let id of selectedProducts) {
-      const product = await store.get(id);
-      product.onShoppingList = false;
-      product.selected = false;  // Also unselect the product when removing from the shopping list
-      await store.put(product);
+    try {
+      // Hae kaikki valitut tuotteet id:n perusteella
+      const selectedProductIds = Array.from(selectedProducts);
+      const selectedProductsArray = await Promise.all(selectedProductIds.map(id => getProductById(id)));
+  
+      // Päivitä valitut tuotteet 
+      // Luo uuden olion, joka sisältää kaikki alkuperäisen product-olion kentät ja niiden arvot, jonne päivitetään uudet arvot
+      const updatedProducts = selectedProductsArray.map(product => ({
+        ...product,
+        onShoppingList: false,
+        selected: false
+      }));
+  
+      await updateProducts(updatedProducts);
+  
+      // Hae päivitetyt tuotteet ostoslistalta ja aseta tilaan
+      const shoppingListProducts = await getProductsOnShoppingList();
+      setProducts(shoppingListProducts);
+  
+      // Tyhjennä valitut tuotteet
+      setSelectedProducts(new Set());
+    } catch (err) {      
+      setError(err.message);
     }
-
-    const allProducts = await store.getAll();
-    const shoppingListProducts = allProducts.filter(product => product.onShoppingList);
-    setProducts(shoppingListProducts);
-    setSelectedProducts(new Set());
   };
 
-  const handleQuantityChange = async (id, quantity) => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    const product = await store.get(id);
-    product.quantity = quantity;
-    await store.put(product);
-
-    const allProducts = await store.getAll();
-    const shoppingListProducts = allProducts.filter(product => product.onShoppingList);
-    setProducts(shoppingListProducts);
+  const handleFieldChange = async (id, field, value) => {
+    try {
+      await updateProductField(id, field, value);
+      // Hae päivitetyt tuotteet ostoslistalta ja aseta tilaan
+      const shoppingListProducts = await getProductsOnShoppingList();
+      setProducts(shoppingListProducts);
+    } catch (err) {      
+      setError(err.message);
+    }
   };
 
-  const handleUnitChange = async (id, unit) => {
-    const db = await getDB();
-    const tx = db.transaction('products', 'readwrite');
-    const store = tx.objectStore('products');
-    const product = await store.get(id);
-    product.unit = unit;
-    await store.put(product);
+  const handleQuantityChange = (id, quantity) => handleFieldChange(id, 'quantity', quantity);
+  const handleUnitChange = (id, unit) => handleFieldChange(id, 'unit', unit);
 
-    const allProducts = await store.getAll();
-    const shoppingListProducts = allProducts.filter(product => product.onShoppingList);
-    setProducts(shoppingListProducts);
-  };
+
 
   const groupedProducts = categories.reduce((acc, category) => {
     const categoryProducts = products.filter(product => product.categoryId == category.id);
