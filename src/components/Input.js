@@ -3,7 +3,9 @@ import styled from "styled-components";
 const Input = styled.input`
     padding-left: 10px;
     padding-top: 5px;
-    padding-bottom: 5px;        
+    padding-bottom: 5px; 
+    margin: 2px;
+    flex:1;     //Ottaa kaiken jäljellä olevan tilan  
 `;
 
 const InputAdd = styled(Input)`

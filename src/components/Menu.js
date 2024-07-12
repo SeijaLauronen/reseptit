@@ -7,7 +7,7 @@ import { clearDB } from '../database';
 import Info from './Info';
 import { ButtonGroup, GroupLeft, GroupRight } from './Container';
 
-const programVersion = '2024-07-12: 136';
+const programVersion = '2024-07-12: 137';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -49,7 +49,6 @@ const MenuList = styled.ul`
   z-index: 999;
 `;
 
-
 const MenuItem = styled.li`
   padding: 10px;
   text-decoration: none;
@@ -64,6 +63,7 @@ const MenuItem = styled.li`
   &:last-child {
     border-bottom: none;
   }
+
 `;
 
 const MenuIcon = styled.div`
@@ -73,7 +73,12 @@ const MenuIcon = styled.div`
 `;
 
 
-
+const MenuHeader = styled.h3`
+  padding: 10px;
+  margin: 0;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+`;
 
 //Huom tähän ei transienttia $isOpenia, koska ei ole styled komponentti
 const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
@@ -123,7 +128,8 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
     </>
   );
 
-  // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
+  // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle, esim $isOpen
+  // tai käytetään pieniä kirjaimia kuten fillspace eikä fillSpace
   return (
     <>
       <MenuContainer>
@@ -135,10 +141,11 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
       <MenuList $isOpen={isOpen}>
         <CloseButtonComponent onClick={toggleMenu}/>
         <MenuItem></MenuItem>
+        <MenuHeader>Toiminnot</MenuHeader>
         <MenuItem>
           <ButtonGroup>
-            <GroupLeft>
-              <DeleteButton onClick={handleDeleteDatabase}>            
+            <GroupLeft fillspace = 'true'>
+              <DeleteButton fullwidth = 'true' onClick={handleDeleteDatabase}>            
               Poista tiedot...
               </DeleteButton>
             </GroupLeft>
@@ -148,11 +155,12 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
           </ButtonGroup>    
           </MenuItem>
         <MenuItem> 
-          <PrimaryButton onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Tuo tiedot...</PrimaryButton>            
+          <PrimaryButton fullwidth = 'true' onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Tuo tiedot...</PrimaryButton>            
         </MenuItem>
         <MenuItem>
-          <PrimaryButton onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Vie tiedot...</PrimaryButton>            
-        </MenuItem>        
+          <PrimaryButton fullwidth = 'true' onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Vie tiedot...</PrimaryButton>            
+        </MenuItem>   
+        <MenuHeader>Tietoja</MenuHeader>     
         <MenuItem>Versio: {programVersion}</MenuItem>
       </MenuList>
       <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>

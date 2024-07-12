@@ -1,6 +1,8 @@
 // dbUtils.js
 import { getDB } from './database';
 
+//TODO eri taulujen operaatioit voisi yhdistää lähettämällä taulun nimen ja tietueen parametirnä
+
 // Category DB operations
 export const fetchCategories = async () => {
   try {

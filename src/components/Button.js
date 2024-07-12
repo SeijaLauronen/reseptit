@@ -25,6 +25,7 @@ const Button = styled.button`
   svg {
     font-size: 14px;
   }
+  width: ${props => (props.fullwidth ? '100%' : 'auto')}; 
 `;
 
 
@@ -115,7 +116,7 @@ export const PrimaryButton = styled(ButtonComponent)`
   background-color: ${props => (props.disabled ? '#ccc' : '#007BFF')};
   &:hover {
     background-color: ${props => (props.disabled ? '#ccc' : '#0056b3')};
-  }
+  }  
 `;
 
 export const SecondaryButton = styled(ButtonComponent)`

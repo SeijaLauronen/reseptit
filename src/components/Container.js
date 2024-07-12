@@ -61,6 +61,7 @@ export const ButtonGroup = styled.div`
 
 export const GroupLeft = styled.div`
   display: flex;
+  flex-grow: ${props => (props.fillspace ? '1' : 'auto')}; 
 `;
 
 export const GroupRight = styled.div`
