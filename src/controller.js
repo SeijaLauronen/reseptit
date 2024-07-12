@@ -46,7 +46,8 @@ const validateProduct = (product) => {
 };
 
 export const getProducts = async () => {
-    return await fetchProducts();
+    const products = await fetchProducts();
+    return products.sort((a, b) => a.name.localeCompare(b.name));  
 };
 
 export const addProduct = async (product) => {

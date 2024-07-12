@@ -61,11 +61,6 @@ const Products = ({ refresh = false, categoryId }) => {
     }
   }, [categoryId]);
 
-  /*
-  useEffect(() => {
-    fetchAndSetProductsAndCategories();
-  }, [refresh, categoryId]);
-  */
 
   useEffect(() => {
     fetchAndSetProductsAndCategories();
@@ -78,7 +73,6 @@ const Products = ({ refresh = false, categoryId }) => {
       setNewProduct('');
       fetchAndSetProductsAndCategories();
       setFilter(''); // Clear the filter after adding a new product
-      filterProducts(''); // Reset the filter
     } catch (err) {
       setError(err.message);
     }
@@ -90,10 +84,9 @@ const Products = ({ refresh = false, categoryId }) => {
 
   const handleSaveProduct = async (id, updatedProduct) => {
     try {
-      await updateProduct (id, updatedProduct);
+      await updateProduct(id, updatedProduct);
       fetchAndSetProductsAndCategories();
       setEditingProduct(null);
-      filterProducts(filter); // Reapply the filter after saving a product
     } catch (err) {
       setError(err.message);
     }
@@ -104,7 +97,6 @@ const Products = ({ refresh = false, categoryId }) => {
       await deleteProduct(id);
       fetchAndSetProductsAndCategories();
       setEditingProduct(null);
-      filterProducts(filter); // Reapply the filter after deleting a product
     }  catch (err) {
       setError(err.message);
     }
@@ -119,52 +111,31 @@ const Products = ({ refresh = false, categoryId }) => {
   const handleShowFavorites = () => {
     setShowFavorites(!showFavorites);
     setError(null);
-  }
+  };
 
   const handleInputChange = (e) => {
     const value = e.target.value;
     setNewProduct(value);
     setFilter(value.toLowerCase());
-    filterProducts(value);
+    scrollToFirstMatchingProduct(value.toLowerCase());
     setError(null);
   };
 
-  const filterProducts = (filter) => {
-    if (filter === '') {
-      setExpandedCategories(new Set(categories.map(category => category.id).concat('uncategorized')));
+  
+  const offset = 100; 
 
-      // Expand only the selected category
-      if (selectedCategoryId) {
-        setExpandedCategories(new Set([parseInt(selectedCategoryId, 10)]));
-      } else {
-        setExpandedCategories(new Set(categories.map(category => category.id).concat('uncategorized')));
-      }
-      return;
-    }
+  const scrollToFirstMatchingProduct = (filter) => {
+    if (filter === '') return;
 
     const lowercasedFilter = filter.toLowerCase();
-    const filteredProducts = products.filter((product) =>
-      product.name.toLowerCase().includes(lowercasedFilter)
-    );
+    const firstMatchingProduct = products.find((product) => product.name.toLowerCase().includes(lowercasedFilter));
 
-    //Lisätty vielä rajaus jos on  selectedCategoryId
-    const filteredCategories = categories.reduce((acc, category) => {
-      const categoryProducts = filteredProducts.filter((product) => product.categoryId === category.id);
-      if (categoryProducts.length > 0 && (selectedCategoryId === null || category.id === selectedCategoryId)) {
-        acc.push(category.id);
-      } else if (categoryProducts.length === 0 && category.id === selectedCategoryId) {
-        acc.push(category.id);
-      }
-
-      return acc;
-    }, []);
-
-    const uncategorizedProducts = filteredProducts.filter((product) => !product.categoryId);
-    if (uncategorizedProducts.length > 0 && selectedCategoryId === null) {
-      filteredCategories.unshift('uncategorized');
+    if (firstMatchingProduct && productRefs.current[firstMatchingProduct.id]) {
+      const element = productRefs.current[firstMatchingProduct.id];
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - offset;      
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
-
-    setExpandedCategories(new Set(filteredCategories));
   };
 
   const handleToggleFavorite = async (id) => {
@@ -174,13 +145,12 @@ const Products = ({ refresh = false, categoryId }) => {
       await updateProduct(id, product);
       const allProducts = await getProducts();
       setProducts(allProducts);
-      filterProducts(filter); // Reapply the filter after toggling favorite
+      scrollToFirstMatchingProduct(filter);
     } catch (err) {
       console.error('Error toggling favorite:', err);
       setError(err.message);
     }
   };
-
 
   const handleToggleShoppingList = async (id) => {
     try {
@@ -189,7 +159,7 @@ const Products = ({ refresh = false, categoryId }) => {
       await updateProduct(id, product);
       const allProducts = await getProducts();
       setProducts(allProducts);
-      filterProducts(filter); // Reapply the filter after toggling shopping list
+      scrollToFirstMatchingProduct(filter);
     } catch (err) {
       console.error('Error toggling shopping list:', err);
       setError(err.message);
@@ -226,38 +196,24 @@ const Products = ({ refresh = false, categoryId }) => {
     if (showFavorites) {
       filteredProducts = filteredProducts.filter(product => product.isFavorite);
     }
-    if (filter !== '') {
-      filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(filter));
-    }
     return filteredProducts;
   };
 
   const sortedProducts = () => {
+  
     let sorted = [...products];
     if (showFavorites) {
       sorted = sorted.filter(product => product.isFavorite);
     }
-    if (filter !== '') {
-      sorted = sorted.filter(product => product.name.toLowerCase().includes(filter));
-    }
-    return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    return sorted;
+    // no need to sort here, sorted when fetched from db
+    //return sorted.sort((a, b) => a.name.localeCompare(b.name));
   };
-
 
   const handleClearFilter = () => {
     setFilter('');
     setNewProduct('');
-    filterProducts('');
-  }
-
-
-  const offset = 100; 
-
-  // Add an effect to scroll to the top when the filter changes
-  useEffect(() => {
-    window.scrollTo({ top: 0 - offset, behavior: 'smooth' });
-  }, [filter]);
-
+  };
 
   useEffect(() => {
     if (handledProductId && productRefs.current[handledProductId]) {
@@ -400,7 +356,7 @@ const Products = ({ refresh = false, categoryId }) => {
           type="text"
           value={newProduct}
           onChange={handleInputChange}
-          placeholder="Suodata tai lisää tuote"
+          placeholder="Etsi tai lisää tuote"
         />
         <AddButton onClick={handleAddProduct} />
       </StickyBottom>
