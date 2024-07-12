@@ -133,7 +133,10 @@ const Products = ({ refresh = false, categoryId }) => {
     if (firstMatchingProduct && productRefs.current[firstMatchingProduct.id]) {
       const element = productRefs.current[firstMatchingProduct.id];
       const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - offset;      
+         
+      const newOffset = window.visualViewport ? window.visualViewport.height / 4 : offset; // Dynaaminen offset, koska näppäimistö vie tilaa
+      const offsetPosition = elementPosition + window.scrollY - newOffset;
+      
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
   };
@@ -225,6 +228,23 @@ const Products = ({ refresh = false, categoryId }) => {
   }, [handledProductId, products]);
 
 
+  const highlightText = (text, highlight) => {
+    if (!highlight) return text;
+  
+    const regex = new RegExp(`(${highlight})`, 'gi');
+    const parts = text.split(regex);
+  
+    return parts.map((part, index) =>
+      part.toLowerCase() === highlight.toLowerCase() ? (
+        <span key={index} style={{ backgroundColor: 'yellow' }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   // EditProductForm ei ole styled komponentti, ei käytetä transienttia propsia
   return (
@@ -277,7 +297,7 @@ const Products = ({ refresh = false, categoryId }) => {
                                   key={product.id}                                
                                   ref={(el) => productRefs.current[product.id] = el}                                 
                                 >
-                                  <span>{product.name}</span>
+                                  <span>{highlightText(product.name, filter)}</span>
                                   <div>
                                     <IconContainer>
                                       <IconWrapper onClick={() => handleEditProduct(product)}>
@@ -313,7 +333,7 @@ const Products = ({ refresh = false, categoryId }) => {
                           key={product.id}                           
                           ref={(el) => productRefs.current[product.id] = el}                          
                         >
-                          <span>{product.name}</span>
+                          <span>{highlightText(product.name, filter)}</span>
                           <div>
                             <IconContainer>
                               <IconWrapper onClick={() => handleEditProduct(product)}>
