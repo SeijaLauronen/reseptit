@@ -115,7 +115,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
 
   const groupedProducts = categories.reduce((acc, category) => {
-    const categoryProducts = products.filter(product => product.categoryId == category.id);
+    const categoryProducts = products.filter(product => product.categoryId == category.id); //Tarkoituksella == eikä ===
     if (categoryProducts.length > 0) {
       acc.push({
         id: category.id,
