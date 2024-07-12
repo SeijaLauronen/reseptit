@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { getCategories, addCategory, updateCategory, updateCategoriesOrder, deleteCategory } from '../controller';
+import { getCategories, addCategory, updateCategory, deleteCategory } from '../controller';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import EditCategoryForm from './forms/EditCategoryForm';

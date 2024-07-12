@@ -31,13 +31,7 @@ export const updateCategory = async (id, updatedCategory) => {
   }
   await dbUpdateCategory(id, updatedCategory);
 };
-
-export const updateCategoriesOrder = async (categories) => {
-    for (let category of categories) {
-      await dbUpdateCategory(category.id, category);
-    }
-};
-  
+ 
 export const deleteCategory = async (id) => {
   await dbDeleteCategory(id);
 };

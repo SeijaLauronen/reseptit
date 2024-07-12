@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faShoppingCart, faStar as faStarSolid, faTimes, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
@@ -30,7 +30,13 @@ const Products = ({ refresh = false, categoryId }) => {
 
   const productRefs = useRef({}); // Ref object to hold references to product items
 
-  const fetchAndSetProductsAndCategories = async () => {
+  /* Koska fetchAndSetProductsAndCategories-funktiota käytetään useissa paikoissa, funktion määrittely 
+  on hyvä olla useEffect-hookin ulkopuolelle. Varmistetaan kuitenkin, että se ei muutu jokaisella renderöinnillä. 
+  Käytetään useCallback-hookia, joka palauttaa memoized version funktiosta, 
+  joka  muuttuu vain, jos joku sen riippuvuuksista muuttuu.
+  */
+
+  const fetchAndSetProductsAndCategories = useCallback(async () => {
     try {
       const allProducts = await getProducts();
       const allCategories = await getCategories();
@@ -53,11 +59,17 @@ const Products = ({ refresh = false, categoryId }) => {
     } catch (err) {
       setError(err.message);
     }
-  };
+  }, [categoryId]);
 
+  /*
   useEffect(() => {
     fetchAndSetProductsAndCategories();
   }, [refresh, categoryId]);
+  */
+
+  useEffect(() => {
+    fetchAndSetProductsAndCategories();
+  }, [fetchAndSetProductsAndCategories, refresh]);
 
   const handleAddProduct = async () => {
     try {
@@ -295,8 +307,7 @@ const Products = ({ refresh = false, categoryId }) => {
               />
               </IconWrapper>
             </div>            
-          </StickyTop>    
-          <h1/>     
+          </StickyTop>                
           
           {showByCategory ? (
             groupedProducts              
