@@ -6,7 +6,7 @@ import { FormContainer, ButtonGroup, GroupLeft, GroupRight } from '../../compone
 // TODO: Tässä ei jostain syystä liukuminen toteudu, vaikka Info-komponentissa samanlainen toteutuu
 const SlideInContainer = styled.div`
   position: fixed;
-  top: 200px;
+  top: 60px;
   right: 0;
   width: 90%;
   max-width: 400px;

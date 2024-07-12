@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import EditForm from './EditForm';
-import { getDB } from '../../database';
 import { InputName, Select } from '../../components/Input';
+import Toast from '../../components/Toast';
+import { getCategories } from '../../controller';
 
 const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen }) => {
   const [name, setName] = useState(product.name);
   const [categoryId, setCategoryId] = useState(product.categoryId || '');
   const [categories, setCategories] = useState([]);
+  const [error, setError] = useState('');
+
+  const fetchAndSetCategories = async () => {
+    try {
+      const allCategories = await getCategories(false); // aakkosjärjestyksessä
+      setCategories(allCategories);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      const db = await getDB();
-      const tx = db.transaction('categories', 'readonly');
-      const store = tx.objectStore('categories');
-      const allCategories = await store.getAll();
-      setCategories(allCategories);
-    };
-
-    fetchCategories();
+    fetchAndSetCategories();
   }, []);
+
 
   const handleSave = () => {
     onSave(product.id, { name, categoryId: parseInt(categoryId, 10) });
@@ -26,6 +30,11 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen }) => {
 
   // transientti props $isOpen ei käytetä, koska EditForm ei ole styled komponentti
   return (
+    <>
+    { error && (
+        <Toast message={error} onClose={() => setError('')} />
+    )}
+
     <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(product.id)}>
       <div>
         <label>Nimi </label>        
@@ -49,6 +58,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen }) => {
           </Select>
       </div>
     </EditForm>
+    </>
   );
 };
 

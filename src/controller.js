@@ -12,8 +12,8 @@ export const getCategories = async (sortByOrder = true) => {
     const categories = await fetchCategories();
     if (sortByOrder) {
       return categories.sort((a, b) => a.order - b.order);
-    }
-    return categories;
+    } 
+    return categories.sort((a, b) => a.name.localeCompare(b.name));  
 };
 
 export const addCategory = async (category) => {
