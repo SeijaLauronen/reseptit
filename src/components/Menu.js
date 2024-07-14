@@ -7,7 +7,7 @@ import { clearDB } from '../database';
 import Info from './Info';
 import { ButtonGroup, GroupLeft, GroupRight } from './Container';
 
-const programVersion = '2024-07-12: 142';
+const programVersion = '2024-07-14: 143';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -118,9 +118,9 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
       </b>
       <br />
       
-      Sovelluksen kaikki data on tallennettu selaimesi muistiin.
+      Sovelluksen kaikki data on tallennettu selaimen muistiin.
       <br />
-      Tiedot poistetaan selaimesi muistista ja niitä ei voi palauttaa. 
+      Tiedot poistetaan selaimen muistista ja niitä ei voi palauttaa. 
       <br />
       Ennen poistamista kysytään vielä varmistus, haluatko varmasti poistaa.
       <br />     

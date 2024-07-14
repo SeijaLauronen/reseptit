@@ -18,12 +18,17 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
   const [error, setError] = useState('');
+  const [shoppingListText, setShoppingListText] = useState('');
 
   const handleOpenInfo = (message) => {
+    if (message === 'print') {
+      const listText = buildShoppingListText();
+      setShoppingListText(listText);        
+    } 
     setInfoMessage(message);
     setIsInfoOpen(true);
   };
-
+  
   const handleCloseInfo = () => {
     setIsInfoOpen(false);
   };
@@ -112,8 +117,6 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const handleQuantityChange = (id, quantity) => handleFieldChange(id, 'quantity', quantity);
   const handleUnitChange = (id, unit) => handleFieldChange(id, 'unit', unit);
 
-
-
   const groupedProducts = categories.reduce((acc, category) => {
     const categoryProducts = products.filter(product => product.categoryId == category.id); //Tarkoituksella == eikä ===
     if (categoryProducts.length > 0) {
@@ -135,6 +138,21 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
       products: uncategorizedProducts,
     });
   }
+
+  const buildShoppingListText = () => {
+    let listText = '';
+  
+    groupedProducts.forEach(category => {
+      listText += `${category.name}:\n`;
+      category.products.forEach(product => {
+        listText += `- ${product.name}, ${product.quantity || ''} ${product.unit || ''}\n`;
+      });
+      listText += '\n';
+    });
+  
+    return listText;
+  };
+
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
@@ -184,13 +202,18 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
               Poista valitut listalta
             </OkButton>
           </GroupLeft>
-          <GroupRight>
-            <PrimaryButton onClick ={() => handleOpenInfo('Tulostusta ei ole vielä toteutettu.')}>Tulosta lista</PrimaryButton>                          
+          <GroupRight>              
+            <PrimaryButton onClick={() => handleOpenInfo('print')}>Tulostettava lista</PrimaryButton>                        
           </GroupRight>
         </StickyBottom>
       </Container>
+      
       <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
-        {infoMessage}
+        {infoMessage === 'print' ? (
+          <textarea value={shoppingListText} rows="20" cols="40" />
+        ) : (
+          infoMessage
+        )}
       </Info>
  
     </>

@@ -33,7 +33,7 @@ const Info = ({ isOpen, onCancel, children }) => {
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (    
     <SlideInContainer $isOpen={isOpen}>
-      <CloseButtonComponent onClick={onCancel}>Muokkaa</CloseButtonComponent>
+      <CloseButtonComponent onClick={onCancel}></CloseButtonComponent>
       <FormContainer>      
         {children}
         <ButtonGroup>
