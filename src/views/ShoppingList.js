@@ -145,7 +145,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     groupedProducts.forEach(category => {
       listText += `${category.name}:\n`;
       category.products.forEach(product => {
-        listText += `- ${product.name}, ${product.quantity || ''} ${product.unit || ''}\n`;
+        listText += `- ${product.name} ${product.quantity || ''} ${product.unit || ''}\n`;
       });
       listText += '\n';
     });
@@ -153,6 +153,9 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     return listText;
   };
 
+  const handleTextAreaChange = (event) => {
+    setShoppingListText(event.target.value);
+  };
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
@@ -210,7 +213,12 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
       
       <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
         {infoMessage === 'print' ? (
-          <textarea value={shoppingListText} rows="20" cols="40" />
+          <textarea
+            value={shoppingListText}
+            onChange={handleTextAreaChange}
+            rows="20"
+            cols="40"
+          />
         ) : (
           infoMessage
         )}
