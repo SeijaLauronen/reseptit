@@ -77,8 +77,13 @@ export const CopyButton = styled(props => (
   <ButtonComponent icon={faCopy} defaultText="Kopioi" {...props} />
 ))`
   background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
+  
   &:hover {
     background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
+  }
+  &:active,
+  &:focus {
+    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
   }
 `;
 
@@ -88,6 +93,10 @@ export const ShareButton = styled(props => (
   background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
   &:hover {
     background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
+  }
+  &:active,
+  &:focus {
+    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
   }
 `;
 
@@ -124,9 +133,9 @@ export const AddButton = styled(props => (
 export const HelpButton = styled(props => (
     <ButtonComponent icon={faQuestion} defaultText="" {...props} />
   ))`
-    background-color: #2196f3;
+    background-color: #007BFF;
     &:hover {
-      background-color: #1976d2;
+      background-color: #0056b3;
     }
     margin-left: auto;
   `;

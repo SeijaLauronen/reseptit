@@ -154,11 +154,12 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     setShoppingListText(event.target.value);
   };
 
-  const handleCopy = () => {
+  const handleCopy = (event) => {
     navigator.clipboard.writeText(shoppingListText);
+    resetButtonState(event); // Button väri normaaliksi klikkauksen jälkeen
   };
 
-  const handleShare = () => {
+  const handleShare = (event) => {
     if (navigator.share) {
       navigator.share({
         title: 'Ostoslista',
@@ -167,6 +168,13 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     } else {
       alert('Jakaminen ei ole tuettu tässä selaimessa.');
     }
+    resetButtonState(event); // Button väri normaaliksi klikkauksen jälkeen
+  };
+
+  //TODO yritetään palauttaa painikkeiden väri klikkauksen jälkeen, ei toimi
+  const resetButtonState = (event) => {
+    const button = event.currentTarget;
+    button.blur();
   };
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
@@ -234,8 +242,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
           />
           <ButtonGroup>
             <GroupLeft>
-              <CopyButton onClick={handleCopy}>Kopioi leikepöydälle</CopyButton>                    
-              <ShareButton onClick={handleShare}>Jaa lista</ShareButton>   
+              <CopyButton onClick={(event) => handleCopy(event)}>Kopioi leikepöydälle</CopyButton>                    
+              <ShareButton onClick={(event) => handleShare(event)}>Jaa lista</ShareButton>   
             </GroupLeft>
           </ButtonGroup>
         </FormContainer>

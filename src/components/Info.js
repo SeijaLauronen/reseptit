@@ -3,6 +3,7 @@ import { OkButton, CloseButtonComponent } from './Button';
 import { FormContainer, ButtonGroup, GroupRight, SlideInContainerRight } from './Container';
 
 const Info = ({ isOpen, onCancel, children }) => {
+  
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -13,7 +14,7 @@ const Info = ({ isOpen, onCancel, children }) => {
       document.body.style.overflow = 'auto';
     };
   }, [isOpen]);
-
+  
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (    
     <SlideInContainerRight $isOpen={isOpen}>
