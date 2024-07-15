@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { CloseButtonComponent, DeleteButton, HelpButton, PrimaryButton } from './Button';
+import { CloseButtonComponent, DeleteButton, HelpButton, MenuHelpButton, PrimaryButton } from './Button';
 import { clearDB } from '../database';
 import Info from './Info';
 import { ButtonGroup, GroupLeft, GroupRight } from './Container';
 
-const programVersion = '2024-07-15: 148';
+const programVersion = '2024-07-15: 150';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -81,7 +81,7 @@ const MenuHeader = styled.h3`
 `;
 
 //Huom tähän ei transienttia $isOpenia, koska ei ole styled komponentti
-const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
+const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
 
   
   const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -135,7 +135,8 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu }) => {
       <MenuContainer>
         <MenuIcon onClick={toggleMenu}>
           <FontAwesomeIcon icon={faBars} />
-        </MenuIcon>        
+        </MenuIcon> 
+        <GroupRight><MenuHelpButton onClick={onOpenInfo}/> </GroupRight>       
       </MenuContainer>
       <MenuOverlay $isOpen={isOpen} onClick={toggleMenu} />
       <MenuList $isOpen={isOpen}>

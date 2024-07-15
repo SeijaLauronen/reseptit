@@ -4,8 +4,8 @@ import styled from 'styled-components';
 //DOM-elementtiin liittyvä styled-component: Käytetään transientteja propseja, eli $ "isJotain" eteen, jotta ne eivät välity tuntemattomina DOM:lle
 const Container = styled.div`
   padding: 45px 5px;
-  opacity: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen ? 0.5 : 1)};
-  pointer-events: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen ? 'none' : 'auto')};
+  opacity: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 0.5 : 1)};
+  pointer-events: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 'none' : 'auto')};
   transition: opacity 0.3s ease-in-out;
   //background-color: green;
 `;
@@ -19,6 +19,17 @@ margin: 20px 0;
 //background-color: blue;
 `;
 
+export const ScrollableFormContainer = styled(FormContainer)`
+  display: flex;
+  flex-direction: column;    
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-height: 50vh;
+  //max-height: calc(100vh - 80px); // Asetetaan maksimi korkeus suhteessa näkymän korkeuteen ja vähennetään ylä- ja ala-marginaalit
+  overflow-y: auto; // Ota käyttöön pystysuuntainen vieritys 
+  margin-bottom: 5px;
+`;
+
 export const SlideInContainerRight = styled.div`
   position: fixed;
   top: 100px;
@@ -26,12 +37,13 @@ export const SlideInContainerRight = styled.div`
   width: 90%;
   max-width: 400px;
   height: auto;
+  padding: 10px; 
   background-color: #fff;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
   transform: translateX(${props => (props.$isOpen ? '0' : '100%')});  
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
-  overflow-y: auto;
+  overflow-y: auto;  
 `;
 
 export const IconContainer = styled.span`

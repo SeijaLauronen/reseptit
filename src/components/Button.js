@@ -137,9 +137,19 @@ export const HelpButton = styled(props => (
     &:hover {
       background-color: #0056b3;
     }
-    margin-left: auto;
+    margin-left: auto;    
   `;
 
+export const MenuHelpButton = styled(props => (
+  <ButtonComponent icon={faQuestion} defaultText="" {...props} />
+))`
+  background-color: #007BFF;
+  &:hover {
+    background-color: #0056b3;
+  }
+  margin-left: auto; 
+  margin-right: 30px;    
+`;
 
 export const PrimaryButton = styled(ButtonComponent)`
   background-color: ${props => (props.disabled ? '#ccc' : '#007BFF')};

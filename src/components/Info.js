@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { OkButton, CloseButtonComponent } from './Button';
-import { FormContainer, ButtonGroup, GroupRight, SlideInContainerRight } from './Container';
+import { ScrollableFormContainer, ButtonGroup, GroupRight, SlideInContainerRight } from './Container';
 
 const Info = ({ isOpen, onCancel, children }) => {
   
@@ -19,14 +19,14 @@ const Info = ({ isOpen, onCancel, children }) => {
   return (    
     <SlideInContainerRight $isOpen={isOpen}>
       <CloseButtonComponent onClick={onCancel}></CloseButtonComponent>
-      <FormContainer>      
-        {children}
-        <ButtonGroup>
+      <ScrollableFormContainer>      
+        {children}        
+      </ScrollableFormContainer>
+      <ButtonGroup>
           <GroupRight>
             <OkButton onClick={onCancel}></OkButton>                    
           </GroupRight>
-        </ButtonGroup>
-      </FormContainer>
+      </ButtonGroup>
     </SlideInContainerRight>
   );
 };

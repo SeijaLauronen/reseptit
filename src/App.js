@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import Menu from './components/Menu';
 import Categories from './views/Categories';
 import Products from './views/Products';
 import ShoppingList from './views/ShoppingList';
 import Footer from './components/Footer'; 
 import Container from './components/Container';
-import styled from 'styled-components';
+import Info from './components/Info';
+import helpTexts from './helpTexts';
 
  // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
 const DisabledOverlay = styled.div`
@@ -19,6 +21,8 @@ const App = () => {
   const [view, setView] = useState('categories'); // Lisätty view-tila
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null); // Lisätty tila valitulle kategorian ID:lle
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
 
   const handleDatabaseCleared = () => {
     setRefresh(!refresh); // Vaihdetaan refresh tila päivittämisen laukaisemiseksi
@@ -35,11 +39,19 @@ const App = () => {
 
   const handleViewChange = (view) => {    
     if (view === 'products') {
-      setSelectedCategoryId(null); // Reset the selected category when switching to products view
+      setSelectedCategoryId(null); // Nollataan valittu kategoria kun siirrytään products-näkymään
     }
     setView(view);
   };
 
+  const handleOpenInfo = () => {
+    setInfoMessage(helpTexts[view]);
+    setIsInfoOpen(true);
+  };
+
+  const handleCloseInfo = () => {
+    setIsInfoOpen(false);
+  };
 
   const renderView = () => {
     switch (view) {     
@@ -57,11 +69,14 @@ const App = () => {
    // Huom, Menu:uun ei transientti props, koska se ei ole styledKOmponentti
   return (
     <div>
-      <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} isOpen={isMenuOpen}/>
+      <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} isOpen={isMenuOpen} onOpenInfo={handleOpenInfo}/>
       <DisabledOverlay $isDisabled={isMenuOpen}>
         <Container>{renderView()}</Container>
         <Footer setView={handleViewChange} />
       </DisabledOverlay>
+      <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
+        {infoMessage}
+      </Info>
     </div>
   );
 };

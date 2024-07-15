@@ -4,7 +4,7 @@ import StickyBottom from '../components/StickyBottom';
 import StickyTop from '../components/StickyTop';
 import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton } from '../components/Button'; 
 import { ShoppingListItem } from '../components/Item';
-import Container, {FormContainer, SlideInContainerRight, ButtonGroup } from '../components/Container';
+import Container, { SlideInContainerRight, ButtonGroup, FormContainer } from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
 import { getProducts, getProductById, getCategories,  updateProduct, updateProducts, getProductsOnShoppingList, updateProductField } from '../controller';
@@ -195,7 +195,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         <Toast message={error} onClose={() => setError('')} />
       )}
 
-      <Container $isMenuOpen={isMenuOpen}>
+      <Container $isMenuOpen={isMenuOpen} $isPrintOpen={isPrintOpen}>
          <StickyTop> 
             <b>Ostoslista</b>
          </StickyTop> 
@@ -230,7 +230,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         <StickyBottom>
           <GroupLeft>
             <OkButton
-              disabled={selectedProducts.size === 0}
+              disabled={selectedProducts.size === 0 }
               onClick={handleRemoveSelected}
             >
               Poista valitut listalta
