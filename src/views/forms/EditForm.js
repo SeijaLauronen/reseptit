@@ -1,24 +1,8 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
 import { OkButton, DeleteButton, CloseButtonComponent } from '../../components/Button';
-import { FormContainer, ButtonGroup, GroupLeft, GroupRight } from '../../components/Container';
+import { FormContainer, ButtonGroup, GroupLeft, GroupRight, SlideInContainerRight as SlideInContainer } from '../../components/Container';
 
 // TODO: Tässä ei jostain syystä liukuminen toteudu, vaikka Info-komponentissa samanlainen toteutuu
-const SlideInContainer = styled.div`
-  position: fixed;
-  top: 60px;
-  right: 0;
-  width: 90%;
-  max-width: 400px;
-  height: auto;
-  background-color: #fff;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-  transform: translateX(${props => (props.$isOpen ? '0' : '100%')});  
-  transition: transform 0.3s ease-in-out;
-  z-index: 1000;
-  overflow-y: auto;
-`;
-
 
 const EditForm = ({ isOpen, onSave, onCancel, onDelete, children }) => {
   useEffect(() => {

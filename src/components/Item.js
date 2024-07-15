@@ -15,10 +15,22 @@ const Item = styled.div`
 `;
 export default Item;
 
+export const GrabbableItem = styled(Item)`
+
+  cursor: grab; /* "Grab" kursori */
+  &:active {
+    cursor: grabbing; /* "Grabbing" kursori, kun itemiä vedetään */
+  }
+  
+  box-shadow: 
+    inset 0 4px 6px rgba(0, 0, 0, 0.1),  /* Sisäinen yleinen varjo */
+    inset 0 1px 3px rgba(0, 0, 0, 0.08); /* Sisäinen hieno varjo */
+`;
+
 export const ProductItem = styled(Item)`
 `;
 
-export const CategoryItem = styled(Item)`
+export const CategoryItem = styled(GrabbableItem)`
 `;
 
 export const ShoppingListItem = styled(Item)`
