@@ -17,6 +17,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [selectedProducts, setSelectedProducts] = useState(new Set());
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
+  const [isPrintOpen, setIsPrintOpen] = useState(false);
   const [error, setError] = useState('');
   const [shoppingListText, setShoppingListText] = useState('');
 
@@ -31,6 +32,16 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   
   const handleCloseInfo = () => {
     setIsInfoOpen(false);
+  };
+
+  const handleOpenPrint = () => {    
+    const listText = buildShoppingListText();
+    setShoppingListText(listText);            
+    setIsPrintOpen(true);
+  };
+  
+  const handleClosePrint = () => {
+    setIsPrintOpen(false);
   };
 
   const fetchData = async () => {
@@ -165,8 +176,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         title: 'Ostoslista',
         text: shoppingListText,
       });
-    } else {
-      alert('Jakaminen ei ole tuettu tässä selaimessa.');
+    } else {      
+      handleOpenInfo('Jakaminen ei ole tuettu tässä selaimessa.');
     }
     resetButtonState(event); // Button väri normaaliksi klikkauksen jälkeen
   };
@@ -226,13 +237,13 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             </OkButton>
           </GroupLeft>
           <GroupRight>              
-            <PrimaryButton onClick={() => handleOpenInfo('print')}>Tulostettava lista</PrimaryButton>                        
+            <PrimaryButton onClick={handleOpenPrint}>Tulostettava lista</PrimaryButton>                        
           </GroupRight>
         </StickyBottom>
       </Container>
       
-      <SlideInContainerRight $isOpen={isInfoOpen}>
-      <CloseButtonComponent onClick={handleCloseInfo}></CloseButtonComponent>
+      <SlideInContainerRight $isOpen={isPrintOpen}>
+      <CloseButtonComponent onClick={handleClosePrint}></CloseButtonComponent>
         <FormContainer>      
           <textarea       
             value={shoppingListText}
@@ -248,6 +259,11 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
           </ButtonGroup>
         </FormContainer>
       </SlideInContainerRight>
+      {isInfoOpen} {
+        <Info isOpen={isInfoOpen} onCancel={handleCloseInfo} >
+          {infoMessage}
+        </Info>
+      }
     </>
   );
 };
