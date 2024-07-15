@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Accordion from '../components/Accordion';
 import StickyBottom from '../components/StickyBottom';
 import StickyTop from '../components/StickyTop';
-import { OkButton, PrimaryButton } from '../components/Button'; 
+import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton } from '../components/Button'; 
 import { ShoppingListItem } from '../components/Item';
-import Container from '../components/Container';
+import Container, {FormContainer, SlideInContainerRight, ButtonGroup } from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
 import { getProducts, getProductById, getCategories,  updateProduct, updateProducts, getProductsOnShoppingList, updateProductField } from '../controller';
@@ -44,7 +44,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
       const selected = new Set(shoppingListProducts.filter(product => product.selected).map(product => product.id));
       setSelectedProducts(selected);
-      }  catch (err) {
+      } catch (err) {
         setError(err.message);
       }
   };
@@ -70,8 +70,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
       const product = await getProductById(id);
       product.selected = !product.selected;
       await updateProduct(id, product);  
-    }
-    catch (err) {
+    } catch (err) {
       setError(err.message);
     }
   };
@@ -141,7 +140,6 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
   const buildShoppingListText = () => {
     let listText = '';
-  
     groupedProducts.forEach(category => {
       listText += `${category.name}:\n`;
       category.products.forEach(product => {
@@ -149,12 +147,26 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
       });
       listText += '\n';
     });
-  
     return listText;
   };
 
   const handleTextAreaChange = (event) => {
     setShoppingListText(event.target.value);
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(shoppingListText);
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'Ostoslista',
+        text: shoppingListText,
+      });
+    } else {
+      alert('Jakaminen ei ole tuettu tässä selaimessa.');
+    }
   };
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
@@ -211,19 +223,23 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         </StickyBottom>
       </Container>
       
-      <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
-        {infoMessage === 'print' ? (
-          <textarea
+      <SlideInContainerRight $isOpen={isInfoOpen}>
+      <CloseButtonComponent onClick={handleCloseInfo}></CloseButtonComponent>
+        <FormContainer>      
+          <textarea       
             value={shoppingListText}
             onChange={handleTextAreaChange}
             rows="20"
             cols="40"
           />
-        ) : (
-          infoMessage
-        )}
-      </Info>
- 
+          <ButtonGroup>
+            <GroupLeft>
+              <CopyButton onClick={handleCopy}>Kopioi leikepöydälle</CopyButton>                    
+              <ShareButton onClick={handleShare}>Jaa lista</ShareButton>   
+            </GroupLeft>
+          </ButtonGroup>
+        </FormContainer>
+      </SlideInContainerRight>
     </>
   );
 };

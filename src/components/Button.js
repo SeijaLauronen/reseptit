@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion, faCopy, faShare } from '@fortawesome/free-solid-svg-icons';
+// import { faShare } from '@fortawesome/free-solid-svg-icons/faShare';
 
 const Button = styled.button`
   background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#007BFF')};
@@ -71,6 +72,25 @@ export const OkButton = styled(props => (
       background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
     }
   `;
+
+export const CopyButton = styled(props => (
+  <ButtonComponent icon={faCopy} defaultText="Kopioi" {...props} />
+))`
+  background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
+  &:hover {
+    background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
+  }
+`;
+
+export const ShareButton = styled(props => (
+  <ButtonComponent icon={faShare} defaultText="Kopioi" {...props} />
+))`
+  background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
+  &:hover {
+    background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
+  }
+`;
+
 
 export const CancelButton = styled(props => (
   <ButtonComponent icon={faTimes} defaultText="Peruuta" {...props} />

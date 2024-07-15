@@ -16,6 +16,22 @@ export const FormContainer = styled.div`
 padding: 20px;
 background-color: #fff;
 margin: 20px 0;
+//background-color: blue;
+`;
+
+export const SlideInContainerRight = styled.div`
+  position: fixed;
+  top: 100px;
+  right: 0;
+  width: 90%;
+  max-width: 400px;
+  height: auto;
+  background-color: #fff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  transform: translateX(${props => (props.$isOpen ? '0' : '100%')});  
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  overflow-y: auto;
 `;
 
 export const IconContainer = styled.span`
@@ -61,6 +77,7 @@ export const ButtonGroup = styled.div`
 
 export const GroupLeft = styled.div`
   display: flex;
+  gap: 10px;
   flex-grow: ${props => (props.fillspace ? '1' : 'auto')}; 
 `;
 
