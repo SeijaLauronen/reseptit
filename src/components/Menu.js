@@ -8,7 +8,7 @@ import Info from './Info';
 import { ButtonGroup, GroupLeft, GroupRight } from './Container';
 import helpTexts from '../helpTexts';
 
-const programVersion = '2024-07-16: 154';
+const programVersion = '2024-07-16: 155';
 
 const MenuContainer = styled.div`
   position: fixed;

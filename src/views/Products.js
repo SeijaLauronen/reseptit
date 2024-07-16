@@ -125,7 +125,7 @@ const Products = ({ refresh = false, categoryId }) => {
   };
 
   
-  const offset = 100; 
+  const offset = 110; 
 
   const scrollToFirstMatchingProduct = (filter) => {
     if (filter === '') return;
