@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import Accordion from '../components/Accordion';
 import StickyBottom from '../components/StickyBottom';
 import StickyTop from '../components/StickyTop';
@@ -10,6 +11,7 @@ import { InputQuantity, InputUnit } from '../components/Input';
 import { getProducts, getProductById, getCategories,  updateProduct, updateProducts, getProductsOnShoppingList, updateProductField } from '../controller';
 import Info from '../components/Info';
 import Toast from '../components/Toast'; 
+import DisabledOverlay from '../components/DisabledOverlay';
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]);
@@ -195,6 +197,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         <Toast message={error} onClose={() => setError('')} />
       )}
 
+      <DisabledOverlay $isDisabled={isPrintOpen}>
       <Container $isMenuOpen={isMenuOpen} $isPrintOpen={isPrintOpen}>
          <StickyTop> 
             <b>Ostoslista</b>
@@ -204,6 +207,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             {category.products.map(product => (
               <ShoppingListItem key={product.id}>
                 <input
+                  disabled={isPrintOpen}
                   type="checkbox"
                   checked={selectedProducts.has(product.id)}
                   onChange={() => handleToggleSelect(product.id)}
@@ -211,12 +215,14 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                 <span>{product.name}</span>
                 <InputWrapper>
                   <InputQuantity
+                    disabled={isPrintOpen}
                     type="number"
                     value={product.quantity || ''}
                     onChange={(e) => handleQuantityChange(product.id, e.target.value)}
                     placeholder="Määrä"
                   />
                   <InputUnit
+                    disabled={isPrintOpen}
                     type="text"
                     value={product.unit || ''}
                     onChange={(e) => handleUnitChange(product.id, e.target.value)}
@@ -227,21 +233,24 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             ))}
           </Accordion>
         ))}
-        <StickyBottom>
-          <GroupLeft>
-            <OkButton
-              disabled={selectedProducts.size === 0 }
-              onClick={handleRemoveSelected}
-            >
-              Poista valitut listalta
-            </OkButton>
-          </GroupLeft>
-          <GroupRight>              
-            <PrimaryButton onClick={handleOpenPrint}>Tulostettava lista</PrimaryButton>                        
-          </GroupRight>
-        </StickyBottom>
+        <DisabledOverlay $isDisabled={isPrintOpen}>
+          <StickyBottom>
+            <GroupLeft>
+              <OkButton
+                disabled={selectedProducts.size === 0 }
+                onClick={handleRemoveSelected}
+              >
+                Poista valitut listalta
+              </OkButton>
+            </GroupLeft>
+            <GroupRight>              
+              <PrimaryButton onClick={handleOpenPrint}>Tulostettava lista</PrimaryButton>                        
+            </GroupRight>
+          </StickyBottom>
+        </DisabledOverlay>
       </Container>
-      
+      </DisabledOverlay>
+
       <SlideInContainerRight $isOpen={isPrintOpen}>
       <CloseButtonComponent onClick={handleClosePrint}></CloseButtonComponent>
         <FormContainer>      

@@ -8,13 +8,7 @@ import Footer from './components/Footer';
 import Container from './components/Container';
 import Info from './components/Info';
 import helpTexts from './helpTexts';
-
- // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
-const DisabledOverlay = styled.div`
-  pointer-events: ${({ $isDisabled }) => ($isDisabled ? 'none' : 'auto')};
-  opacity: ${({ $isDisabled }) => ($isDisabled ? 0.5 : 1)};
-`;
-
+import DisabledOverlay from './components/DisabledOverlay';
 
 const App = () => {
   const [refresh, setRefresh] = useState(false);
