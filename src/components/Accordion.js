@@ -15,6 +15,8 @@ const AccordionTitle = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  word-wrap: break-word;
+  word-break: break-all;
 `;
 
 // transientti props $isOpen, koska styled komponentti ja isJotain
