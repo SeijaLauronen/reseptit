@@ -3,17 +3,22 @@
 const helpTexts = {
     categories: (
         <>
+          
+          <b>Ostokset</b>       
+          <p>           
+            3 näkymää: kategoriat, tuotteet ja ostoslista. 
+            Näkymiä vaihdat alalaidan painikkeista.
+          </p>
+          
+          
           <b>Kategoriat</b>
-          <br />
-          <p>
+          <p>         
           Voit lisätä mieleisiäsi kategorioita, kuten Hedelemät, Vihannekset, Leivät jne.
-          <br />
+          </p><p>
           Voit muuttaa kategogorioiden järjestystä raahaamalla kategorian sopivaan kohtaan.
-          <br />
-          <br />
+          </p><p>
           Tuotteet -sivulle pääset joko alavalikosta tai kategorian nuolipainikkeesta.
           Jos menet nuolipainikkeesta, Tuote-sivulla näytetään vain sen kategorian tuotteet ja uusi tuote lisätään kyseiseen kategoriaan.
-          <br />
           </p>
         </>
       ),

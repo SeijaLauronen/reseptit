@@ -66,7 +66,7 @@ const App = () => {
       <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} isOpen={isMenuOpen} onOpenInfo={handleOpenInfo}/>
       <DisabledOverlay $isDisabled={isMenuOpen}>
         <Container>{renderView()}</Container>
-        <Footer setView={handleViewChange} />
+        <Footer setView={handleViewChange} currentView ={view}/>
       </DisabledOverlay>
       <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
         {infoMessage}

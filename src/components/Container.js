@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 //DOM-elementtiin liittyvä styled-component: Käytetään transientteja propseja, eli $ "isJotain" eteen, jotta ne eivät välity tuntemattomina DOM:lle
 const Container = styled.div`
-  padding: 45px 5px;
+  padding: 55px 5px;
   opacity: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 0.5 : 1)};
   pointer-events: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 'none' : 'auto')};
   transition: opacity 0.3s ease-in-out;

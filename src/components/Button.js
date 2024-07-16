@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion, faCopy, faShare } from '@fortawesome/free-solid-svg-icons';
-// import { faShare } from '@fortawesome/free-solid-svg-icons/faShare';
 
 const Button = styled.button`
   background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#007BFF')};
