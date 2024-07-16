@@ -79,6 +79,9 @@ const Products = ({ refresh = false, categoryId }) => {
   };
 
   const handleEditProduct = (product) => {
+    // Tyhjätään skrollauspiste, jos oli aiemmin lisätty tuote. 
+    // Ei aseteta uutta skrollauspistettä editissä, koska on jo valmiiksi vieritetyssä kohdassa
+    setHandledProductId(null); 
     setEditingProduct(product);
   };
 

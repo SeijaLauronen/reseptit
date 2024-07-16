@@ -6,8 +6,9 @@ import { CloseButtonComponent, DeleteButton, HelpButton, MenuHelpButton, Primary
 import { clearDB } from '../database';
 import Info from './Info';
 import { ButtonGroup, GroupLeft, GroupRight } from './Container';
+import helpTexts from '../helpTexts';
 
-const programVersion = '2024-07-16: 151';
+const programVersion = '2024-07-16: 152';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -111,23 +112,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
     setIsInfoOpen(false);
   };
 
-  const deleteInfo = (
-    <>
-      <b>
-      Poista tiedot...
-      </b>
-      <br />
-      
-      Sovelluksen kaikki data on tallennettu selaimen muistiin.
-      <br />
-      Tiedot poistetaan selaimen muistista ja niitä ei voi palauttaa. 
-      <br />
-      Ennen poistamista kysytään vielä varmistus, haluatko varmasti poistaa.
-      <br />     
-      
-    </>
-  );
-
+ 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle, esim $isOpen
   // tai käytetään pieniä kirjaimia kuten fillspace eikä fillSpace
   return (
@@ -151,7 +136,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
               </DeleteButton>
             </GroupLeft>
             <GroupRight>
-              <HelpButton onClick={() => handleOpenInfo(deleteInfo)}/>      
+              <HelpButton onClick={() => handleOpenInfo(helpTexts['deleteDB'])}/>     
             </GroupRight>
           </ButtonGroup>    
           </MenuItem>

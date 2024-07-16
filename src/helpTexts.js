@@ -60,7 +60,7 @@ const helpTexts = {
           
         </>
       ),
-    delete: (
+    deleteDB: (
       <>
         <b>Poista tiedot...</b>
         <br />
