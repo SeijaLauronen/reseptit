@@ -125,7 +125,7 @@ const Products = ({ refresh = false, categoryId }) => {
   };
 
   
-  const offset = 300; 
+  const offset = 400; 
 
   const scrollToFirstMatchingProduct = (filter) => {
     if (filter === '') return;
@@ -139,7 +139,8 @@ const Products = ({ refresh = false, categoryId }) => {
         
       // Dynaaminen offset, koska näppäimistö vie tilaa. visualViewport ei sisällä on-screen näppäimistöä
       const newOffset = window.visualViewport ? window.visualViewport.height / 2 : offset; 
-      const offsetPosition = elementPosition + window.scrollY - newOffset; 
+      //const offsetPosition = elementPosition + window.scrollY - newOffset; // ei toimi toivotusti 
+      const offsetPosition = elementPosition + window.scrollY - offset;
       
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });      
       
