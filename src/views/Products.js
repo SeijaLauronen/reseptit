@@ -136,10 +136,10 @@ const Products = ({ refresh = false, categoryId }) => {
     if (firstMatchingProduct && productRefs.current[firstMatchingProduct.id]) {
       const element = productRefs.current[firstMatchingProduct.id];
       const elementPosition = element.getBoundingClientRect().top;
-         
-      const newOffset = window.visualViewport ? window.visualViewport.height / 4 : offset; // Dynaaminen offset, koska näppäimistö vie tilaa
-      //const offsetPosition = elementPosition + window.scrollY - newOffset; //Ei ota tämäkään näppistä huomioon
-      const offsetPosition = elementPosition + window.scrollY - offset; // Laitetaan kiinteästi
+        
+      // Dynaaminen offset, koska näppäimistö vie tilaa. visualViewport ei sisällä on-screen näppäimistöä
+      const newOffset = window.visualViewport ? window.visualViewport.height / 2 : offset; 
+      const offsetPosition = elementPosition + window.scrollY - newOffset; 
       
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });      
       
