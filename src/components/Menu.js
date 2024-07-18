@@ -9,7 +9,7 @@ import { ButtonGroup, GroupLeft, GroupRight } from './Container';
 import DataManagement from '../DataManagement';
 import helpTexts from '../helpTexts';
 
-const programVersion = '2024-07-18: 162';
+const programVersion = '2024-07-18: 163';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -124,7 +124,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
     setShowDataManagement(false);
     setDataManagementAction('');    
     
-    if (refresh) {      
+    if (refresh) {         
       onDatabaseCleared(); // refresh kutsu App.js:lle
       onToggleMenu(false);
     }
@@ -159,16 +159,10 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
             </GroupRight>
           </ButtonGroup>    
           </MenuItem>
-        <MenuItem> 
-          <PrimaryButton fullwidth = 'true' onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Tuo tiedot...</PrimaryButton>            
-        </MenuItem>
-        <MenuItem>
-          <PrimaryButton fullwidth = 'true' onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Vie tiedot...</PrimaryButton>            
-        </MenuItem> 
-
-        <MenuItem onClick={() => handleOpenDataManagement('import')}>Tuo tiedot</MenuItem>
-        <MenuItem onClick={() => handleOpenDataManagement('export')}>Vie tiedot</MenuItem>
-        <MenuItem onClick={() => handleOpenDataManagement('load')}>Lataa esimerkkiaineisto</MenuItem>
+  
+          <MenuItem onClick={() => handleOpenDataManagement('import')}>Tuo tiedot...</MenuItem>
+          <MenuItem onClick={() => handleOpenDataManagement('export')}>Vie tiedot...</MenuItem>
+          <MenuItem onClick={() => handleOpenDataManagement('load')}>Lataa esimerkkiaineisto...</MenuItem>
 
         <MenuHeader>Tietoja</MenuHeader>     
         <MenuItem>Versio: {programVersion}</MenuItem>

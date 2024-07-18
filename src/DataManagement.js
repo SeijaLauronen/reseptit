@@ -1,12 +1,11 @@
-// DataManagement.js
-
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { handleImportData, handleExportData, handleLoadExample } from './controller';
-import { SlideInContainerRight, FormContainer, ButtonGroup, GroupLeft } from './components/Container'
-import { CloseButtonComponent } from './components/Button';
+import { SlideInContainerRight, FormContainer, ButtonGroup, GroupRight, GroupLeft } from './components/Container'
+import { PrimaryButton , SecondaryButton, CancelButton, CloseButtonComponent, OkButton } from './components/Button';
 import exampleData from './exampleData.json';
 
+//TODO siirrä toimintoja täältä dataUtilsiin...
 
 const TextArea = styled.textarea`
   width: 80%;
@@ -14,16 +13,36 @@ const TextArea = styled.textarea`
   margin: 10px 0;
 `;
 
-const Button = styled.button`
-  padding: 10px 20px;
-  margin: 10px;
-  border: none;
+// Styled component for file input
+const FileInputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const FileInputLabel = styled.label`
+  margin-bottom: 5px;
+  color: #333;
+`;
+
+const FileInput = styled.input`
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  background-color: #673ab7;
-  color: white;
   cursor: pointer;
 
-  &:hover {
+  &::file-selector-button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #673ab7;
+    color: white;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  &::file-selector-button:hover {
     background-color: #512a9e;
   }
 `;
@@ -33,6 +52,11 @@ const DataManagement = ({isOpen, action, onClose}) => {
 
     useEffect(() => {
         if (isOpen) {
+            setData('');
+            setShowTextArea(false);
+            setLoading(false);
+            setSuccess(false);
+            setSelectedFileName('');
           document.body.style.overflow = 'hidden';
         } else {
           document.body.style.overflow = 'auto';
@@ -46,15 +70,14 @@ const DataManagement = ({isOpen, action, onClose}) => {
   const [showTextArea, setShowTextArea] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState('');
 
   const handleFileRead = async (event) => {
     const file = event.target.files[0];
+    setSelectedFileName(file.name);
     const reader = new FileReader();
     reader.onload = async (e) => {
-      /*
-      const content = e.target.result;
-      setData(content);
-      */
+
       const content = JSON.parse(e.target.result);
       setData(JSON.stringify(content, null, 2));
       setShowTextArea(true);
@@ -63,13 +86,13 @@ const DataManagement = ({isOpen, action, onClose}) => {
         setLoading(true);
         await handleImportData(content);
         setLoading(false);
-        setSuccess(true);
-        //onRefresh(); // Päivittää näkymän 
+        setSuccess(true);        
       }
     };
     reader.readAsText(file);
   };
 
+  //TODO tiedoston nimi ja sijainti näytetään käyttäjälle
   const handleExport = async () => {
     setLoading(true);
     const exportedData = await handleExportData();
@@ -79,7 +102,7 @@ const DataManagement = ({isOpen, action, onClose}) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'exported_data.json';
+    link.download = 'exported_data.json'; //TODO nimeen aikaleima yms
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -94,7 +117,6 @@ const DataManagement = ({isOpen, action, onClose}) => {
         await handleImportData(exampleData);
         setLoading(false);
         setSuccess(true);
-        //onRefresh(); // Päivittää näkymän  
     }
   };
 
@@ -102,37 +124,71 @@ const DataManagement = ({isOpen, action, onClose}) => {
 
   return (
     <SlideInContainerRight $isOpen={isOpen}>
-      <CloseButtonComponent onClick={onClose}></CloseButtonComponent>
+      <CloseButtonComponent onClick={() => onClose(success && !loading)}></CloseButtonComponent>
         <FormContainer>         
     
         {action==='import' && (
-            <>
+            <>            
+            
+            <h2>Tuo tiedot</h2>
+            <p>Voit tuoda tiedot tiedostosta. Kaikki nykyiset tiedot poistetaan ja tilalle ladataan tiedot valitsemastasi tiedostosta </p>
+            <p>Mikäli olet jo tallentanut tietoja ohjelmalla, suositellaan varmuuskopion ottamista "Vie tiedot" toiminnolla.</p>
+
+            <FileInputContainer>
+              <FileInput type="file" onChange={handleFileRead} />
+            </FileInputContainer>
             {loading && <p>Ladataan...</p>}
-            {success && !loading && <p>Lataus onnistui!</p>}
-            <h2>Valitse tiedosto, josta tiedot tuodaan </h2>
-            <input type="file" onChange={handleFileRead} />
+            {success && !loading && <p>{selectedFileName} lataus onnistui!</p>}
+
+            <ButtonGroup>
+                <GroupRight>
+                {!success && <CancelButton onClick={() => onClose(false)}/> }
+                {success && !loading && <OkButton onClick={() => onClose(true)}/>} 
+                </GroupRight>
+            </ButtonGroup>
+
             </>
         )}
 
         {action==='export' && (
             <>
+            
+            <h2>Vie tiedot</h2>
+            <p>Kaikki sovelluksen tiedot talletetaan tiedostoon.</p>
+
             {loading && <p>Ladataan...</p>}
-            {success && !loading && <p>Tiedot tallennettu tiedostoon..</p>}
-            <h2>Ladataan tiedot kannasta </h2>
-            <Button onClick={handleExport}>Vie tiedot</Button>
+            {success && !loading && <p>Tiedot tallennettu tiedostoon.</p>}
+
+            <ButtonGroup>
+                <PrimaryButton onClick={handleExport}>Vie tiedot</PrimaryButton>
+                <GroupRight>
+                {!success && <CancelButton onClick={() => onClose(false)}/> }
+                {success && !loading && <OkButton onClick={() => onClose(false)}/>} 
+                </GroupRight>
+            </ButtonGroup>
             </>
         )}
        
 
         {action==='load' && (
             <>
+            
+            <h2>Lataa esimerkkiainesto </h2>
+            <p>Voit ladata esimerkkiaineiston. Kaikki nykyiset tiedot poistetaan.</p>
+            <p>Mikäli olet jo tallentanut tietoja ohjelmalla, suositellaan varmuuskopion ottamista "Vie tiedot" toiminnolla.</p>
             {loading && <p>Ladataan...</p>}
             {success && !loading && <p>Lataus onnistui!</p>}
-            <h2>Ladataan esimerkkitiedostosta tiedot </h2>
-            <Button onClick={handleLoadExample}>Lataa esimerkkiaineisto</Button>
+            
             {showTextArea && (
                 <TextArea value={data} readOnly />
             )}
+            <ButtonGroup>
+                <PrimaryButton onClick={handleLoadExample}>Lataa</PrimaryButton>
+                <GroupRight>
+                {!success && <CancelButton onClick={() => onClose(false)}/> }
+                {success && !loading && <OkButton onClick={() => onClose(true)}/>} 
+                </GroupRight>
+            </ButtonGroup>
             </>
       )}
 
