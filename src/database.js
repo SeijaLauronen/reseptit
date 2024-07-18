@@ -2,6 +2,7 @@ import { openDB } from 'idb';
 
 const DB_NAME = 'ReseptitDB';
 const DB_VERSION = 1;
+const STORE_NAMES = ['categories', 'products']; // Määritä taulujen nimet
 
 const initDB = async () => {
   return openDB(DB_NAME, DB_VERSION, {

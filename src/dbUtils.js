@@ -1,5 +1,6 @@
 // dbUtils.js
-import { getDB } from './database';
+import { getDB, clearDB } from './database';
+const STORE_NAMES = ['categories', 'products']; // Määritä taulujen nimet, TODO kumpaanko näm laitetaan, on myös database.js
 
 //TODO eri taulujen operaatioit voisi yhdistää lähettämällä taulun nimen ja tietueen parametirnä
 
@@ -142,3 +143,57 @@ export const deleteProduct = async (id) => {
     throw new Error('Virhe poistettaessa tuotetta: ' + err);
   }
 };
+
+//TODO tämä on myös tuolla database.js:ssä Valitse jompi kumpi
+// TODO käytetään vakioita, luupataan se
+export const clearDatabase = async () => {
+  const db = await getDB();
+  await db.clear('categories');
+  await db.clear('products');
+  await db.clear('recipes');
+  await db.clear('days');
+
+};
+
+
+export const importDataToDatabase = async (data) => {
+  const db = await getDB();
+  for (const storeName of STORE_NAMES) {
+    const tx = db.transaction(storeName, 'readwrite');
+    const store = tx.objectStore(storeName);
+    await store.clear(); // Tyhjennä taulu ennen uusien tietojen lisäämistä
+    const items = data[storeName] || [];
+    for (const item of items) {
+      await store.add(item);
+    }
+    await tx.done;
+  }
+};
+
+export const exportDataFromDatabase = async () => {
+  const db = await getDB();
+  const result = {};
+  for (const storeName of STORE_NAMES) {
+    const tx = db.transaction(storeName, 'readonly');
+    const store = tx.objectStore(storeName);
+    const data = await store.getAll();
+    result[storeName] = data;
+    await tx.done;
+  }
+  return result;
+};
+
+export const loadExampleDataToDatabase = async (exampleData) => {
+  const db = await getDB();
+  for (const storeName of STORE_NAMES) {
+    const tx = db.transaction(storeName, 'readwrite');
+    const store = tx.objectStore(storeName);
+    await store.clear(); // Tyhjennä taulu ennen esimerkkiaineiston lisäämistä
+    const items = exampleData[storeName] || [];
+    for (const item of items) {
+      await store.add(item);
+    }
+    await tx.done;
+  }
+};
+

@@ -1,0 +1,114 @@
+{
+    "categories": [
+      {
+        "name": "HeVi",
+        "order": 1,
+        "id": 1
+      },
+      {
+        "name": "Leivät",
+        "order": 2,
+        "id": 2
+      },
+      {
+        "name": "Lihat",
+        "order": 3,
+        "id": 3
+      },
+      {
+        "name": "Pakasteet",
+        "order": 4,
+        "id": 4
+      },
+      {
+        "name": "Juomat",
+        "order": 5,
+        "id": 5
+      },
+      {
+        "name": "Vaatteet",
+        "order": 6,
+        "id": 6
+      }
+    ],
+    "products": [
+      {
+        "name": "Appelsiini",
+        "categoryId": 1,
+        "id": 1,
+        "onShoppingList": true,
+        "quantity": "5",
+        "unit": "kpl"
+      },
+      {
+        "name": "Banaani",
+        "categoryId": 1,
+        "id": 2,
+        "onShoppingList": true,
+        "quantity": "4",
+        "unit": "kpl"
+      },
+      {
+        "name": "Tomaatti",
+        "categoryId": 1,
+        "id": 3,
+        "onShoppingList": true,
+        "quantity": "500",
+        "unit": "g"
+      },
+      {
+        "name": "Kurkku",
+        "categoryId": 1,
+        "id": 4,
+        "onShoppingList": true,
+        "quantity": "1",
+        "unit": "kpl"
+      },
+      {
+        "name": "Ruisleipä",
+        "categoryId": 2,
+        "id": 5
+      },
+      {
+        "name": "Näkkileipä",
+        "categoryId": 2,
+        "id": 6
+      },
+      {
+        "name": "Jauheliha",
+        "categoryId": 3,
+        "id": 7
+      },
+      {
+        "name": "Jäätelö",
+        "categoryId": 4,
+        "id": 8
+      },
+      {
+        "name": "Sekamehu",
+        "categoryId": 5,
+        "id": 9
+      },
+      {
+        "name": "Appelsiinimehu",
+        "categoryId": 5,
+        "id": 10
+      },
+      {
+        "name": "Kahvi",
+        "categoryId": 5,
+        "id": 11
+      },
+      {
+        "name": "Tee",
+        "categoryId": 5,
+        "id": 12
+      },
+      {
+        "name": "Sukat",
+        "categoryId": 6,
+        "id": 13
+      }
+    ]
+  }
+  

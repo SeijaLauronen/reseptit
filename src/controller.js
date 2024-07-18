@@ -1,5 +1,23 @@
 import { fetchCategories, addCategory as dbAddCategory, updateCategory as dbUpdateCategory, deleteCategory as dbDeleteCategory } from './dbUtils';
 import { fetchProducts, getProductById as dbGetProductById, addProduct as dbAddProduct, updateProduct as dbUpdateProduct, updateProducts as dbUpdateProducts, deleteProduct as dbDeleteProduct } from './dbUtils';
+import { clearDatabase } from './dbUtils'; //TODO tarvitaankohan
+import { importDataToDatabase, exportDataFromDatabase, loadExampleDataToDatabase } from './dbUtils';
+
+
+export const handleImportData = async (data) => {
+  return await importDataToDatabase(data);
+};
+
+export const handleExportData = async () => {
+  return await exportDataFromDatabase();
+};
+
+// Tällehän pitäisi tulla data, ja funkka sama kuin import...
+export const handleLoadExample = async () => {
+  return await loadExampleDataToDatabase();
+};
+
+
 
 const validateCategory = (category) => { 
   if (!category.name || category.name.trim() === '') {
@@ -94,4 +112,24 @@ export const updateProductField = async (id, field, value) => {
   
   product[field] = value;
   await dbUpdateProduct(id, product);
+};
+
+// Tietokannan kopionti 
+export const importData = async (data) => {
+  await clearDatabase();
+  await importDataToDatabase(data);
+};
+
+export const exportData = async () => {
+  //const data = await getDatabaseContents();
+  const data = await exportDataFromDatabase();
+  return data;
+};
+
+export const loadExampleData = async () => {
+  // Oletetaan, että esimerkkiaineisto on tallennettu tiedostoon
+  const response = await fetch('/path/to/exampleData.json');
+  const data = await response.json();
+  await clearDatabase();
+  await importDataToDatabase(data);
 };

@@ -6,9 +6,10 @@ import { CloseButtonComponent, DeleteButton, HelpButton, MenuHelpButton, Primary
 import { clearDB } from '../database';
 import Info from './Info';
 import { ButtonGroup, GroupLeft, GroupRight } from './Container';
+import DataManagement from '../DataManagement';
 import helpTexts from '../helpTexts';
 
-const programVersion = '2024-07-17: 160';
+const programVersion = '2024-07-18: 162';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -83,10 +84,11 @@ const MenuHeader = styled.h3`
 
 //Huom tähän ei transienttia $isOpenia, koska ei ole styled komponentti
 const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
-
   
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
+  const [showDataManagement, setShowDataManagement] = useState(false);
+  const [dataManagementAction, setDataManagementAction] = useState('');
 
   const handleOpenInfo = (message) => {
     setInfoMessage(message);
@@ -112,6 +114,23 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
     setIsInfoOpen(false);
   };
 
+  const handleOpenDataManagement = (action) => {
+    setShowDataManagement(true);
+    setDataManagementAction(action);
+    //onToggleMenu(false); // Suljetaan menu kun data management aukeaa
+  };
+
+  const handleCloseDataManagement = (refresh) => {
+    setShowDataManagement(false);
+    setDataManagementAction('');    
+    
+    if (refresh) {      
+      onDatabaseCleared(); // refresh kutsu App.js:lle
+      onToggleMenu(false);
+    }
+  };
+
+        
  
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle, esim $isOpen
   // tai käytetään pieniä kirjaimia kuten fillspace eikä fillSpace
@@ -145,13 +164,24 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
         </MenuItem>
         <MenuItem>
           <PrimaryButton fullwidth = 'true' onClick={() => handleOpenInfo('Ei vielä toteutettu.')}>Vie tiedot...</PrimaryButton>            
-        </MenuItem>   
+        </MenuItem> 
+
+        <MenuItem onClick={() => handleOpenDataManagement('import')}>Tuo tiedot</MenuItem>
+        <MenuItem onClick={() => handleOpenDataManagement('export')}>Vie tiedot</MenuItem>
+        <MenuItem onClick={() => handleOpenDataManagement('load')}>Lataa esimerkkiaineisto</MenuItem>
+
         <MenuHeader>Tietoja</MenuHeader>     
         <MenuItem>Versio: {programVersion}</MenuItem>
       </MenuList>
       <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
         {infoMessage}
       </Info>
+      <DataManagement 
+        isOpen={showDataManagement}  
+        action={dataManagementAction} 
+        onClose={handleCloseDataManagement} 
+      />
+
     </>
   );
 };

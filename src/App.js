@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import Menu from './components/Menu';
 import Categories from './views/Categories';
 import Products from './views/Products';
