@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { CloseButtonComponent, DeleteButton, HelpButton, MenuHelpButton, PrimaryButton } from './Button';
-import { clearDB } from '../database';
+import { faBars, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { CloseButtonComponent, MenuHelpButton } from './Button';
 import Info from './Info';
-import { ButtonGroup, GroupLeft, GroupRight } from './Container';
+import { GroupRight } from './Container';
 import DataManagement from '../DataManagement';
-import helpTexts from '../helpTexts';
 
-const programVersion = '2024-07-18: 163';
+const programVersion = '2024-07-19: 1.164';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -52,6 +50,11 @@ const MenuList = styled.ul`
 `;
 
 const MenuItem = styled.li`
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   padding: 10px;
   text-decoration: none;
   color: black;
@@ -74,6 +77,10 @@ const MenuIcon = styled.div`
   font-size: 24px;
 `;
 
+const ChevronIcon = () => {
+  return <FontAwesomeIcon icon={faChevronRight} size="xs" />
+};
+
 
 const MenuHeader = styled.h3`
   padding: 10px;
@@ -90,28 +97,18 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
   const [showDataManagement, setShowDataManagement] = useState(false);
   const [dataManagementAction, setDataManagementAction] = useState('');
 
+  //TODO INFO ei tällä hetkellä käytössä, mutta jätetään se vielä
   const handleOpenInfo = (message) => {
     setInfoMessage(message);
     setIsInfoOpen(true);
   };
 
-  const handleDeleteDatabase = async () => {
-    const confirmDelete = window.confirm('Haluatko varmasti poistaa kaikki sovelluksen tiedot?');
-    if (confirmDelete) {
-      await clearDB();
-      handleOpenInfo('Tiedot poistettu');
-      onDatabaseCleared();
-    }
-    onToggleMenu(false); // Suljetaan menu joka tapauksessa
+  const handleCloseInfo = () => {
+    setIsInfoOpen(false);
   };
 
   const toggleMenu = () => {    
     onToggleMenu(!isOpen);
-  };
-
-
-  const handleCloseInfo = () => {
-    setIsInfoOpen(false);
   };
 
   const handleOpenDataManagement = (action) => {
@@ -144,26 +141,12 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
       </MenuContainer>
       <MenuOverlay $isOpen={isOpen} onClick={toggleMenu} />
       <MenuList $isOpen={isOpen}>
-        <CloseButtonComponent onClick={toggleMenu}/>
-        <MenuItem></MenuItem>
-        <MenuHeader>Toiminnot</MenuHeader>
-        <MenuItem>
-          <ButtonGroup>
-            <GroupLeft fillspace = 'true'>
-              <DeleteButton fullwidth = 'true' onClick={handleDeleteDatabase}>            
-              Poista tiedot...
-              </DeleteButton>
-            </GroupLeft>
-            <GroupRight>
-              <HelpButton onClick={() => handleOpenInfo(helpTexts['deleteDB'])}/>     
-            </GroupRight>
-          </ButtonGroup>    
-          </MenuItem>
-  
-          <MenuItem onClick={() => handleOpenDataManagement('import')}>Tuo tiedot...</MenuItem>
-          <MenuItem onClick={() => handleOpenDataManagement('export')}>Vie tiedot...</MenuItem>
-          <MenuItem onClick={() => handleOpenDataManagement('load')}>Lataa esimerkkiaineisto...</MenuItem>
-
+        <CloseButtonComponent onClick={toggleMenu}/>        
+        <MenuHeader>Toiminnot</MenuHeader>        
+        <MenuItem onClick={() => handleOpenDataManagement('load')}>Lataa esimerkkiaineisto<ChevronIcon/></MenuItem>
+        <MenuItem onClick={() => handleOpenDataManagement('export')}>Varmuuskopioi / Vie tiedot<ChevronIcon/></MenuItem>
+        <MenuItem onClick={() => handleOpenDataManagement('import')}>Palauta / Tuo tiedot<ChevronIcon/></MenuItem>                
+        <MenuItem onClick={() => handleOpenDataManagement('delete')}>Poista tiedot<ChevronIcon/></MenuItem>
         <MenuHeader>Tietoja</MenuHeader>     
         <MenuItem>Versio: {programVersion}</MenuItem>
       </MenuList>

@@ -114,22 +114,32 @@ export const updateProductField = async (id, field, value) => {
   await dbUpdateProduct(id, product);
 };
 
-// Tietokannan kopionti 
+//Tietokannan tyhjennys
+export const deleteAllData = async (data) => {
+  await clearDatabase();  
+};
+
+// Tietokantaan tiedot
 export const importData = async (data) => {
   await clearDatabase();
   await importDataToDatabase(data);
 };
 
+// Tietokannan tiedot haetaan
 export const exportData = async () => {
-  //const data = await getDatabaseContents();
   const data = await exportDataFromDatabase();
   return data;
 };
 
+
+
+// TODO tätä ei käytetä täältä, on suoraan UI:llä. 
+// Jos haettaisiin pub hakemistosta, käytettäisiin fetc, mutta reititys pitäisi huolehtia...
 export const loadExampleData = async () => {
   // Oletetaan, että esimerkkiaineisto on tallennettu tiedostoon
-  const response = await fetch('/path/to/exampleData.json');
+  const response = await fetch('/path/to/exampleData.json'); 
   const data = await response.json();
   await clearDatabase();
   await importDataToDatabase(data);
 };
+

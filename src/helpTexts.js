@@ -67,14 +67,16 @@ const helpTexts = {
       ),
     deleteDB: (
       <>
-        <b>Poista tiedot...</b>
-        <br />
-        Sovelluksen kaikki data on tallennettu selaimen muistiin.
-        <br />
-        Tiedot poistetaan selaimen muistista ja niitä ei voi palauttaa.
-        <br />
-        Ennen poistamista kysytään vielä varmistus, haluatko varmasti poistaa.
-        <br />
+        <p>
+        Sovelluksen kaikki data on tallennettu selaimen muistiin. Mikäli haluat poistaa koko sovelluksen, on hyvä tehdä ensin tämä tietojen poisto.
+        </p>
+        <p>
+        Tiedot poistetaan selaimen muistista ja niitä ei voi palauttaa, ellet ole ottanut varmuuskopita "Vie tiedot" toiminnolla.
+        </p>
+        <p>
+        Ennen poistamista kysytään vielä varmistus, haluatko varmasti poistaa.        
+        </p>
+
       </>
     ),
     // Lisää tarvittaessa muita sivuja...
