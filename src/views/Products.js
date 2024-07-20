@@ -190,8 +190,8 @@ const Products = ({ refresh = false, categoryId }) => {
       return acc;
     }, []);
 
-  // Add products with no category under 'Uncategorized' at the top
-  const uncategorizedProducts = products.filter(product => !product.categoryId);
+  // Lisätään ylimmäksi tuotteet, joilla ei ole kategoriaa.
+  const uncategorizedProducts = products.filter(product => !product.categoryId || !categories.some(category => category.id === product.categoryId));
   if (uncategorizedProducts.length > 0) {
     groupedProducts.unshift({
       id: 'uncategorized',

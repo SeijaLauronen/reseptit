@@ -141,8 +141,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     return acc;
   }, []);
 
-  // Add products with no category under 'Uncategorized'
-  const uncategorizedProducts = products.filter(product => !product.categoryId);
+  // Lisätään tuotteet, joilla ei ole kategoriaa tai kategoriaId ei löydy kategorioista.
+  const uncategorizedProducts = products.filter(product => !product.categoryId || !categories.some(category => category.id === product.categoryId));
   if (uncategorizedProducts.length > 0) {
     groupedProducts.unshift({
       id: 'uncategorized',
