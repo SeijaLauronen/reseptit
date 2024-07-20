@@ -27,11 +27,3 @@ export const getDB = async () => {
   const db = await initDB();
   return db;
 };
-
-export const clearDB = async () => {
-  const db = await getDB();
-  await db.clear('categories');
-  await db.clear('products');
-  await db.clear('recipes');
-  await db.clear('days');
-};

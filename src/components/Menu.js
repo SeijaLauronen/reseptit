@@ -7,7 +7,7 @@ import Info from './Info';
 import { GroupRight } from './Container';
 import DataManagement from '../DataManagement';
 
-const programVersion = '2024-07-19: 1.164';
+const programVersion = '2024-07-20: 1.167';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -69,6 +69,16 @@ const MenuItem = styled.li`
     border-bottom: none;
   }
 
+`;
+
+const MenuItemText = styled.div`  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+  border-bottom: 1px solid #ddd;
 `;
 
 const MenuIcon = styled.div`
@@ -147,8 +157,9 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
         <MenuItem onClick={() => handleOpenDataManagement('export')}>Varmuuskopioi / Vie tiedot<ChevronIcon/></MenuItem>
         <MenuItem onClick={() => handleOpenDataManagement('import')}>Palauta / Tuo tiedot<ChevronIcon/></MenuItem>                
         <MenuItem onClick={() => handleOpenDataManagement('delete')}>Poista tiedot<ChevronIcon/></MenuItem>
-        <MenuHeader>Tietoja</MenuHeader>     
-        <MenuItem>Versio: {programVersion}</MenuItem>
+        <MenuHeader>Tietoja</MenuHeader>  
+        <MenuItemText>Sovellus: Ostokset</MenuItemText>
+        <MenuItemText>Versio: {programVersion}</MenuItemText>
       </MenuList>
       <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
         {infoMessage}

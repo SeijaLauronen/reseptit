@@ -1,5 +1,5 @@
 // dbUtils.js
-import { getDB, clearDB } from './database';
+import { getDB } from './database';
 const STORE_NAMES = ['categories', 'products']; // Määritä taulujen nimet, TODO kumpaanko näm laitetaan, on myös database.js
 
 //TODO eri taulujen operaatioit voisi yhdistää lähettämällä taulun nimen ja tietueen parametirnä
