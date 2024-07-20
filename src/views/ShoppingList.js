@@ -66,6 +66,12 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     fetchData();
   }, [refresh]);
 
+  useEffect(() => {
+    if (isPrintOpen) {
+      const listText = buildShoppingListText();
+      setShoppingListText(listText);
+    }
+  }, [isPrintOpen, products, selectedProducts]);
 
   const handleToggleSelect = async (id) => {
     try {
@@ -83,6 +89,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
       const product = await getProductById(id);
       product.selected = !product.selected;
       await updateProduct(id, product);  
+      fetchData();
     } catch (err) {
       setError(err.message);
     }
@@ -156,7 +163,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     groupedProducts.forEach(category => {
       listText += `${category.name}:\n`;
       category.products.forEach(product => {
-        listText += `- ${product.name} ${product.quantity || ''} ${product.unit || ''}\n`;
+        const prefix = selectedProducts.has(product.id) ? '*' : '-';
+        listText += `${prefix} ${product.name} ${product.quantity || ''} ${product.unit || ''}\n`;
       });
       listText += '\n';
     });
