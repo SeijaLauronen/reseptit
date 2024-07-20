@@ -99,6 +99,20 @@ export const ShareButton = styled(props => (
   }
 `;
 
+//TODO icon
+export const ImportButton = styled(props => (
+  <ButtonComponent defaultText="Kopioi" {...props} />
+))`
+  background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
+  &:hover {
+    background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
+  }
+  &:active,
+  &:focus {
+    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
+  }
+`;
+
 
 export const CancelButton = styled(props => (
   <ButtonComponent icon={faTimes} defaultText="Peruuta" {...props} />

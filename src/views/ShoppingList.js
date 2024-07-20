@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import Accordion from '../components/Accordion';
 import StickyBottom from '../components/StickyBottom';
 import StickyTop from '../components/StickyTop';
-import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton } from '../components/Button'; 
+import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton, ImportButton } from '../components/Button'; 
 import { ShoppingListItem } from '../components/Item';
 import Container, { SlideInContainerRight, ButtonGroup, FormContainer } from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
-import { getProducts, getProductById, getCategories,  updateProduct, updateProducts, getProductsOnShoppingList, updateProductField } from '../controller';
+import { getProducts, getProductById, getCategories, updateProduct, updateProducts, getProductsOnShoppingList, updateProductField, addCategory, addProduct } from '../controller';
 import Info from '../components/Info';
 import Toast from '../components/Toast'; 
 import DisabledOverlay from '../components/DisabledOverlay';
@@ -20,8 +20,10 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
   const [isPrintOpen, setIsPrintOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
   const [error, setError] = useState('');
   const [shoppingListText, setShoppingListText] = useState('');
+  const [importText, setImportText] = useState('');
 
   const handleOpenInfo = (message) => {
     if (message === 'print') {
@@ -46,6 +48,14 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     setIsPrintOpen(false);
   };
 
+  const handleOpenImport = () => {
+    setIsImportOpen(true);
+  };
+
+  const handleCloseImport = () => {
+    setIsImportOpen(false);
+  };
+
   const fetchData = async () => {
     try {        
       const allProducts = await getProducts();
@@ -57,9 +67,9 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
       const selected = new Set(shoppingListProducts.filter(product => product.selected).map(product => product.id));
       setSelectedProducts(selected);
-      } catch (err) {
-        setError(err.message);
-      }
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   useEffect(() => { 
@@ -175,6 +185,10 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     setShoppingListText(event.target.value);
   };
 
+  const handleImportTextAreaChange = (event) => {
+    setImportText(event.target.value);
+  };
+
   const handleCopy = (event) => {
     navigator.clipboard.writeText(shoppingListText);
     resetButtonState(event); // Button väri normaaliksi klikkauksen jälkeen
@@ -198,14 +212,75 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     button.blur();
   };
 
-  // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
+  //TODO tästä tulee vielä uutta lisättäessä Warning: Each child in a list should have a unique "key" prop.
+  const handleImport = async () => {
+    const lines = importText.split('\n');
+    let currentCategory = null;
+
+    for (const line of lines) {
+      if (line.trim() === '') continue;
+
+      const categoryMatch = line.match(/^(.+) \(\d+\):$/);
+      if (categoryMatch) {
+        const categoryName = categoryMatch[1];
+        if (categoryName === "Ei kategoriaa") {
+          currentCategory = null;
+        } else {
+          let category = categories.find(cat => cat.name === categoryName);
+          if (!category) {
+            const categoryId = await addCategory({ name: categoryName });
+            category = { id: categoryId, name: categoryName };
+            setCategories(prevCategories => [...prevCategories, category]);
+          }
+          currentCategory = category;
+        }
+      } else if (currentCategory || (line.startsWith('-') || line.startsWith('*'))) {
+        //TODO tämä muuten kuin regexillä?
+        //const itemMatch = line.match(/^([\*\-])(.+?)(?:\s+(\d+)(?:\s+(\w+))?)?$/);//Muuten ok, mutta lopussa tyhjiäUnnecessary escape character: \* Unnecessary escape character: \-
+        //const itemMatch = line.match(/^([\*\-])\s*(.+?)(?:\s+(\d+))?(?:\s+(\w+))?$/);//Luulin että ääkkösongelma, tämän piti ratkaista...
+        const itemMatch = line.match(/^([\*\-])\s*(.+?)(?:\s+(\d+))?(?:\s+(\w+))?\s*$/); //lopusta tyhjät pois
+        if (itemMatch) {
+          const [, prefix, name, quantity, unit] = itemMatch;
+          const categoryId = currentCategory ? currentCategory.id : null;
+          const trimmedName = name.trim();
+          
+          let product = products.find(prod => prod.name === trimmedName && prod.categoryId === categoryId);
+          if (!product) {
+            product = await addProduct({
+              name: trimmedName,
+              categoryId: categoryId,
+              quantity: quantity || null,
+              unit: unit || null,
+              onShoppingList: true,
+              selected: prefix === '*',
+            });
+            setProducts(prevProducts => [...prevProducts, product]);
+          } else {
+            await updateProduct(product.id, {
+              ...product,
+              quantity: quantity || product.quantity,
+              unit: unit || product.unit,
+              onShoppingList: true,
+              selected: prefix === '*',
+            });
+          }
+        }
+      }
+    }
+
+    setImportText('');
+    handleCloseImport();
+    fetchData();
+  };
+
+// transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
     <>
     { error && (
         <Toast message={error} onClose={() => setError('')} />
       )}
 
-      <DisabledOverlay $isDisabled={isPrintOpen}>
+      <DisabledOverlay $isDisabled={isPrintOpen || isImportOpen}>
       <Container $isMenuOpen={isMenuOpen} $isPrintOpen={isPrintOpen}>
          <StickyTop> 
             <b>Ostoslista</b>
@@ -248,11 +323,12 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                 disabled={selectedProducts.size === 0 }
                 onClick={handleRemoveSelected}
               >
-                Poista valitut listalta
+                Poista valitut
               </OkButton>
             </GroupLeft>
-            <GroupRight>              
-              <PrimaryButton onClick={handleOpenPrint}>Tulostettava lista</PrimaryButton>                        
+            <GroupRight>   
+              <PrimaryButton onClick={handleOpenImport}>Tuo lista</PrimaryButton>             
+              <ShareButton onClick={handleOpenPrint}>Jaa lista</ShareButton>                                      
             </GroupRight>
           </StickyBottom>
         </DisabledOverlay>
@@ -272,6 +348,24 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             <GroupLeft>
               <CopyButton onClick={(event) => handleCopy(event)}>Kopioi leikepöydälle</CopyButton>                    
               <ShareButton onClick={(event) => handleShare(event)}>Jaa lista</ShareButton>   
+            </GroupLeft>
+          </ButtonGroup>
+        </FormContainer>
+      </SlideInContainerRight>
+      
+      <SlideInContainerRight $isOpen={isImportOpen}>
+        <CloseButtonComponent onClick={handleCloseImport}></CloseButtonComponent>
+        <FormContainer>      
+          <textarea       
+            value={importText}
+            onChange={handleImportTextAreaChange}
+            rows="20"
+            cols="40"
+            placeholder="Liitä ostoslista tähän..."
+          />
+          <ButtonGroup>
+            <GroupLeft>
+              <PrimaryButton onClick={handleImport}>Tuo lista</PrimaryButton>
             </GroupLeft>
           </ButtonGroup>
         </FormContainer>

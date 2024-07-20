@@ -60,8 +60,20 @@ const helpTexts = {
           Voit ruksata keräämäsi tuotteet ja poistaa ne ostoslistalta. Tuotteet eivät poistu tuotelistalta.
           </p>
           <p>
-          Tulostettavan tekstimuotoisen listan voit kopioida leikepöydälle tai jakaa viestinä.          
+          Jaa painikkeesta listan voit jakaa tekstimuotoisena tai kopioida leikepöydälle.          
           </p>
+          <p>
+          Tuo painikkeella listan voit tuoda sellaisenaan, jos olet saanut sen tällä sovelluksena jaettuna. Puuttuvat kategoriat ja tuotteet lisätään.
+          Jos lista kirjoitetaan käsin, tarvitsee tuotteen eteen laittaa '-' merkki. Tällöin ne menevät "Ei kategoriaa" alle. Esimerkiksi:
+          </p>
+          <pre>
+          -Maito <br/> 
+          -Leipää <br/>
+          -Appelsiini 5 kpl <br/>
+          </pre>
+          
+
+
           
         </>
       ),

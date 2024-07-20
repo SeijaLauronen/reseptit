@@ -39,7 +39,8 @@ export const addCategory = async (category) => {
   if (error) {
     throw new Error(error);
   }
-  await dbAddCategory(category);
+  const addedId = await dbAddCategory(category);
+  return addedId;
 };
 
 export const updateCategory = async (id, updatedCategory) => {

@@ -22,7 +22,8 @@ export const addCategory = async (category) => {
     const db = await getDB();
     const tx = db.transaction('categories', 'readwrite');
     const store = tx.objectStore('categories');    
-    await store.add(category);
+    const addedId = await store.add(category);
+    return addedId;
   } catch (err) {
     console.error('Error adding category:', err);
     throw new Error('Virhe lisättäessä kategoriaa: ' + err);
