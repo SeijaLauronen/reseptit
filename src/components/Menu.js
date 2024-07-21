@@ -7,7 +7,7 @@ import Info from './Info';
 import { GroupRight } from './Container';
 import DataManagement from '../DataManagement';
 
-const programVersion = '2024-07-21: 1.171';
+const programVersion = '2024-07-21: 1.172';
 
 const MenuContainer = styled.div`
   position: fixed;

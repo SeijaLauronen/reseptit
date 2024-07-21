@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import Accordion from '../components/Accordion';
 import StickyBottom from '../components/StickyBottom';
 import StickyTop from '../components/StickyTop';
@@ -14,7 +13,8 @@ import Toast from '../components/Toast';
 import DisabledOverlay from '../components/DisabledOverlay';
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]); //ostolistalla olevat tuotteet
+  const [allProducts, setAllProducts] = useState([]); //kaikki tuotteet
   const [categories, setCategories] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState(new Set());
   const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -24,6 +24,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [error, setError] = useState('');
   const [shoppingListText, setShoppingListText] = useState('');
   const [importText, setImportText] = useState('');
+  const noCategoryName = "Ei kategoriaa";
 
   const handleOpenInfo = (message) => {
     if (message === 'print') {
@@ -60,11 +61,10 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     try {        
       const allProducts = await getProducts();
       const allCategories = await getCategories();
-
-      const shoppingListProducts = allProducts.filter(product => product.onShoppingList);     
+      const shoppingListProducts = allProducts.filter(product => product.onShoppingList);  
+      setAllProducts(allProducts);   
       setProducts(shoppingListProducts);
       setCategories(allCategories);
-
       const selected = new Set(shoppingListProducts.filter(product => product.selected).map(product => product.id));
       setSelectedProducts(selected);
     } catch (err) {
@@ -164,8 +164,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   if (uncategorizedProducts.length > 0) {
     groupedProducts.unshift({
       id: 'uncategorized',
-      heading: `Ei kategoriaa (${uncategorizedProducts.length})`,
-      name: `Ei kategoriaa`,
+      heading: noCategoryName + ` (${uncategorizedProducts.length})`,
+      name: noCategoryName,
       products: uncategorizedProducts,
     });
   }
@@ -224,7 +224,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     
       if (line.endsWith(':')) {
         const categoryName = line.slice(0, -1).trim();
-        if (categoryName === "Ei kategoriaa") {
+        if (categoryName === noCategoryName) {
           currentCategory = null;
         } else {
           let category = categories.find(cat => cat.name === categoryName);
@@ -271,7 +271,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         const categoryId = currentCategory ? currentCategory.id : null;
         const trimmedName = name.trim();
     
-        let product = products.find(prod => prod.name === trimmedName && prod.categoryId === categoryId);
+        let product = allProducts.find(prod => prod.name === trimmedName && prod.categoryId === categoryId);
         if (!product) {
           product = await importProduct({
             name: trimmedName,
