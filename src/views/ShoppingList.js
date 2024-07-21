@@ -7,10 +7,11 @@ import { ShoppingListItem } from '../components/Item';
 import Container, { SlideInContainerRight, ButtonGroup, FormContainer } from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
-import { getProducts, getProductById, getCategories, updateProduct, updateProducts, getProductsOnShoppingList, updateProductField, addCategory, importProduct, importCategory } from '../controller';
+import { getProducts, getProductById, getCategories, updateProduct, updateProducts, getProductsOnShoppingList, updateProductField } from '../controller';
 import Info from '../components/Info';
 import Toast from '../components/Toast'; 
 import DisabledOverlay from '../components/DisabledOverlay';
+import {importShoppinglistData} from '../utils/dataUtils';
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]); //ostolistalla olevat tuotteet
@@ -214,92 +215,18 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     button.blur();    
   };
 
-  //TODO tästä tulee vielä uutta lisättäessä Warning: Each child in a list should have a unique "key" prop.
   const handleImport = async () => {
-    const lines = importText.split('\n');
-    let currentCategory = null;
-
-    for (const line of lines) {
-      if (line.trim() === '') continue;
-    
-      if (line.endsWith(':')) {
-        const categoryName = line.slice(0, -1).trim();
-        if (categoryName === noCategoryName) {
-          currentCategory = null;
-        } else {
-          let category = categories.find(cat => cat.name === categoryName);
-          if (!category) {
-            category = await importCategory({ name: categoryName });
-            setCategories(prevCategories => [...prevCategories, category]);
-          }
-          currentCategory = category;
-        }
-      } else {
-        const trimmedLine = line.trim();
-        let prefix = '-';
-        let content = trimmedLine;
-
-        if (trimmedLine.startsWith('*') || trimmedLine.startsWith('-')) {
-          prefix = trimmedLine[0];
-          content = trimmedLine.slice(1).trim();
-        }
-
-        let name = content;
-        let quantity = '';
-        let unit = '';
-
-        const parts = content.split(' ');
-
-        // Try to find the last part that is a combination of number and letters
-        for (let i = parts.length - 1; i >= 0; i--) {
-          const match = parts[i].match(/^(\d+)(\D+)$/);
-          if (match) {
-            quantity = match[1];
-            unit = match[2];
-            name = parts.slice(0, i).join(' ');
-            break;
-          } else if (!isNaN(parts[i])) {
-            quantity = parts[i];
-            name = parts.slice(0, i).join(' ');
-            if (i + 1 < parts.length) {
-              unit = parts[i + 1];
-            }
-            break;
-          }
-        }
-    
-        const categoryId = currentCategory ? currentCategory.id : null;
-        const trimmedName = name.trim();
-    
-        let product = allProducts.find(prod => prod.name === trimmedName && prod.categoryId === categoryId);
-        if (!product) {
-          product = await importProduct({
-            name: trimmedName,
-            categoryId: categoryId,
-            quantity: quantity || null,
-            unit: unit || null,
-            onShoppingList: true,
-            selected: prefix === '*',
-          });
-          setProducts(prevProducts => [...prevProducts, product]);
-        } else {
-          await updateProduct(product.id, {
-            ...product,
-            quantity: quantity || product.quantity,
-            unit: unit || product.unit,
-            onShoppingList: true,
-            selected: prefix === '*',
-          });
-        }
-      }
+    try {
+      const { addedCategories, addedProducts, updatedProducts } = await importShoppinglistData(importText, categories, allProducts, noCategoryName);
+      fetchData(); 
+      setImportText('');
+      handleCloseImport();
+    } catch (err) {
+      setError(err.message);
     }
-    
-
-    setImportText('');
-    handleCloseImport();
-    fetchData();
   };
-
+  
+  
 // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
     <>
