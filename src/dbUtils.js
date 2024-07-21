@@ -30,6 +30,18 @@ export const addCategory = async (category) => {
   }
 };
 
+export const getCategoryById = async (id) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('categories', 'readonly');
+    const store = tx.objectStore('categories');
+    return await store.get(id);
+  } catch (err) {
+    console.error('Error fetching category by ID:', err);
+    throw new Error('Virhe haettaessa kategoriaa ID:llä: ' + err);
+  }
+};
+
 export const updateCategory = async (id, updatedCategory) => {
   try {
     const db = await getDB();

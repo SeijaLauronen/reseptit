@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import Accordion from '../components/Accordion';
 import StickyBottom from '../components/StickyBottom';
 import StickyTop from '../components/StickyTop';
-import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton, ImportButton } from '../components/Button'; 
+import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton } from '../components/Button'; 
 import { ShoppingListItem } from '../components/Item';
 import Container, { SlideInContainerRight, ButtonGroup, FormContainer } from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
-import { getProducts, getProductById, getCategories, updateProduct, updateProducts, getProductsOnShoppingList, updateProductField, addCategory, addProduct } from '../controller';
+import { getProducts, getProductById, getCategories, updateProduct, updateProducts, getProductsOnShoppingList, updateProductField, addCategory, importProduct, importCategory } from '../controller';
 import Info from '../components/Info';
 import Toast from '../components/Toast'; 
 import DisabledOverlay from '../components/DisabledOverlay';
@@ -151,7 +151,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     if (categoryProducts.length > 0) {
       acc.push({
         id: category.id,
-        name: `${category.name} (${categoryProducts.length})`,
+        heading: `${category.name} (${categoryProducts.length})`,
+        name: `${category.name}`,
         products: categoryProducts,
       });
     }
@@ -163,7 +164,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   if (uncategorizedProducts.length > 0) {
     groupedProducts.unshift({
       id: 'uncategorized',
-      name: `Ei kategoriaa (${uncategorizedProducts.length})`,
+      heading: `Ei kategoriaa (${uncategorizedProducts.length})`,
+      name: `Ei kategoriaa`,
       products: uncategorizedProducts,
     });
   }
@@ -209,7 +211,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   //TODO yritetään palauttaa painikkeiden väri klikkauksen jälkeen, ei toimi
   const resetButtonState = (event) => {
     const button = event.currentTarget;
-    button.blur();
+    button.blur();    
   };
 
   //TODO tästä tulee vielä uutta lisättäessä Warning: Each child in a list should have a unique "key" prop.
@@ -219,54 +221,79 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
     for (const line of lines) {
       if (line.trim() === '') continue;
-
-      const categoryMatch = line.match(/^(.+) \(\d+\):$/);
-      if (categoryMatch) {
-        const categoryName = categoryMatch[1];
+    
+      if (line.endsWith(':')) {
+        const categoryName = line.slice(0, -1).trim();
         if (categoryName === "Ei kategoriaa") {
           currentCategory = null;
         } else {
           let category = categories.find(cat => cat.name === categoryName);
           if (!category) {
-            const categoryId = await addCategory({ name: categoryName });
-            category = { id: categoryId, name: categoryName };
+            category = await importCategory({ name: categoryName });
             setCategories(prevCategories => [...prevCategories, category]);
           }
           currentCategory = category;
         }
-      } else if (currentCategory || (line.startsWith('-') || line.startsWith('*'))) {
-        //TODO tämä muuten kuin regexillä?
-        //const itemMatch = line.match(/^([\*\-])(.+?)(?:\s+(\d+)(?:\s+(\w+))?)?$/);//Muuten ok, mutta lopussa tyhjiäUnnecessary escape character: \* Unnecessary escape character: \-
-        //const itemMatch = line.match(/^([\*\-])\s*(.+?)(?:\s+(\d+))?(?:\s+(\w+))?$/);//Luulin että ääkkösongelma, tämän piti ratkaista...
-        const itemMatch = line.match(/^([\*\-])\s*(.+?)(?:\s+(\d+))?(?:\s+(\w+))?\s*$/); //lopusta tyhjät pois
-        if (itemMatch) {
-          const [, prefix, name, quantity, unit] = itemMatch;
-          const categoryId = currentCategory ? currentCategory.id : null;
-          const trimmedName = name.trim();
-          
-          let product = products.find(prod => prod.name === trimmedName && prod.categoryId === categoryId);
-          if (!product) {
-            product = await addProduct({
-              name: trimmedName,
-              categoryId: categoryId,
-              quantity: quantity || null,
-              unit: unit || null,
-              onShoppingList: true,
-              selected: prefix === '*',
-            });
-            setProducts(prevProducts => [...prevProducts, product]);
-          } else {
-            await updateProduct(product.id, {
-              ...product,
-              quantity: quantity || product.quantity,
-              unit: unit || product.unit,
-              onShoppingList: true,
-              selected: prefix === '*',
-            });
+      } else {
+        const trimmedLine = line.trim();
+        let prefix = '-';
+        let content = trimmedLine;
+
+        if (trimmedLine.startsWith('*') || trimmedLine.startsWith('-')) {
+          prefix = trimmedLine[0];
+          content = trimmedLine.slice(1).trim();
+        }
+
+        let name = content;
+        let quantity = '';
+        let unit = '';
+
+        const parts = content.split(' ');
+
+        // Try to find the last part that is a combination of number and letters
+        for (let i = parts.length - 1; i >= 0; i--) {
+          const match = parts[i].match(/^(\d+)(\D+)$/);
+          if (match) {
+            quantity = match[1];
+            unit = match[2];
+            name = parts.slice(0, i).join(' ');
+            break;
+          } else if (!isNaN(parts[i])) {
+            quantity = parts[i];
+            name = parts.slice(0, i).join(' ');
+            if (i + 1 < parts.length) {
+              unit = parts[i + 1];
+            }
+            break;
           }
+        }
+    
+        const categoryId = currentCategory ? currentCategory.id : null;
+        const trimmedName = name.trim();
+    
+        let product = products.find(prod => prod.name === trimmedName && prod.categoryId === categoryId);
+        if (!product) {
+          product = await importProduct({
+            name: trimmedName,
+            categoryId: categoryId,
+            quantity: quantity || null,
+            unit: unit || null,
+            onShoppingList: true,
+            selected: prefix === '*',
+          });
+          setProducts(prevProducts => [...prevProducts, product]);
+        } else {
+          await updateProduct(product.id, {
+            ...product,
+            quantity: quantity || product.quantity,
+            unit: unit || product.unit,
+            onShoppingList: true,
+            selected: prefix === '*',
+          });
         }
       }
     }
+    
 
     setImportText('');
     handleCloseImport();
@@ -286,7 +313,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             <b>Ostoslista</b>
          </StickyTop> 
         {groupedProducts.map(category => (
-          <Accordion key={category.id} title={category.name} defaultExpanded={true}>
+          <Accordion key={category.id} title={category.heading} defaultExpanded={true}>
             {category.products.map(product => (
               <ShoppingListItem key={product.id}>
                 <input

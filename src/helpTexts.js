@@ -57,24 +57,44 @@ const helpTexts = {
           Tuotteet näytetään kategorioitten mukaisessa järjestyksessä, jonka voit asettaa kategoriat-sivulla.
           </p>
           <p>
-          Voit ruksata keräämäsi tuotteet ja poistaa ne ostoslistalta. Tuotteet eivät poistu tuotelistalta.
+          Voit ruksata keräämäsi tuotteet ja <b>poistaa</b> ne ostoslistalta. Tuotteet eivät poistu tuotelistalta.
           </p>
           <p>
-          Jaa painikkeesta listan voit jakaa tekstimuotoisena tai kopioida leikepöydälle.          
+          <b>Jaa</b> painikkeesta listan voit jakaa tekstimuotoisena tai kopioida leikepöydälle.          
           </p>
           <p>
-          Tuo painikkeella listan voit tuoda sellaisenaan, jos olet saanut sen tällä sovelluksena jaettuna. Puuttuvat kategoriat ja tuotteet lisätään.
-          Jos lista kirjoitetaan käsin, tarvitsee tuotteen eteen laittaa '-' merkki. Tällöin ne menevät "Ei kategoriaa" alle. Esimerkiksi:
+          <b>Tuo</b> painikkeella voit tuoda tällä sovelluksella jaetun listan tai itse kirjoitetun listan.
+          Puuttuvat kategoriat ja tuotteet lisätään. Kategoriariviksi tulkitaan rivi, joka loppuu ":".
+          Voit antaa tuotteet myös ilman kategoriaa jolloin ne menevät "Ei kategoriaa" alle. Esimerkkejä:
           </p>
           <pre>
-          -Maito <br/> 
-          -Leipää <br/>
-          -Appelsiini 5 kpl <br/>
+          Hevi:<br/>
+            - Appelsiini 5 kpl <br/>
+            - Kurkku 1 <br/>
+          Juomat: <br/>
+            -Maito <br/> 
+          Leivät:<br/>
+            *Leipää 2kpl <br/>          
           </pre>
+          <p>tai:</p>
+          <pre>
+          Hevi:<br/>
+          Appelsiini 5 kpl <br/>
+          Kurkku 1 <br/>
+          Juomat: <br/>
+          Maito <br/> 
+          Leivät:<br/>
+          Leipää 2kpl <br/>          
+          </pre>
+          <p>tai:</p>
+          <pre>
+          Kurkku 1 <br/>
+          Maito <br/> 
+          Leipää 2kpl <br/>
+          Appelsiini 5 kpl <br/>
           
-
-
-          
+          </pre>
+                    
         </>
       ),
     deleteDB: (
