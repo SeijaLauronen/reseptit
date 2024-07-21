@@ -230,6 +230,7 @@ const Products = ({ refresh = false, categoryId }) => {
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - offset; // Adjust 100px for the top margin
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      setHandledProductId(null);
     }
   }, [handledProductId, products]);
 
