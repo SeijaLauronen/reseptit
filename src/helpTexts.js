@@ -92,7 +92,13 @@ const helpTexts = {
           Maito <br/> 
           Leipää 2kpl <br/>
           Appelsiini 5 kpl <br/>
-          
+          </pre>
+          <p>tai:</p>
+          <pre>
+          1Kurkku  <br/>
+          Maito <br/> 
+          2kpl Leipää  <br/>
+          5 kpl Appelsiini<br/>
           </pre>
                     
         </>

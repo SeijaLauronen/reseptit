@@ -315,7 +315,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             onChange={handleImportTextAreaChange}
             rows="20"
             cols="40"
-            placeholder="Liitä ostoslista tähän..."
+            placeholder="Liitä tai kirjoita ostoslista tähän..."
           />
           <ButtonGroup>
             <GroupLeft>
