@@ -161,11 +161,18 @@ export const deleteProduct = async (id) => {
 // TODO käytetään vakioita, luupataan se
 export const clearDatabase = async () => {
   const db = await getDB();
-  await db.clear('categories');
-  await db.clear('products');
-  await db.clear('recipes');
-  await db.clear('days');
-
+  if (db.objectStoreNames.contains('categories')) {
+    await db.clear('categories');
+  }
+  if (db.objectStoreNames.contains('products')) {
+    await db.clear('products');
+  }
+  if (db.objectStoreNames.contains('recipes')) {
+    await db.clear('recipes');
+  }
+  if (db.objectStoreNames.contains('days')) {
+    await db.clear('days');
+  }
 };
 
 
