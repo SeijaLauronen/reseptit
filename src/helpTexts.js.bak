@@ -7,7 +7,7 @@ const helpTexts = {
           <b>Ostokset</b>       
           <p>           
             3 näkymää: kategoriat, tuotteet ja ostoslista. 
-            Näkymiä vaihdat alalaidan painikkeista. Kullekin näkymälle on oma infotekstinsä.
+            Näkymiä vaihdat alalaidan painikkeista.
           </p>
           
           
