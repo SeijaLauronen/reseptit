@@ -47,39 +47,46 @@
         const parts = content.split(' ');
   
         if (parts.length === 2 && !isNaN(parts[0])) {
-          // If the line has two parts and the first part is a number
+          // Jos rivillä on kaksi osaa ja ensimmäinen osa on numero
           quantity = parts[0];
           name = parts[1];
         } else if (parts.length === 1) {
-          // Check if the single part is a combination of number and letters
+          // Tarkistetaan, onko yksittäinen osa numeroiden ja kirjainten yhdistelmä
           const match = parts[0].match(/^(\d+)(\D+)$/);
           if (match) {
             quantity = match[1];
             name = match[2];
           }
         } else {
-          // Try to find the first part that is a combination of number and letters at the start
-          const match = parts[0].match(/^(\d+)(\D*)$/);
-          if (match) {
-            quantity = match[1];
-            unit = match[2] || '';
-            name = parts.slice(1).join(' ');
+          // Jos ensimmäinen osa on numero ja osia on enemmän kuin kaksi
+          if (!isNaN(parts[0])) {
+            quantity = parts[0];
+            unit = parts[1];
+            name = parts.slice(2).join(' ');
           } else {
-            // Try to find the last part that is a combination of number and letters
-            for (let i = parts.length - 1; i >= 0; i--) {
-              const match = parts[i].match(/^(\d+)(\D*)$/);
-              if (match) {
-                quantity = match[1];
-                unit = match[2] || '';
-                name = parts.slice(0, i).join(' ');
-                break;
-              } else if (!isNaN(parts[i])) {
-                quantity = parts[i];
-                name = parts.slice(0, i).join(' ');
-                if (i + 1 < parts.length) {
-                  unit = parts[i + 1];
+            // Yritetään löytää ensimmäinen osa, joka on yhdistelmä numeroa ja kirjaimia
+            const match = parts[0].match(/^(\d+)(\D*)$/);
+            if (match) {
+              quantity = match[1];
+              unit = match[2] || '';
+              name = parts.slice(1).join(' ');
+            } else {
+              // Yritetään löytää viimeinen osa, joka on yhdistelmä numeroa ja kirjaimia
+              for (let i = parts.length - 1; i >= 0; i--) {
+                const match = parts[i].match(/^(\d+)(\D*)$/);
+                if (match) {
+                  quantity = match[1];
+                  unit = match[2] || '';
+                  name = parts.slice(0, i).join(' ');
+                  break;
+                } else if (!isNaN(parts[i])) {
+                  quantity = parts[i];
+                  name = parts.slice(0, i).join(' ');
+                  if (i + 1 < parts.length) {
+                    unit = parts[i + 1];
+                  }
+                  break;
                 }
-                break;
               }
             }
           }
@@ -119,6 +126,7 @@
       updatedProducts
     };
   };
+  
   
   
   
