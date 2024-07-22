@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/reseptit/static/css/main.e6c13ad2.css",
-    "main.js": "/reseptit/static/js/main.58da3ae7.js",
+    "main.js": "/reseptit/static/js/main.c1a9207c.js",
     "index.html": "/reseptit/index.html",
     "main.e6c13ad2.css.map": "/reseptit/static/css/main.e6c13ad2.css.map",
-    "main.58da3ae7.js.map": "/reseptit/static/js/main.58da3ae7.js.map"
+    "main.c1a9207c.js.map": "/reseptit/static/js/main.c1a9207c.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.58da3ae7.js"
+    "static/js/main.c1a9207c.js"
   ]
 }
