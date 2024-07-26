@@ -6,11 +6,10 @@ import { PrimaryButton , CancelButton, CloseButtonComponent, OkButton, DeleteBut
 import { BoldedParagraph } from './components/StyledParagraph';
 import exampleData from './exampleData.json';
 import helpTexts from './helpTexts';
+import ConfirmDialog from './components/ConfirmDialog';
 
-//TODO siirrä toimintoja täältä dataUtilsiin...
 //TODO siirrä tekstit täältä erilliseen tiedostoon
-//TODO window.confirmin tilalle oma dialogi
-// TODO BoldedParagraph teksteineen kopmponentiksi
+//TODO BoldedParagraph teksteineen kopmponentiksi
 
 const TextArea = styled.textarea`
   width: 80%;
@@ -71,6 +70,7 @@ const DataManagement = ({isOpen, action, onClose}) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState('');
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
 
   const handleFileRead = async (event) => {
     const file = event.target.files[0];
@@ -81,12 +81,19 @@ const DataManagement = ({isOpen, action, onClose}) => {
       const content = JSON.parse(e.target.result);
       setData(JSON.stringify(content, null, 2));
       setShowTextArea(true);
-      if (window.confirm('Haluatko varmasti tuoda tiedot? Tämä poistaa nykyiset tiedot tietokannasta.')) {
-        setLoading(true);
-        await handleImportData(content);
-        setLoading(false);
-        setSuccess(true);        
-      }
+
+      setConfirmDialog({
+        isOpen: true,
+        message: 'Haluatko varmasti tuoda tiedot? Tämä poistaa nykyiset tiedot tietokannasta.',
+        onConfirm: async () => {
+          setLoading(true);
+          await handleImportData(content);
+          setLoading(false);
+          setSuccess(true);
+          setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
+        },
+      });
+
     };
     reader.readAsText(file);
   };
@@ -116,22 +123,33 @@ const DataManagement = ({isOpen, action, onClose}) => {
 
 
   const handleLoadExample = async () => {
-    if (window.confirm('Haluatko varmasti ladata esimerkkiaineiston? Tämä poistaa nykyiset tiedot.')) {
+
+    setConfirmDialog({
+      isOpen: true,
+      message: 'Haluatko varmasti ladata esimerkkiaineiston? Tämä poistaa nykyiset tiedot.',
+      onConfirm: async () => {
         setLoading(true);
         await handleImportData(exampleData);
         setLoading(false);
         setSuccess(true);
-    }
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
+      },
+    });
   };
 
   const handleDeleteAllData = async () => {
-    if (window.confirm('Haluatko varmasti poistaa kaikki tiedot?')) {
+    setConfirmDialog({
+      isOpen: true,
+      message: 'Haluatko varmasti poistaa kaikki tiedot?',
+      onConfirm: async () => {
         setLoading(true);
         await deleteAllData();
         setLoading(false);
         setSuccess(true);
-    }
-  }
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
+      },
+    });
+  };
 
   return (
     <SlideInContainerRight $isOpen={isOpen}>
@@ -145,9 +163,12 @@ const DataManagement = ({isOpen, action, onClose}) => {
             <p>Voit tuoda tiedot tiedostosta. Kaikki nykyiset tiedot poistetaan ja tilalle ladataan tiedot valitsemastasi tiedostosta </p>
             <p>Mikäli olet jo tallentanut tietoja ohjelmalla, suositellaan varmuuskopion ottamista "Vie tiedot" toiminnolla.</p>
 
+            {!success && 
             <FileInputContainer>
               <FileInput type="file" onChange={handleFileRead} />
             </FileInputContainer>
+            }
+
             {loading && <BoldedParagraph>Ladataan...</BoldedParagraph>}
             {success && !loading && <BoldedParagraph>{selectedFileName} lataus onnistui!</BoldedParagraph>}
 
@@ -195,7 +216,7 @@ const DataManagement = ({isOpen, action, onClose}) => {
                 <TextArea value={data} readOnly />
             )}
             <ButtonGroup>
-                <PrimaryButton onClick={handleLoadExample}>Lataa</PrimaryButton>
+                {!success && <PrimaryButton onClick={handleLoadExample}>Lataa</PrimaryButton>}
                 <GroupRight>
                 {!success && <CancelButton onClick={() => onClose(false)}/> }
                 {success && !loading && <OkButton onClick={() => onClose(true)}/>} 
@@ -211,10 +232,9 @@ const DataManagement = ({isOpen, action, onClose}) => {
             {helpTexts['deleteDB']}
             {loading && <BoldedParagraph>Poistetaan...</BoldedParagraph>}
             {success && !loading && <BoldedParagraph>Poisto onnistui!</BoldedParagraph>}
-            
-            
+                        
             <ButtonGroup>
-                <DeleteButton onClick={handleDeleteAllData}>Poista kaikki tiedot</DeleteButton>
+                {!success && <DeleteButton onClick={handleDeleteAllData}>Poista kaikki tiedot</DeleteButton>}
                 <GroupRight>
                 {!success && <CancelButton onClick={() => onClose(false)}/> }
                 {success && !loading && <OkButton onClick={() => onClose(true)}/>} 
@@ -224,6 +244,14 @@ const DataManagement = ({isOpen, action, onClose}) => {
         )}
 
     </FormContainer>
+
+    <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog({ isOpen: false, message: '', onConfirm: null })}
+      />
+
     </SlideInContainerRight>
 
   );

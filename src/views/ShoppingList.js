@@ -4,7 +4,7 @@ import StickyBottom from '../components/StickyBottom';
 import StickyTop from '../components/StickyTop';
 import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton } from '../components/Button'; 
 import { ShoppingListItem } from '../components/Item';
-import Container, { SlideInContainerRight, ButtonGroup, FormContainer } from '../components/Container';
+import Container, { SlideInContainerRight, ButtonGroup } from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
 import { getProducts, getProductById, getCategories, updateProduct, updateProducts, getProductsOnShoppingList, updateProductField } from '../controller';
@@ -291,11 +291,11 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
       <SlideInContainerRight $isOpen={isPrintOpen}>
       <CloseButtonComponent onClick={handleClosePrint}></CloseButtonComponent>
-        <FormContainer>      
+            
           <textarea       
             value={shoppingListText}
             onChange={handleTextAreaChange}
-            rows="20"
+            rows="18"
             cols="40"
           />
           <ButtonGroup>
@@ -304,16 +304,15 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
               <ShareButton onClick={(event) => handleShare(event)}>Jaa lista</ShareButton>   
             </GroupLeft>
           </ButtonGroup>
-        </FormContainer>
+        
       </SlideInContainerRight>
       
       <SlideInContainerRight $isOpen={isImportOpen}>
-        <CloseButtonComponent onClick={handleCloseImport}></CloseButtonComponent>
-        <FormContainer>      
+        <CloseButtonComponent onClick={handleCloseImport}></CloseButtonComponent>            
           <textarea       
             value={importText}
             onChange={handleImportTextAreaChange}
-            rows="20"
+            rows="16"
             cols="40"
             placeholder="Liitä tai kirjoita ostoslista tähän..."
           />
@@ -321,8 +320,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             <GroupLeft>
               <PrimaryButton onClick={handleImport}>Tuo lista</PrimaryButton>
             </GroupLeft>
-          </ButtonGroup>
-        </FormContainer>
+          </ButtonGroup>        
       </SlideInContainerRight>
       {isInfoOpen} {
         <Info isOpen={isInfoOpen} onCancel={handleCloseInfo} >

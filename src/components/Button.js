@@ -124,6 +124,16 @@ export const CancelButton = styled(props => (
   }
 `;
 
+export const ConfirmDangerButton = styled(props => (
+  <ButtonComponent defaultText="Kyllä" {...props} />
+))`
+  background-color: #f44336;
+  &:hover {
+    background-color: #d32f2f;
+  }
+  margin-left: auto;
+`;
+
 export const DeleteButton = styled(props => (
   <ButtonComponent icon={faTrash} defaultText="Poista" {...props} />
 ))`
