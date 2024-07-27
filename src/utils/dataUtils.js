@@ -78,6 +78,10 @@
                   quantity = match[1];
                   unit = match[2] || '';
                   name = parts.slice(0, i).join(' ');
+                  //yllä oleva löytää myös, jos numero ja sana erikseen kirjoitettu, otetaan sana osa unit:ksi
+                  if (i === parts.length - 2 ){
+                    unit = parts[i + 1]
+                  }
                   break;
                 } else if (!isNaN(parts[i])) {
                   quantity = parts[i];
