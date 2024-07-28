@@ -1,8 +1,81 @@
-// utils/dataUtils.js
   import { importCategory, importProduct, updateProduct } from '../controller';
 
-  export const importData = async (data) => {
-    // Import data to database
+  //TODO tämä totetutus eri tavalla, selkeämmäksi
+  export const parseProductLine = (line) => {
+    const trimmedLine = line.trim();
+    let prefix = '-';
+    let content = trimmedLine;
+  
+    if (trimmedLine.startsWith('*') || trimmedLine.startsWith('-')) {
+      prefix = trimmedLine[0];
+      content = trimmedLine.slice(1).trim();
+    }
+  
+    let name = content;
+    let quantity = '';
+    let unit = '';
+  
+    const parts = content.split(' ');
+  
+    if (parts.length === 2 && !isNaN(parts[0])) {
+      // Jos rivillä on kaksi osaa ja ensimmäinen osa on numero
+      quantity = parts[0];
+      name = parts[1];
+    } else if (parts.length === 1) {
+      // Tarkistetaan, onko yksittäinen osa numeroiden ja kirjainten yhdistelmä
+      const match = parts[0].match(/^(\d+)(\D+)$/);
+      if (match) {
+        quantity = match[1];
+        name = match[2];
+      }
+    } else {
+      // Jos ensimmäinen osa on numero ja osia on enemmän kuin kaksi
+      if (!isNaN(parts[0])) {
+        quantity = parts[0];
+        unit = parts[1];
+        name = parts.slice(2).join(' ');
+      } else {
+        // Yritetään löytää ensimmäinen osa, joka on yhdistelmä numeroa ja kirjaimia
+        const match = parts[0].match(/^(\d+)(\D*)$/);
+        if (match) {
+          quantity = match[1];
+          unit = match[2] || '';
+          name = parts.slice(1).join(' ');
+          if (parts.length === 3 && parts[1] !== '') {
+            unit = parts[1];
+          }
+        } else {
+          for (let i = parts.length - 1; i >= 0; i--) {
+            // Yritetään löytää viimeinen osa, joka on yhdistelmä numeroa ja kirjaimia
+            const match = parts[i].match(/^(\d+)(\D*)$/);
+            if (match) {
+              quantity = match[1];
+              unit = match[2] || '';
+              name = parts.slice(0, i).join(' ');
+              //yllä oleva löytää myös, jos numero ja sana erikseen kirjoitettu, otetaan sana osa unit:ksi
+              if (i === parts.length - 2) {
+                unit = parts[i + 1];
+              }
+              break;
+            } else if (!isNaN(parts[i])) {
+              quantity = parts[i];
+              name = parts.slice(0, i).join(' ');
+              if (i + 1 < parts.length) {
+                unit = parts[i + 1];
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
+  
+    return {
+      prefix,
+      name: name.trim(),
+      quantity,
+      unit
+    };
   };
   
   export const importShoppinglistData = async (importText, categories, allProducts, noCategoryName) => {
@@ -31,70 +104,7 @@
           currentCategory = category;
         }
       } else {
-        const trimmedLine = line.trim();
-        let prefix = '-';
-        let content = trimmedLine;
-  
-        if (trimmedLine.startsWith('*') || trimmedLine.startsWith('-')) {
-          prefix = trimmedLine[0];
-          content = trimmedLine.slice(1).trim();
-        }
-  
-        let name = content;
-        let quantity = '';
-        let unit = '';
-  
-        const parts = content.split(' ');
-  
-        if (parts.length === 2 && !isNaN(parts[0])) {
-          // Jos rivillä on kaksi osaa ja ensimmäinen osa on numero
-          quantity = parts[0];
-          name = parts[1];
-        } else if (parts.length === 1) {
-          // Tarkistetaan, onko yksittäinen osa numeroiden ja kirjainten yhdistelmä
-          const match = parts[0].match(/^(\d+)(\D+)$/);
-          if (match) {
-            quantity = match[1];
-            name = match[2];
-          }
-        } else {
-          // Jos ensimmäinen osa on numero ja osia on enemmän kuin kaksi
-          if (!isNaN(parts[0])) {
-            quantity = parts[0];
-            unit = parts[1];
-            name = parts.slice(2).join(' ');
-          } else {
-            // Yritetään löytää ensimmäinen osa, joka on yhdistelmä numeroa ja kirjaimia
-            const match = parts[0].match(/^(\d+)(\D*)$/);
-            if (match) {
-              quantity = match[1];
-              unit = match[2] || '';
-              name = parts.slice(1).join(' ');
-            } else {
-              // Yritetään löytää viimeinen osa, joka on yhdistelmä numeroa ja kirjaimia
-              for (let i = parts.length - 1; i >= 0; i--) {
-                const match = parts[i].match(/^(\d+)(\D*)$/);
-                if (match) {
-                  quantity = match[1];
-                  unit = match[2] || '';
-                  name = parts.slice(0, i).join(' ');
-                  //yllä oleva löytää myös, jos numero ja sana erikseen kirjoitettu, otetaan sana osa unit:ksi
-                  if (i === parts.length - 2 ){
-                    unit = parts[i + 1]
-                  }
-                  break;
-                } else if (!isNaN(parts[i])) {
-                  quantity = parts[i];
-                  name = parts.slice(0, i).join(' ');
-                  if (i + 1 < parts.length) {
-                    unit = parts[i + 1];
-                  }
-                  break;
-                }
-              }
-            }
-          }
-        }
+        const { prefix, name, quantity, unit } = parseProductLine(line);
   
         const categoryId = currentCategory ? currentCategory.id : null;
         const trimmedName = name.trim();
@@ -131,31 +141,7 @@
     };
   };
   
-  
-  
-  
 
-  export const exportData = async () => {
-    // Export data from database
-  };
-  
-  export const loadExampleData = async () => {
-    // Load example data from a file or predefined object
-  };
-  
-  export const clearDatabase = async () => {
-    // Clear the database
-  };
-  
-  export const getDatabaseContents = async () => {
-    // Get contents of the database to check if it's empty
-  };
-  
-  export const insertData = async (data) => {
-    // Insert data into the database
-  };
-  
-  // Utility functions
   export const selectFile = async () => {
     return new Promise((resolve, reject) => {
       const input = document.createElement('input');
