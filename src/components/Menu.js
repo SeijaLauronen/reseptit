@@ -6,8 +6,10 @@ import { CloseButtonComponent, MenuHelpButton } from './Button';
 import Info from './Info';
 import { GroupRight } from './Container';
 import DataManagement from '../DataManagement';
+import { getBrowserName } from '../utils/browserUtils';
+import DeviceInfo from './DeviceInfo';
 
-const programVersion = '2024-07-28: 1.181';
+const programVersion = '2024-08-07: 1.182';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -103,7 +105,8 @@ const MenuHeader = styled.h3`
 const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
   
   const [isInfoOpen, setIsInfoOpen] = useState(false);
-  const [infoMessage, setInfoMessage] = useState('');
+  //const [infoMessage, setInfoMessage] = useState('');
+  const [infoMessage, setInfoMessage] = useState(null);
   const [showDataManagement, setShowDataManagement] = useState(false);
   const [dataManagementAction, setDataManagementAction] = useState('');
 
@@ -136,9 +139,14 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
       onToggleMenu(false);
     }
   };
-
-        
  
+
+
+  const TestComponent = () => {
+    return <DeviceInfo />;
+  };
+
+
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle, esim $isOpen
   // tai käytetään pieniä kirjaimia kuten fillspace eikä fillSpace
   return (
@@ -159,11 +167,18 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
         <MenuItem onClick={() => handleOpenDataManagement('delete')}>Poista tiedot<ChevronIcon/></MenuItem>
         <MenuHeader>Tietoja</MenuHeader>  
         <MenuItemText>Sovellus: Ostokset</MenuItemText>
-        <MenuItemText>Versio: {programVersion}</MenuItemText>
+        <MenuItemText>Versio: {programVersion}</MenuItemText>                
+        <MenuItem onClick={() => handleOpenInfo(<DeviceInfo></DeviceInfo>)}>Selaimesi: {getBrowserName()} <ChevronIcon /></MenuItem>                
       </MenuList>
+
+    
+
+
       <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
         {infoMessage}
       </Info>
+      
+      
       <DataManagement 
         isOpen={showDataManagement}  
         action={dataManagementAction} 

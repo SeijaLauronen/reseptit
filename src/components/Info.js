@@ -19,8 +19,8 @@ const Info = ({ isOpen, onCancel, children }) => {
   return (    
     <SlideInContainerRight $isOpen={isOpen}>
       <CloseButtonComponent onClick={onCancel}></CloseButtonComponent>
-      <ScrollableFormContainer>      
-        {children}        
+      <ScrollableFormContainer>                 
+        {React.isValidElement(children) ? children : <div>{children}</div>}
       </ScrollableFormContainer>
       <ButtonGroup>
           <GroupRight>
