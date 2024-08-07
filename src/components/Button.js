@@ -46,10 +46,10 @@ cursor: pointer;
 background-color: white;
 `;
 
-export const CloseButtonComponent =({...props}) => (
-    <CloseButton >      
-          <FontAwesomeIcon icon={faTimes} size="1x" onClick={props.onClick} />
-    </CloseButton>
+export const CloseButtonComponent = ({ ...props }) => (
+  <CloseButton >
+    <FontAwesomeIcon icon={faTimes} size="1x" onClick={props.onClick} />
+  </CloseButton>
 );
 
 
@@ -64,13 +64,17 @@ export const SaveButton = styled(props => (
 `;
 
 export const OkButton = styled(props => (
-    <ButtonComponent icon={faCheck} defaultText="OK" {...props} />
-  ))`
+  <ButtonComponent icon={faCheck} defaultText="OK" {...props} />
+))`
     background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
     &:hover {
       background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
     }
-  `;
+    &:active,
+    &:focus {
+    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
+}
+`;
 
 export const CopyButton = styled(props => (
   <ButtonComponent icon={faCopy} defaultText="Kopioi" {...props} />
@@ -154,8 +158,8 @@ export const AddButton = styled(props => (
 `;
 
 export const HelpButton = styled(props => (
-    <ButtonComponent icon={faQuestion} defaultText="" {...props} />
-  ))`
+  <ButtonComponent icon={faQuestion} defaultText="" {...props} />
+))`
     background-color: #007BFF;
     &:hover {
       background-color: #0056b3;

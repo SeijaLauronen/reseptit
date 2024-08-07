@@ -9,7 +9,7 @@ import DataManagement from '../DataManagement';
 import { getBrowserName } from '../utils/browserUtils';
 import DeviceInfo from './DeviceInfo';
 
-const programVersion = '2024-08-07: 1.182';
+const programVersion = '2024-08-07: 1.183';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -140,12 +140,6 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
     }
   };
  
-
-
-  const TestComponent = () => {
-    return <DeviceInfo />;
-  };
-
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle, esim $isOpen
   // tai käytetään pieniä kirjaimia kuten fillspace eikä fillSpace
