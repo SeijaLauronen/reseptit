@@ -74,79 +74,6 @@ export const PasteButton = (props) => <IconButtonGreen icon={faPaste} defaultTex
 export const ShareButton = (props) => <IconButtonGreen icon={faShare} defaultText="Jaa" {...props} />;
 export const AddButton = (props) => <IconButtonGreen icon={faPlus} defaultText="" {...props} />;
 
-export const AddButtonXYZ = styled(props => (
-  <ButtonComponent icon={faPlus} defaultText="" {...props} />
-))`
-  background-color: ${props => (props.disabled ? '#ccc' : '#4caf50')};
-  &:hover {
-    background-color: ${props => (props.disabled ? '#ccc' : '#388e3c')};
-  }
-`;
-
-export const SaveButtonXYZ = styled(props => (
-  <ButtonComponent icon={faSave} defaultText="Tallenna" {...props} />
-))`
-  background-color: #4caf50;
-  &:hover {
-    background-color: #388e3c;
-  }
-`;
-
-export const OkButtonXYZ = styled(props => (
-  <ButtonComponent icon={faCheck} defaultText="OK" {...props} />
-))`
-    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
-    &:hover {
-      background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
-    }
-    &:active,
-    &:focus {
-    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
-}
-`;
-
-export const CopyButtonXYZ = styled(props => (
-  <ButtonComponent icon={faCopy} defaultText="Kopioi" {...props} />
-))`
-  background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
-  
-  &:hover {
-    background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
-  }
-  &:active,
-  &:focus {
-    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
-  }
-`;
-
-export const PasteButtonXYZ = styled(props => (
-  <ButtonComponent icon={faPaste} defaultText="Liitä" {...props} />
-))`
-  background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
-  
-  &:hover {
-    background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
-  }
-  &:active,
-  &:focus {
-    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
-  }
-`;
-
-export const ShareButtonXYZ = styled(props => (
-  <ButtonComponent icon={faShare} defaultText="Kopioi" {...props} />
-))`
-  background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
-  &:hover {
-    background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#388e3c')};
-  }
-  &:active,
-  &:focus {
-    background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#4caf50')};
-  }
-`;
-
-
 export const CancelButton = styled(props => (
   <ButtonComponent icon={faTimes} defaultText="Peruuta" {...props} />
 ))`
@@ -176,7 +103,6 @@ export const DeleteButton = styled(props => (
   }
   margin-left: auto;
 `;
-
 
 
 export const HelpButton = styled(props => (
