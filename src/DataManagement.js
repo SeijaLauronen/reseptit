@@ -8,9 +8,7 @@ import exampleData from './exampleData.json';
 import helpTexts from './helpTexts';
 import ConfirmDialog from './components/ConfirmDialog';
 
-//TODO siirrä tekstit täältä erilliseen tiedostoon
-//TODO BoldedParagraph teksteineen kopmponentiksi
-//TODO showTextArea ei taida tehdä oikeasti mitään..
+//TODO BoldedParagraph teksteineen komponentiksi
 
 const TextArea = styled.textarea`
   width: 80%;
@@ -51,7 +49,6 @@ const FileInput = styled.input`
 const DataManagement = ({ isOpen, action, onClose }) => {
 
   const [data, setData] = useState('');
-  const [showTextArea, setShowTextArea] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState('');
@@ -63,7 +60,6 @@ const DataManagement = ({ isOpen, action, onClose }) => {
 
     if (isOpen) {
       setData('');
-      setShowTextArea(false);
       setLoading(false);
       setSuccess(false);
       setSelectedFileName('');
@@ -99,7 +95,6 @@ const DataManagement = ({ isOpen, action, onClose }) => {
 
       const content = JSON.parse(e.target.result);
       setData(JSON.stringify(content, null, 2));
-      setShowTextArea(true);      
 
       setConfirmDialog({
         isOpen: true,
@@ -134,12 +129,9 @@ const DataManagement = ({ isOpen, action, onClose }) => {
     link.click();
     document.body.removeChild(link);
     setLoading(false);
-    setSuccess(true);    
+    setSuccess(true);
     setSavedFilename(filename);
   };
-
-
-
 
   const handleLoadExample = async () => {
 
@@ -197,8 +189,8 @@ const DataManagement = ({ isOpen, action, onClose }) => {
     }
   };
 
-  const handleJsonCheckedChange = () => {    
-    setShowJsonTextArea(!showJsonTextArea) 
+  const handleJsonCheckedChange = () => {
+    setShowJsonTextArea(!showJsonTextArea)
   };
 
   const JsonCheckbox = () => {
@@ -206,8 +198,8 @@ const DataManagement = ({ isOpen, action, onClose }) => {
       <label>
         <input
           type="checkbox"
-          checked={showJsonTextArea}    
-          onChange={handleJsonCheckedChange}    
+          checked={showJsonTextArea}
+          onChange={handleJsonCheckedChange}
         />
         Näytä tiedot
       </label>
@@ -220,11 +212,8 @@ const DataManagement = ({ isOpen, action, onClose }) => {
 
       {action === 'import' && (
         <>
-
           <h2>Palauta tai tuo tiedot</h2>
-          <p>Voit tuoda tiedot tiedostosta. Kaikki nykyiset tiedot poistetaan ja tilalle ladataan tiedot valitsemastasi tiedostosta </p>
-          <p>Mikäli olet jo tallentanut tietoja ohjelmalla, suositellaan varmuuskopion ottamista "Vie tiedot" toiminnolla.</p>
-
+          {helpTexts['importDB']}
           {!success &&
             <FileInputContainer>
               <FileInput type="file" onChange={handleFileRead} />
@@ -247,15 +236,18 @@ const DataManagement = ({ isOpen, action, onClose }) => {
       {action === 'export' && (
         <>
           <h2>Varmuuskopioi tai vie tiedot</h2>
-          <p>Voit tallentaa kaikki sovelluksen tiedot tiedostoon tai kopioida ne leikepöydälle.</p>
-          <JsonCheckbox/>
+          {helpTexts['exportDB']}
+          <JsonCheckbox />
           {showJsonTextArea &&
-            <TextArea
-              value={data}
-              onChange={handleExportJsonChange}
-              rows="18"
-              cols="40"
-            />
+            <>
+              {helpTexts['showExportDB']}
+              <TextArea
+                value={data}
+                onChange={handleExportJsonChange}
+                rows="18"
+                cols="40"
+              />
+            </>
           }
 
           {loading && <BoldedParagraph>Ladataan...</BoldedParagraph>}
@@ -280,14 +272,10 @@ const DataManagement = ({ isOpen, action, onClose }) => {
         <>
 
           <h2>Lataa esimerkkiainesto </h2>
-          <p>Voit ladata esimerkkiaineiston. Kaikki nykyiset tiedot poistetaan.</p>
-          <p>Mikäli olet jo tallentanut tietoja ohjelmalla, suositellaan varmuuskopion ottamista "Vie tiedot" toiminnolla.</p>
+          {helpTexts['loadExampleDB']}
           {loading && <BoldedParagraph>Ladataan...</BoldedParagraph>}
           {success && !loading && <BoldedParagraph>Lataus onnistui!</BoldedParagraph>}
 
-          {showTextArea && (
-            <TextArea value={data} readOnly />
-          )}
           <ButtonGroup>
             {!success && <PrimaryButton onClick={handleLoadExample}>Lataa</PrimaryButton>}
             <GroupRight>
