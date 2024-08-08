@@ -137,9 +137,16 @@ const helpTexts = {
   importDB: (
     <>
       <p>
-        Voit tuoda tiedot tiedostosta. Kaikki nykyiset tiedot poistetaan ja tilalle ladataan tiedot valitsemastasi tiedostosta </p>
+        Voit tuoda tiedot tiedostosta tai tekstikentästä. Kaikki nykyiset tiedot poistetaan ja tilalle ladataan tiedot tiedostosta tai tekstikentästä. </p>
       <p>
-        Mikäli olet jo tallentanut tietoja ohjelmalla, suositellaan varmuuskopion ottamista "Vie tiedot" toiminnolla.
+        Mikäli olet jo tallentanut tietoja ohjelmalla, suositellaan ensin varmuuskopion ottamista.
+      </p>
+    </>
+  ),
+  showImportDB: (
+    <>
+      <p>
+        Liitä tai kirjoita tähän tiedot json-muotoisena:
       </p>
     </>
   ),

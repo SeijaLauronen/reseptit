@@ -21,7 +21,7 @@ export const addCategory = async (category) => {
   try {
     const db = await getDB();
     const tx = db.transaction('categories', 'readwrite');
-    const store = tx.objectStore('categories');    
+    const store = tx.objectStore('categories');
     const addedId = await store.add(category);
     return addedId;
   } catch (err) {
@@ -176,19 +176,52 @@ export const clearDatabase = async () => {
 };
 
 
-export const importDataToDatabase = async (data) => {
-  const db = await getDB();
-  for (const storeName of STORE_NAMES) {
-    const tx = db.transaction(storeName, 'readwrite');
-    const store = tx.objectStore(storeName);
-    await store.clear(); // Tyhjennä taulu ennen uusien tietojen lisäämistä
-    const items = data[storeName] || [];
-    for (const item of items) {
-      await store.add(item);
+export const importDataToDatabaseXYZ = async (data) => {
+  try {
+    const db = await getDB();
+    for (const storeName of STORE_NAMES) {
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      await store.clear(); // Tyhjennä taulu ennen uusien tietojen lisäämistä
+      const items = data[storeName] || [];
+      for (const item of items) {
+        await store.add(item);
+      }
+      await tx.done;
     }
-    await tx.done;
+  } catch (err) {
+    console.error('Error importing data:', err);
+    throw new Error('Virhe tietojen lataamisessa: ' + err);
   }
 };
+
+export const importDataToDatabase = async (data) => {
+  try {
+    const db = await getDB();
+    for (const storeName of STORE_NAMES) {
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      await store.clear(); // Tyhjennä taulu ennen uusien tietojen lisäämistä
+      const items = data[storeName] || [];
+      for (const item of items) {
+        try {
+          await store.add(item);
+        } catch (err) {
+          console.error(`Error adding item to store ${storeName}:`, err);
+          throw new Error(`Virhe lisättäessä tietoa tauluun ${storeName}: ${err.message}`);
+        }
+      }
+      await tx.done;
+    }
+  } catch (err) {
+    console.error('Error importing data:', err);
+    throw new Error('Virhe tietojen lataamisessa: ' + err.message);
+  }
+};
+
+
+
+
 
 export const exportDataFromDatabase = async () => {
   const db = await getDB();

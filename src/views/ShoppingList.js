@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import Accordion from '../components/Accordion';
 import StickyBottom from '../components/StickyBottom';
 import StickyTop from '../components/StickyTop';
-import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton } from '../components/Button'; 
+import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton } from '../components/Button';
 import { ShoppingListItem } from '../components/Item';
 import Container, { SlideInContainerRight, ButtonGroup } from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
 import { InputQuantity, InputUnit } from '../components/Input';
 import { getProducts, getProductById, getCategories, updateProduct, updateProducts, getProductsOnShoppingList, updateProductField } from '../controller';
 import Info from '../components/Info';
-import Toast from '../components/Toast'; 
+import Toast from '../components/Toast';
 import DisabledOverlay from '../components/DisabledOverlay';
-import {importShoppinglistData} from '../utils/dataUtils';
+import { importShoppinglistData } from '../utils/dataUtils';
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]); //ostolistalla olevat tuotteet
@@ -30,22 +30,22 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const handleOpenInfo = (message) => {
     if (message === 'print') {
       const listText = buildShoppingListText();
-      setShoppingListText(listText);        
-    } 
+      setShoppingListText(listText);
+    }
     setInfoMessage(message);
     setIsInfoOpen(true);
   };
-  
+
   const handleCloseInfo = () => {
     setIsInfoOpen(false);
   };
 
-  const handleOpenPrint = () => {    
+  const handleOpenPrint = () => {
     const listText = buildShoppingListText();
-    setShoppingListText(listText);            
+    setShoppingListText(listText);
     setIsPrintOpen(true);
   };
-  
+
   const handleClosePrint = () => {
     setIsPrintOpen(false);
   };
@@ -59,11 +59,11 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   };
 
   const fetchData = async () => {
-    try {        
+    try {
       const allProducts = await getProducts();
       const allCategories = await getCategories();
-      const shoppingListProducts = allProducts.filter(product => product.onShoppingList);  
-      setAllProducts(allProducts);   
+      const shoppingListProducts = allProducts.filter(product => product.onShoppingList);
+      setAllProducts(allProducts);
       setProducts(shoppingListProducts);
       setCategories(allCategories);
       const selected = new Set(shoppingListProducts.filter(product => product.selected).map(product => product.id));
@@ -73,7 +73,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     fetchData();
   }, [refresh]);
 
@@ -99,7 +99,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
       const product = await getProductById(id);
       product.selected = !product.selected;
-      await updateProduct(id, product);  
+      await updateProduct(id, product);
       fetchData();
     } catch (err) {
       setError(err.message);
@@ -111,7 +111,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
       // Hae kaikki valitut tuotteet id:n perusteella
       const selectedProductIds = Array.from(selectedProducts);
       const selectedProductsArray = await Promise.all(selectedProductIds.map(id => getProductById(id)));
-  
+
       // Päivitä valitut tuotteet 
       // Luo uuden olion, joka sisältää kaikki alkuperäisen product-olion kentät ja niiden arvot, jonne päivitetään uudet arvot
       const updatedProducts = selectedProductsArray.map(product => ({
@@ -119,16 +119,16 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         onShoppingList: false,
         selected: false
       }));
-  
+
       await updateProducts(updatedProducts);
-  
+
       // Hae päivitetyt tuotteet ostoslistalta ja aseta tilaan
       const shoppingListProducts = await getProductsOnShoppingList();
       setProducts(shoppingListProducts);
-  
+
       // Tyhjennä valitut tuotteet
       setSelectedProducts(new Set());
-    } catch (err) {      
+    } catch (err) {
       setError(err.message);
     }
   };
@@ -139,7 +139,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
       // Hae päivitetyt tuotteet ostoslistalta ja aseta tilaan
       const shoppingListProducts = await getProductsOnShoppingList();
       setProducts(shoppingListProducts);
-    } catch (err) {      
+    } catch (err) {
       setError(err.message);
     }
   };
@@ -203,7 +203,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         title: 'Ostoslista',
         text: shoppingListText,
       });
-    } else {      
+    } else {
       handleOpenInfo('Jakaminen ei ole tuettu tässä selaimessa.');
     }
     resetButtonState(event); // Button väri normaaliksi klikkauksen jälkeen
@@ -212,115 +212,115 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   //TODO yritetään palauttaa painikkeiden väri klikkauksen jälkeen, ei toimi
   const resetButtonState = (event) => {
     const button = event.currentTarget;
-    button.blur();    
+    button.blur();
   };
 
   const handleImport = async () => {
     try {
       const { addedCategories, addedProducts, updatedProducts } = await importShoppinglistData(importText, categories, allProducts, noCategoryName);
-      fetchData(); 
+      fetchData();
       setImportText('');
       handleCloseImport();
     } catch (err) {
       setError(err.message);
     }
   };
-  
-  
-// transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
+
+
+  // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
     <>
-    { error && (
+      {error && (
         <Toast message={error} onClose={() => setError('')} />
       )}
 
       <DisabledOverlay $isDisabled={isPrintOpen || isImportOpen}>
-      <Container $isMenuOpen={isMenuOpen} $isPrintOpen={isPrintOpen}>
-         <StickyTop> 
+        <Container $isMenuOpen={isMenuOpen} $isPrintOpen={isPrintOpen}>
+          <StickyTop>
             <b>Ostoslista</b>
-         </StickyTop> 
-        {groupedProducts.map(category => (
-          <Accordion key={category.id} title={category.heading} defaultExpanded={true}>
-            {category.products.map(product => (
-              <ShoppingListItem key={product.id}>
-                <input
-                  disabled={isPrintOpen}
-                  type="checkbox"
-                  checked={selectedProducts.has(product.id)}
-                  onChange={() => handleToggleSelect(product.id)}
-                />
-                <span>{product.name}</span>
-                <InputWrapper>
-                  <InputQuantity
+          </StickyTop>
+          {groupedProducts.map(category => (
+            <Accordion key={category.id} title={category.heading} defaultExpanded={true}>
+              {category.products.map(product => (
+                <ShoppingListItem key={product.id}>
+                  <input
                     disabled={isPrintOpen}
-                    type="number"
-                    value={product.quantity || ''}
-                    onChange={(e) => handleQuantityChange(product.id, e.target.value)}
-                    placeholder="Määrä"
+                    type="checkbox"
+                    checked={selectedProducts.has(product.id)}
+                    onChange={() => handleToggleSelect(product.id)}
                   />
-                  <InputUnit
-                    disabled={isPrintOpen}
-                    type="text"
-                    value={product.unit || ''}
-                    onChange={(e) => handleUnitChange(product.id, e.target.value)}
-                    placeholder="Yksikkö"
-                  />
-                </InputWrapper>
-              </ShoppingListItem>
-            ))}
-          </Accordion>
-        ))}
-        <DisabledOverlay $isDisabled={isPrintOpen}>
-          <StickyBottom>
-            <GroupLeft>
-              <OkButton
-                disabled={selectedProducts.size === 0 }
-                onClick={handleRemoveSelected}
-              >
-                Poista valitut
-              </OkButton>
-            </GroupLeft>
-            <GroupRight>   
-              <PrimaryButton onClick={handleOpenImport}>Tuo lista</PrimaryButton>             
-              <ShareButton onClick={handleOpenPrint}>Jaa lista</ShareButton>                                      
-            </GroupRight>
-          </StickyBottom>
-        </DisabledOverlay>
-      </Container>
+                  <span>{product.name}</span>
+                  <InputWrapper>
+                    <InputQuantity
+                      disabled={isPrintOpen}
+                      type="number"
+                      value={product.quantity || ''}
+                      onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                      placeholder="Määrä"
+                    />
+                    <InputUnit
+                      disabled={isPrintOpen}
+                      type="text"
+                      value={product.unit || ''}
+                      onChange={(e) => handleUnitChange(product.id, e.target.value)}
+                      placeholder="Yksikkö"
+                    />
+                  </InputWrapper>
+                </ShoppingListItem>
+              ))}
+            </Accordion>
+          ))}
+          <DisabledOverlay $isDisabled={isPrintOpen}>
+            <StickyBottom>
+              <GroupLeft>
+                <OkButton
+                  disabled={selectedProducts.size === 0}
+                  onClick={handleRemoveSelected}
+                >
+                  Poista valitut
+                </OkButton>
+              </GroupLeft>
+              <GroupRight>
+                <PrimaryButton onClick={handleOpenImport}>Tuo lista</PrimaryButton>
+                <ShareButton onClick={handleOpenPrint}>Jaa lista</ShareButton>
+              </GroupRight>
+            </StickyBottom>
+          </DisabledOverlay>
+        </Container>
       </DisabledOverlay>
 
       <SlideInContainerRight $isOpen={isPrintOpen}>
-      <CloseButtonComponent onClick={handleClosePrint}></CloseButtonComponent>
-            
-          <textarea       
-            value={shoppingListText}
-            onChange={handleTextAreaChange}
-            rows="18"
-            cols="40"
-          />
-          <ButtonGroup>
-            <GroupLeft>
-              <CopyButton onClick={(event) => handleCopy(event)}>Kopioi leikepöydälle</CopyButton>                    
-              <ShareButton onClick={(event) => handleShare(event)}>Jaa lista</ShareButton>   
-            </GroupLeft>
-          </ButtonGroup>
-        
+        <CloseButtonComponent onClick={handleClosePrint}></CloseButtonComponent>
+
+        <textarea
+          value={shoppingListText}
+          onChange={handleTextAreaChange}
+          rows="18"
+          cols="40"
+        />
+        <ButtonGroup>
+          <GroupLeft>
+            <CopyButton onClick={(event) => handleCopy(event)}>Kopioi leikepöydälle</CopyButton>
+            <ShareButton onClick={(event) => handleShare(event)}>Jaa lista</ShareButton>
+          </GroupLeft>
+        </ButtonGroup>
+
       </SlideInContainerRight>
-      
+
       <SlideInContainerRight $isOpen={isImportOpen}>
-        <CloseButtonComponent onClick={handleCloseImport}></CloseButtonComponent>            
-          <textarea       
-            value={importText}
-            onChange={handleImportTextAreaChange}
-            rows="16"
-            cols="40"
-            placeholder="Liitä tai kirjoita ostoslista tähän..."
-          />
-          <ButtonGroup>
-            <GroupLeft>
-              <PrimaryButton onClick={handleImport}>Tuo lista</PrimaryButton>
-            </GroupLeft>
-          </ButtonGroup>        
+        <CloseButtonComponent onClick={handleCloseImport}></CloseButtonComponent>
+        <textarea
+          value={importText}
+          onChange={handleImportTextAreaChange}
+          rows="16"
+          cols="40"
+          placeholder="Liitä tai kirjoita ostoslista tähän..."
+        />
+        <ButtonGroup>
+          <GroupLeft>
+            <PrimaryButton onClick={handleImport}>Tuo lista</PrimaryButton>
+          </GroupLeft>
+        </ButtonGroup>
       </SlideInContainerRight>
       {isInfoOpen} {
         <Info isOpen={isInfoOpen} onCancel={handleCloseInfo} >

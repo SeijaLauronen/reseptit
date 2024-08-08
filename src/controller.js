@@ -5,7 +5,12 @@ import { importDataToDatabase, exportDataFromDatabase, loadExampleDataToDatabase
 
 
 export const handleImportData = async (data) => {
-  return await importDataToDatabase(data);
+  try {
+    return await importDataToDatabase(data);
+  } catch (error) {
+    console.log("VIRHE:" + error.message)
+    throw error;
+  }
 };
 
 export const handleExportData = async () => {
@@ -19,7 +24,7 @@ export const handleLoadExample = async () => {
 
 
 
-const validateCategory = (category) => { 
+const validateCategory = (category) => {
   if (!category.name || category.name.trim() === '') {
     return 'Nimi on pakollinen tieto';
   }
@@ -27,11 +32,11 @@ const validateCategory = (category) => {
 };
 
 export const getCategories = async (sortByOrder = true) => {
-    const categories = await fetchCategories();
-    if (sortByOrder) {
-      return categories.sort((a, b) => a.order - b.order);
-    } 
-    return categories.sort((a, b) => a.name.localeCompare(b.name));  
+  const categories = await fetchCategories();
+  if (sortByOrder) {
+    return categories.sort((a, b) => a.order - b.order);
+  }
+  return categories.sort((a, b) => a.name.localeCompare(b.name));
 };
 
 export const addCategory = async (category) => {
@@ -53,7 +58,7 @@ export const importCategory = async (category) => {
   const newOrder = categories.length ? Math.max(...categories.map(cat => cat.order)) + 1 : 1;
   category.order = newOrder;
   const addedId = await dbAddCategory(category);
-  const addedCategory = await dbGetCategoryById(addedId);    
+  const addedCategory = await dbGetCategoryById(addedId);
   return addedCategory;
 };
 
@@ -64,32 +69,32 @@ export const updateCategory = async (id, updatedCategory) => {
   }
   await dbUpdateCategory(id, updatedCategory);
 };
- 
+
 export const deleteCategory = async (id) => {
   await dbDeleteCategory(id);
 };
 
 // Similar functions for products can be added here
 
-const validateProduct = (product) => { 
-    if (!product.name || product.name.trim() === '') {
-      return 'Nimi on pakollinen tieto';
-    }
-    return null;
+const validateProduct = (product) => {
+  if (!product.name || product.name.trim() === '') {
+    return 'Nimi on pakollinen tieto';
+  }
+  return null;
 };
 
 export const getProducts = async () => {
-    const products = await fetchProducts();
-    return products.sort((a, b) => a.name.localeCompare(b.name));  
+  const products = await fetchProducts();
+  return products.sort((a, b) => a.name.localeCompare(b.name));
 };
 
 export const addProduct = async (product) => {
-    const error = validateProduct(product);
-    if (error) {
-      throw new Error(error);
-    }
-    const addedId = await dbAddProduct(product);
-    return addedId;
+  const error = validateProduct(product);
+  if (error) {
+    throw new Error(error);
+  }
+  const addedId = await dbAddProduct(product);
+  return addedId;
 };
 
 export const importProduct = async (product) => {
@@ -98,17 +103,17 @@ export const importProduct = async (product) => {
     throw new Error(error);
   }
   const addedId = await dbAddProduct(product);
-  const importedProduct = await dbGetProductById(addedId); 
+  const importedProduct = await dbGetProductById(addedId);
   return importedProduct;
 };
 
 
 export const updateProduct = async (id, updatedProduct) => {
-    const error = validateProduct(updatedProduct);
-    if (error) {
-      throw new Error(error);
-    }
-    await dbUpdateProduct(id, updatedProduct);
+  const error = validateProduct(updatedProduct);
+  if (error) {
+    throw new Error(error);
+  }
+  await dbUpdateProduct(id, updatedProduct);
 };
 
 //TODO validointi tarvittaessa
@@ -117,12 +122,12 @@ export const updateProducts = async (products) => {
 };
 
 export const getProductById = async (id) => {
-  return await dbGetProductById(id);  
+  return await dbGetProductById(id);
 };
 
 
 export const deleteProduct = async (id) => {
-    await dbDeleteProduct(id);
+  await dbDeleteProduct(id);
 };
 
 export const getProductsOnShoppingList = async () => {
@@ -135,14 +140,14 @@ export const updateProductField = async (id, field, value) => {
   if (!product) {
     throw new Error('Product not found');
   }
-  
+
   product[field] = value;
   await dbUpdateProduct(id, product);
 };
 
 //Tietokannan tyhjennys
 export const deleteAllData = async (data) => {
-  await clearDatabase();  
+  await clearDatabase();
 };
 
 // Tietokantaan tiedot
@@ -163,7 +168,7 @@ export const exportData = async () => {
 // Jos haettaisiin pub hakemistosta, käytettäisiin fetc, mutta reititys pitäisi huolehtia...
 export const loadExampleData = async () => {
   // Oletetaan, että esimerkkiaineisto on tallennettu tiedostoon
-  const response = await fetch('/path/to/exampleData.json'); 
+  const response = await fetch('/path/to/exampleData.json');
   const data = await response.json();
   await clearDatabase();
   await importDataToDatabase(data);

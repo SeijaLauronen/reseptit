@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { handleImportData, handleExportData, deleteAllData } from './controller';
 import { SlideInContainerRight, ButtonGroup, GroupRight, GroupLeft } from './components/Container'
-import { PrimaryButton, CancelButton, CloseButtonComponent, OkButton, DeleteButton, CopyButton } from './components/Button';
+import { PrimaryButton, CancelButton, CloseButtonComponent, OkButton, DeleteButton, CopyButton, PasteButton } from './components/Button';
 import { BoldedParagraph } from './components/StyledParagraph';
 import exampleData from './exampleData.json';
 import helpTexts from './helpTexts';
 import ConfirmDialog from './components/ConfirmDialog';
+import Toast from './components/Toast';
+import MyErrorBoundary from './components/ErrorBoundary';
 
 //TODO BoldedParagraph teksteineen komponentiksi
 
@@ -55,6 +57,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
   const [showJsonTextArea, setShowJsonTextArea] = useState(false);
   const [savedFilename, setSavedFilename] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
 
@@ -64,6 +67,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
       setSuccess(false);
       setSelectedFileName('');
       setSavedFilename('');
+      setError('');
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -162,7 +166,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
     });
   };
 
-  const handleExportJsonChange = (event) => {
+  const handleJsonTextChange = (event) => {
     setData(event.target.value);
   };
 
@@ -170,6 +174,18 @@ const DataManagement = ({ isOpen, action, onClose }) => {
     navigator.clipboard.writeText(data);
   };
 
+  // async, koska palauttaa lupauksen (Promise)
+  const handlePaste = async (event) => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      setData(clipboardText);
+    } catch (err) {
+      setError('Leikepöydän lukeminen epäonnistui. \n' + err.message);
+    }
+  };
+
+  //TODO tämä ei saa kiinni virhettä ennenkuin se jo kaataa sivun, jos antaa esim samat avaimet tuotteille.
+  // Käytä errorbounderya
   const handleImportFromTextArea = async () => {
     try {
       const content = JSON.parse(data);
@@ -177,15 +193,21 @@ const DataManagement = ({ isOpen, action, onClose }) => {
         isOpen: true,
         message: 'Haluatko varmasti tuoda tiedot? Tämä poistaa nykyiset tiedot tietokannasta.',
         onConfirm: async () => {
-          setLoading(true);
-          await handleImportData(content);
-          setLoading(false);
-          setSuccess(true);
-          setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
+          try {
+            setLoading(true);
+            await handleImportData(content);
+            setLoading(false);
+            setSuccess(true);
+            setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
+          } catch (err) {
+            setLoading(false);
+            setError('Virhe tietojen tuomisessa: ' + err.message);
+            setConfirmDialog({ isOpen: false, message: '', onConfirm: null }); // Suljetaan dialogi virheen yhteydessä
+          }
         },
       });
-    } catch (error) {
-      alert('Virheellinen JSON-data.');
+    } catch (err) {
+      setError('Virheellinen JSON-data. \n' + err.message);
     }
   };
 
@@ -194,6 +216,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
   };
 
   const JsonCheckbox = () => {
+    const labelText = action === 'import' ? "Tuo tekstikentästä" : "Näytä tiedot";
     return (
       <label>
         <input
@@ -201,119 +224,173 @@ const DataManagement = ({ isOpen, action, onClose }) => {
           checked={showJsonTextArea}
           onChange={handleJsonCheckedChange}
         />
-        Näytä tiedot
+        {labelText}
       </label>
     )
   }
 
+  const jsonPlaceholder = `
+Malli json tekstistä:
+
+  {
+    "categories": [
+      {
+        "name": "Kategoria 1",
+        "order": 1,
+        "id": 1
+      }
+    ],
+    "products": [
+      {
+        "name": "Tuote 1",
+        "categoryId": 1,
+        "id": 1,
+      },
+      {
+        "name": "Tuote 2",
+        "categoryId": 1,
+        "id": 2
+      }
+    ]
+  }
+  `
+
   return (
-    <SlideInContainerRight $isOpen={isOpen}>
-      <CloseButtonComponent onClick={() => onClose(success && !loading)}></CloseButtonComponent>
-
-      {action === 'import' && (
-        <>
-          <h2>Palauta tai tuo tiedot</h2>
-          {helpTexts['importDB']}
-          {!success &&
-            <FileInputContainer>
-              <FileInput type="file" onChange={handleFileRead} />
-            </FileInputContainer>
-          }
-
-          {loading && <BoldedParagraph>Ladataan...</BoldedParagraph>}
-          {success && !loading && <BoldedParagraph>{selectedFileName} lataus onnistui!</BoldedParagraph>}
-
-          <ButtonGroup>
-            <GroupRight>
-              {!success && <CancelButton onClick={() => onClose(false)} />}
-              {success && !loading && <OkButton onClick={() => onClose(true)} />}
-            </GroupRight>
-          </ButtonGroup>
-
-        </>
+    <MyErrorBoundary>
+      {error && (
+        <Toast message={error} onClose={() => setError('')} />
       )}
 
-      {action === 'export' && (
-        <>
-          <h2>Varmuuskopioi tai vie tiedot</h2>
-          {helpTexts['exportDB']}
-          <JsonCheckbox />
-          {showJsonTextArea &&
-            <>
-              {helpTexts['showExportDB']}
-              <TextArea
-                value={data}
-                onChange={handleExportJsonChange}
-                rows="18"
-                cols="40"
-              />
-            </>
-          }
+      <SlideInContainerRight $isOpen={isOpen}>
+        <CloseButtonComponent onClick={() => onClose(success && !loading)}></CloseButtonComponent>
 
-          {loading && <BoldedParagraph>Ladataan...</BoldedParagraph>}
-          {success && !loading && <BoldedParagraph>Tiedot tallennettu tiedostoon: {savedFilename}.</BoldedParagraph>}
+        {action === 'import' && (
+          <>
+            <h2>Palauta tai tuo tiedot</h2>
+            {helpTexts['importDB']}
 
-          <ButtonGroup>
-            <GroupLeft>
-              <OkButton onClick={handleExport}>Tiedostoon</OkButton>
-              <CopyButton onClick={(event) => handleCopy(event)}>Kopioi</CopyButton>
-            </GroupLeft>
-            <GroupRight>
-              {!success && <CancelButton onClick={() => onClose(false)} />}
-              {success && !loading && <CancelButton onClick={() => onClose(false)}>Sulje</CancelButton>}
-            </GroupRight>
-          </ButtonGroup>
+            <JsonCheckbox />
+            {showJsonTextArea &&
+              <>
+                {helpTexts['showImportDB']}
+                <TextArea
+                  value={data}
+                  onChange={handleJsonTextChange}
+                  rows="18"
+                  cols="40"
+                  placeholder={jsonPlaceholder}
+                />
+              </>
+            }
 
-        </>
-      )}
+            {!success && !showJsonTextArea &&
+              <FileInputContainer>
+                <FileInput type="file" onChange={handleFileRead} />
+              </FileInputContainer>
+            }
+
+            {loading && <BoldedParagraph>Ladataan...</BoldedParagraph>}
+            {success && !loading && <BoldedParagraph>{selectedFileName} lataus onnistui!</BoldedParagraph>}
+
+            <ButtonGroup>
+              <GroupLeft>
+                <PasteButton onClick={(event) => handlePaste(event)}>Liitä</PasteButton>
+                <OkButton
+                  onClick={handleImportFromTextArea}
+                  disabled={!data || data.trim() === ''}  // Disabloi, jos `data` on tyhjä merkkijono
+                >
+                  Lataa tiedot
+                </OkButton>
+              </GroupLeft>
+              <GroupRight>
+                {!success && <CancelButton onClick={() => onClose(false)} />}
+                {success && !loading && <OkButton onClick={() => onClose(true)} />}
+              </GroupRight>
+            </ButtonGroup>
+
+          </>
+        )}
+
+        {action === 'export' && (
+          <>
+            <h2>Varmuuskopioi tai vie tiedot</h2>
+            {helpTexts['exportDB']}
+            <JsonCheckbox />
+            {showJsonTextArea &&
+              <>
+                {helpTexts['showExportDB']}
+                <TextArea
+                  value={data}
+                  onChange={handleJsonTextChange}
+                  rows="18"
+                  cols="40"
+                />
+              </>
+            }
+
+            {loading && <BoldedParagraph>Ladataan...</BoldedParagraph>}
+            {success && !loading && <BoldedParagraph>Tiedot tallennettu tiedostoon: {savedFilename}.</BoldedParagraph>}
+
+            <ButtonGroup>
+              <GroupLeft>
+                <OkButton onClick={handleExport}>Tiedostoon</OkButton>
+                <CopyButton onClick={(event) => handleCopy(event)}>Kopioi</CopyButton>
+              </GroupLeft>
+              <GroupRight>
+                {!success && <CancelButton onClick={() => onClose(false)} />}
+                {success && !loading && <CancelButton onClick={() => onClose(false)}>Sulje</CancelButton>}
+              </GroupRight>
+            </ButtonGroup>
+
+          </>
+        )}
 
 
-      {action === 'load' && (
-        <>
+        {action === 'load' && (
+          <>
 
-          <h2>Lataa esimerkkiainesto </h2>
-          {helpTexts['loadExampleDB']}
-          {loading && <BoldedParagraph>Ladataan...</BoldedParagraph>}
-          {success && !loading && <BoldedParagraph>Lataus onnistui!</BoldedParagraph>}
+            <h2>Lataa esimerkkiainesto </h2>
+            {helpTexts['loadExampleDB']}
+            {loading && <BoldedParagraph>Ladataan...</BoldedParagraph>}
+            {success && !loading && <BoldedParagraph>Lataus onnistui!</BoldedParagraph>}
 
-          <ButtonGroup>
-            {!success && <PrimaryButton onClick={handleLoadExample}>Lataa</PrimaryButton>}
-            <GroupRight>
-              {!success && <CancelButton onClick={() => onClose(false)} />}
-              {success && !loading && <OkButton onClick={() => onClose(true)} />}
-            </GroupRight>
-          </ButtonGroup>
-        </>
-      )}
+            <ButtonGroup>
+              {!success && <PrimaryButton onClick={handleLoadExample}>Lataa</PrimaryButton>}
+              <GroupRight>
+                {!success && <CancelButton onClick={() => onClose(false)} />}
+                {success && !loading && <OkButton onClick={() => onClose(true)} />}
+              </GroupRight>
+            </ButtonGroup>
+          </>
+        )}
 
-      {action === 'delete' && (
-        <>
+        {action === 'delete' && (
+          <>
 
-          <h2>Poista tiedot </h2>
-          {helpTexts['deleteDB']}
-          {loading && <BoldedParagraph>Poistetaan...</BoldedParagraph>}
-          {success && !loading && <BoldedParagraph>Poisto onnistui!</BoldedParagraph>}
+            <h2>Poista tiedot </h2>
+            {helpTexts['deleteDB']}
+            {loading && <BoldedParagraph>Poistetaan...</BoldedParagraph>}
+            {success && !loading && <BoldedParagraph>Poisto onnistui!</BoldedParagraph>}
 
-          <ButtonGroup>
-            {!success && <DeleteButton onClick={handleDeleteAllData}>Poista kaikki tiedot</DeleteButton>}
-            <GroupRight>
-              {!success && <CancelButton onClick={() => onClose(false)} />}
-              {success && !loading && <OkButton onClick={() => onClose(true)} />}
-            </GroupRight>
-          </ButtonGroup>
-        </>
-      )}
+            <ButtonGroup>
+              {!success && <DeleteButton onClick={handleDeleteAllData}>Poista kaikki tiedot</DeleteButton>}
+              <GroupRight>
+                {!success && <CancelButton onClick={() => onClose(false)} />}
+                {success && !loading && <OkButton onClick={() => onClose(true)} />}
+              </GroupRight>
+            </ButtonGroup>
+          </>
+        )}
 
+        <ConfirmDialog
+          isOpen={confirmDialog.isOpen}
+          message={confirmDialog.message}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={() => setConfirmDialog({ isOpen: false, message: '', onConfirm: null })}
+        />
 
-      <ConfirmDialog
-        isOpen={confirmDialog.isOpen}
-        message={confirmDialog.message}
-        onConfirm={confirmDialog.onConfirm}
-        onCancel={() => setConfirmDialog({ isOpen: false, message: '', onConfirm: null })}
-      />
-
-    </SlideInContainerRight>
-
+      </SlideInContainerRight>
+    </MyErrorBoundary>
   );
 };
 
