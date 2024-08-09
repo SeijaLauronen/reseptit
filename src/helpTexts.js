@@ -120,34 +120,27 @@ const helpTexts = {
   exportDB: (
     <>
       <p>
-        Voit tallentaa kaikki sovelluksen tiedot tiedostoon varmuuskopioksi, josta voit palauttaa ne myöhemmin.
-      </p>
-      <p>
-        Voit myös kopioida tiedot leikepöydälle ja liittää ne valitsemaasi paikkaan.
+        Tallenna tiedot tiedostoon varmuuskopioksi tai kopioi leikepöydälle.
       </p>
     </>
   ),
   showExportDB: (
     <>
-      <p>
-        Voit muokata tietoja ennen kopiointia tai tallennusta. Suositeltavaa on tallentaa ne ilman muokkausta.
-      </p>
+       <br/>
+        Voit muokata tietoja.
     </>
   ),
   importDB: (
     <>
       <p>
-        Voit tuoda tiedot tiedostosta tai tekstikentästä. Kaikki nykyiset tiedot poistetaan ja tilalle ladataan tiedot tiedostosta tai tekstikentästä. </p>
-      <p>
-        Mikäli olet jo tallentanut tietoja ohjelmalla, suositellaan ensin varmuuskopion ottamista.
+        Kaikki tiedot korvataan valitsemastasi tiedostosta tai tekstikentästä.
       </p>
     </>
   ),
   showImportDB: (
     <>
-      <p>
-        Liitä tai kirjoita tähän tiedot json-muotoisena:
-      </p>
+      <br/>
+        Liitä tai kirjoita tähän tiedot json-muotoisena:      
     </>
   ),
   loadExampleDB: (

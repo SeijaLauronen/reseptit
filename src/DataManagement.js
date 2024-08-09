@@ -14,8 +14,8 @@ import MyErrorBoundary from './components/ErrorBoundary';
 
 const TextArea = styled.textarea`
   width: 80%;
-  height: 200px;
-  margin: 10px 0;
+  height: 180px;
+  margin: 2px 15px;
 `;
 
 // Styled component for file input
@@ -68,6 +68,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
       setSelectedFileName('');
       setSavedFilename('');
       setError('');
+      setShowJsonTextArea(false);
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -294,13 +295,17 @@ Malli json tekstistä:
 
             <ButtonGroup>
               <GroupLeft>
-                <PasteButton onClick={(event) => handlePaste(event)}>Liitä</PasteButton>
-                <OkButton
-                  onClick={handleImportFromTextArea}
-                  disabled={!data || data.trim() === ''}  // Disabloi, jos `data` on tyhjä merkkijono
-                >
-                  Lataa tiedot
-                </OkButton>
+                {showJsonTextArea &&
+                  <>
+                    <PasteButton onClick={(event) => handlePaste(event)}>Liitä</PasteButton>
+                    <OkButton
+                      onClick={handleImportFromTextArea}
+                      disabled={!data || data.trim() === ''}  // Disabloi, jos `data` on tyhjä merkkijono
+                    >
+                      Lataa tiedot
+                    </OkButton>
+                  </>
+                }
               </GroupLeft>
               <GroupRight>
                 {!success && <CancelButton onClick={() => onClose(false)} />}
