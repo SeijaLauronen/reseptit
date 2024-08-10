@@ -175,26 +175,6 @@ export const clearDatabase = async () => {
   }
 };
 
-
-export const importDataToDatabaseXYZ = async (data) => {
-  try {
-    const db = await getDB();
-    for (const storeName of STORE_NAMES) {
-      const tx = db.transaction(storeName, 'readwrite');
-      const store = tx.objectStore(storeName);
-      await store.clear(); // Tyhjennä taulu ennen uusien tietojen lisäämistä
-      const items = data[storeName] || [];
-      for (const item of items) {
-        await store.add(item);
-      }
-      await tx.done;
-    }
-  } catch (err) {
-    console.error('Error importing data:', err);
-    throw new Error('Virhe tietojen lataamisessa: ' + err);
-  }
-};
-
 export const importDataToDatabase = async (data) => {
   try {
     const db = await getDB();
@@ -218,10 +198,6 @@ export const importDataToDatabase = async (data) => {
     throw new Error('Virhe tietojen lataamisessa: ' + err.message);
   }
 };
-
-
-
-
 
 export const exportDataFromDatabase = async () => {
   const db = await getDB();

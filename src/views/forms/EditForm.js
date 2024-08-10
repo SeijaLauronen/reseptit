@@ -4,7 +4,7 @@ import { FormContainer, ButtonGroup, GroupLeft, GroupRight, SlideInContainerRigh
 
 // TODO: Tässä ei jostain syystä liukuminen toteudu, vaikka Info-komponentissa samanlainen toteutuu
 
-const EditForm = ({ isOpen, onSave, onCancel, onDelete, children }) => {
+const EditForm = ({ isOpen, onSave, onCancel, onDelete, children, deleteEnabled = true }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -17,17 +17,19 @@ const EditForm = ({ isOpen, onSave, onCancel, onDelete, children }) => {
   }, [isOpen]);
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
-  return (    
+  return (
     <SlideInContainer $isOpen={isOpen}>
       <CloseButtonComponent onClick={onCancel}>Muokkaa</CloseButtonComponent>
-      <FormContainer>      
+      <FormContainer>
         {children}
         <ButtonGroup>
           <GroupLeft>
-            <DeleteButton onClick={onDelete} />
+            {deleteEnabled &&
+              <DeleteButton onClick={onDelete} />
+            }
           </GroupLeft>
           <GroupRight>
-            <OkButton onClick={onSave} />                    
+            <OkButton onClick={onSave} />
           </GroupRight>
         </ButtonGroup>
       </FormContainer>
