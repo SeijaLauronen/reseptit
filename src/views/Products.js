@@ -84,10 +84,11 @@ const Products = ({ refresh = false, categoryId }) => {
     // Tyhjätään skrollauspiste, jos oli aiemmin lisätty tuote. 
     // Ei aseteta uutta skrollauspistettä editissä, koska on jo valmiiksi vieritetyssä kohdassa
     setHandledProductId(null);
-    setEditingProduct(product);
+    setEditingProduct(product);    
   };
 
   const handleSaveProduct = async (id, updatedProduct) => {
+    setEditingProductAmount(false);
     try {
       await updateProduct(id, updatedProduct);
       fetchAndSetProductsAndCategories();
@@ -167,17 +168,20 @@ const Products = ({ refresh = false, categoryId }) => {
 
 
   const timerRef = useRef(null);
-  const handleShoppingListPress = (product) => {
+  const handleShoppingListPress = (e, product) => {
+    e.preventDefault();
     timerRef.current = setTimeout(() => {
       setIsShopLongPress(true);
     }, 500); // 500ms on aika, jota pidetään "pitkänä painalluksena"    
   }
 
-  const handleShoppingListRelease = (product) => {
+  const handleShoppingListRelease = (e, product) => {
 
+    e.preventDefault();
     if (!isShopLongPress) {
       handleToggleShoppingList(product.id); // Yhden klikkauksen tai napautuksen toiminta
     } else {
+      product.onShoppingList = true;
       setEditingProduct(product);
       setEditingProductAmount(true);
     }
@@ -290,13 +294,11 @@ const Products = ({ refresh = false, categoryId }) => {
       )}
 
 
-
-
       {(editingProduct) && (
         <EditProductForm
           product={editingProduct}
           onSave={handleSaveProduct}
-          onCancel={() => setEditingProduct(null)}
+          onCancel={() => {setEditingProduct(null); setEditingProductAmount(false);}}
           onDelete={handleDeleteProduct}
           isOpen={editingProduct}
           editAmount={editingProductAmount}
@@ -352,10 +354,10 @@ const Products = ({ refresh = false, categoryId }) => {
                             </IconWrapper>
                             <IconWrapper
                               //onClick={() => handleShoppingListPress(product.id)}
-                              onTouchStart={() => handleShoppingListPress(product)}
-                              onTouchEnd={() => handleShoppingListRelease(product)}
-                              onMouseDown={() => handleShoppingListPress(product)}
-                              onMouseUp={() => handleShoppingListRelease(product)}
+                              onTouchStart={(e) => handleShoppingListPress(e, product)}
+                              onTouchEnd={(e) => handleShoppingListRelease(e, product)}
+                              onMouseDown={(e) => handleShoppingListPress(e, product)}
+                              onMouseUp={(e) => handleShoppingListRelease(e, product)}
                             >
                               <FontAwesomeIcon
                                 icon={faShoppingCart}
@@ -394,10 +396,10 @@ const Products = ({ refresh = false, categoryId }) => {
                     </IconWrapper>
                     <IconWrapper
                       //onClick={() => handleShoppingListPress(product.id)}
-                      onTouchStart={() => handleShoppingListPress(product)}
-                      onTouchEnd={() => handleShoppingListRelease(product)}
-                      onMouseDown={() => handleShoppingListPress(product)}
-                      onMouseUp={() => handleShoppingListRelease(product)}
+                      onTouchStart={(e) => handleShoppingListPress(e, product)}
+                      onTouchEnd={(e) => handleShoppingListRelease(e, product)}
+                      onMouseDown={(e) => handleShoppingListPress(e, product)}
+                      onMouseUp={(e) => handleShoppingListRelease(e, product)}
                     >
                       <FontAwesomeIcon
                         icon={faShoppingCart}
