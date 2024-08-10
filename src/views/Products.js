@@ -170,6 +170,8 @@ const Products = ({ refresh = false, categoryId }) => {
   const timerRef = useRef(null);
   const handleShoppingListPress = (e, product) => {
     e.preventDefault();
+    //Mobiililaitteella seuraavan rivin teksti maalautui
+    e.stopPropagation(); // Estetään tapahtuman leviäminen muihin elementteihin. 
     timerRef.current = setTimeout(() => {
       setIsShopLongPress(true);
     }, 500); // 500ms on aika, jota pidetään "pitkänä painalluksena"    
@@ -178,6 +180,8 @@ const Products = ({ refresh = false, categoryId }) => {
   const handleShoppingListRelease = (e, product) => {
 
     e.preventDefault();
+    //Mobiililaitteella seuraavan rivin teksti maalautui
+    e.stopPropagation(); // Estetään tapahtuman leviäminen muihin elementteihin. 
     if (!isShopLongPress) {
       handleToggleShoppingList(product.id); // Yhden klikkauksen tai napautuksen toiminta
     } else {
