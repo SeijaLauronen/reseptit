@@ -62,6 +62,7 @@ export const IconWrapper = styled.span`
   margin-top: 10px;
   padding: 0px 10px;
   cursor: pointer;
+  user-select: none; // Estää tekstin valinnan 
   //background-color: blue;
   @media (min-width: 300px) {   
     margin-top: 0px;
