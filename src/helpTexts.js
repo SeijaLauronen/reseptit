@@ -26,24 +26,24 @@ const helpTexts = {
     <>
       <b>Tuotteet</b>
       <p>
-        Kirjoittaessasi alareunan tekstikenttään sivulta etsitään tekstiä vastaavia tuotteita ja ne korostetaan.
+        Kirjoittaessasi <b>alareunan tekstikenttään</b> sivulta etsitään tekstiä vastaavia tuotteita ja ne korostetaan.
         Voit tyhjentää kentän vasemmalla puolella olevasta ruksista tai lisätä tuotteen + painikkeesta.
       </p>
       <p>
-        Jos tulit sivulle kategorian nuolipainikkeesta, sivulla näytetään vain sen kategorian tuotteet
+        Jos tulit sivulle <b>kategorian nuolipainikkeesta</b>, sivulla näytetään vain sen kategorian tuotteet
         ja uusi tuote lisätään kyseiseen kategoriaan.
       </p>
       <p>
-        Jos tulit sivulle alavalikon kautta, näytetään kaikki tuotteet. Tällöin uudelle tuotteelle
+        Jos tulit sivulle <b>alavalikon kautta</b>, näytetään kaikki tuotteet. Tällöin uudelle tuotteelle
         ei anneta kategoriaa, mutta voit asettaa sen kynän kuvaa klikkaamalla.
         Laittamalla ruksin "Kategorioittain" kohtaan, tuotteet näytetään kategorioittain
         ja ylimpänä ne, joille ei ole asetettu kategoriaa.
       </p>
       <p>
-        Voit asettaa tuotteita suosikeiksi ja yläpalkin tähdestä suodattaa näkyviin vain suosikit.
+        Voit asettaa tuotteita <b>suosikeiksi</b> ja yläpalkin tähdestä suodattaa näkyviin vain suosikit.
       </p>
       <p>
-        Klikkaamalla ostoskorin kuvaa voit asettaa tuotteen ostoslistalle tai pois sieltä.
+        Klikkaamalla <b>ostoskorin</b> kuvaa voit asettaa tuotteen ostoslistalle tai pois sieltä. <b>Pitkä painallus</b> avaa lomakkeen, jolla voit antaa määrän.
       </p>
     </>
   ),
