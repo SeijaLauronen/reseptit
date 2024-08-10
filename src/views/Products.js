@@ -84,7 +84,7 @@ const Products = ({ refresh = false, categoryId }) => {
     // Tyhjätään skrollauspiste, jos oli aiemmin lisätty tuote. 
     // Ei aseteta uutta skrollauspistettä editissä, koska on jo valmiiksi vieritetyssä kohdassa
     setHandledProductId(null);
-    setEditingProduct(product);    
+    setEditingProduct(product);
   };
 
   const handleSaveProduct = async (id, updatedProduct) => {
@@ -194,6 +194,16 @@ const Products = ({ refresh = false, categoryId }) => {
     setIsShopLongPress(false);
   }
 
+  // Estä oletustoiminta touchmove- ja contextmenu-tapahtumissa
+  const handleTouchMove = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleContextMenu = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
 
   const handleToggleShoppingList = async (id) => {
 
@@ -302,7 +312,7 @@ const Products = ({ refresh = false, categoryId }) => {
         <EditProductForm
           product={editingProduct}
           onSave={handleSaveProduct}
-          onCancel={() => {setEditingProduct(null); setEditingProductAmount(false);}}
+          onCancel={() => { setEditingProduct(null); setEditingProductAmount(false); }}
           onDelete={handleDeleteProduct}
           isOpen={editingProduct}
           editAmount={editingProductAmount}
@@ -360,8 +370,10 @@ const Products = ({ refresh = false, categoryId }) => {
                               //onClick={() => handleShoppingListPress(product.id)}
                               onTouchStart={(e) => handleShoppingListPress(e, product)}
                               onTouchEnd={(e) => handleShoppingListRelease(e, product)}
+                              onTouchMove={(e) => handleTouchMove(e)}
                               onMouseDown={(e) => handleShoppingListPress(e, product)}
                               onMouseUp={(e) => handleShoppingListRelease(e, product)}
+                              onContextMenu={(e) => handleContextMenu(e)} // Estää oikean painikkeen valikon
                             >
                               <FontAwesomeIcon
                                 icon={faShoppingCart}
@@ -402,8 +414,10 @@ const Products = ({ refresh = false, categoryId }) => {
                       //onClick={() => handleShoppingListPress(product.id)}
                       onTouchStart={(e) => handleShoppingListPress(e, product)}
                       onTouchEnd={(e) => handleShoppingListRelease(e, product)}
+                      onTouchMove={(e) => handleTouchMove(e)}
                       onMouseDown={(e) => handleShoppingListPress(e, product)}
                       onMouseUp={(e) => handleShoppingListRelease(e, product)}
+                      onContextMenu={(e) => handleContextMenu(e)} // Estää oikean painikkeen valikon
                     >
                       <FontAwesomeIcon
                         icon={faShoppingCart}
