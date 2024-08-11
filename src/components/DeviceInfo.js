@@ -1,4 +1,3 @@
-// src/components/DeviceInfo.js
 import React from 'react';
 import {
     isMobile,
@@ -20,17 +19,18 @@ const DeviceInfo = () => {
 
         <div>
             <h3>Tietoja laitteestasi:</h3>
-            <p>Laitetyyppi: {deviceType}</p>
-            <p>Selain: {browserName}</p>
-            <p>Moottori: {engineName}</p>
-            <p>Käyttöjärjestelmä: {osName}</p>
-            <p>Käyttöjärjestelmän versio: {osVersion}</p>
-            <p>Onko mobiililaite: {isMobile ? 'Kyllä' : 'Ei'}</p>
-            <p>Onko tabletti: {isTablet ? 'Kyllä' : 'Ei'}</p>
-            {/* <p>Onko selain: {isBrowser ? 'Kyllä' : 'Ei'}</p> */}
-            <p>Onko pöytäkone: {isDesktop ? 'Kyllä' : 'Ei'}</p>
-            <p>Näytön leveys: {screenWidth}px</p>
-            <p>Näytön korkeus: {screenHeight}px</p>
+            Laitetyyppi: {deviceType}<br/>
+            Selain: {browserName}<br/>
+            Näytön leveys: {screenWidth}px<br/>
+            Näytön korkeus: {screenHeight}px<br/>
+            Onko selain: {isBrowser ? 'Kyllä' : 'Ei'}<br/>
+            Onko mobiililaite: {isMobile ? 'Kyllä' : 'Ei'}<br/>
+            Onko tabletti: {isTablet ? 'Kyllä' : 'Ei'}<br/>            
+            Onko pöytäkone: {isDesktop ? 'Kyllä' : 'Ei'}<br/>  
+            Moottori: {engineName}<br/>
+            Käyttöjärjestelmä: {osName}<br/>
+            Käyttöjärjestelmän versio: {osVersion}<br/>
+                      
         </div>
 
     );
