@@ -23,7 +23,7 @@ export const getBrowserName = () => {
         browserName = "Microsoft Edge (Chromium)";
     } else if (userAgent.includes("Chrome")) {
         // "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
-        browserName = "Google Chrome or Chromium";
+        browserName = "Google Chrome tai Chromium";
     } else if (userAgent.includes("Safari")) {
         // "Mozilla/5.0 (iPhone; CPU iPhone OS 15_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6 Mobile/15E148 Safari/604.1"
         browserName = "Apple Safari";

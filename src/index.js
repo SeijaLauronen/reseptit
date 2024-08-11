@@ -4,11 +4,14 @@ import './index.css';
 import App from './App';
 //import reportWebVitals from './reportWebVitals';
 import MyErrorBoundary from './components/ErrorBoundary';
+import { SettingsProvider } from './SettingsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <MyErrorBoundary>
-        <App />
+        <SettingsProvider>
+            <App />
+        </SettingsProvider>
     </MyErrorBoundary>
 );
 // poistettu <React.StrictMode> App:n ympäriltä, että drag drop toimii myös localhostissa
