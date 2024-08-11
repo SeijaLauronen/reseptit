@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const AccordionWrapper = styled.div`
   margin-bottom: 10px;
@@ -37,7 +39,9 @@ const Accordion = ({ title, children, defaultExpanded = false }) => {
     <AccordionWrapper>
       <AccordionTitle onClick={toggleAccordion}>
         {title}
-        <span>{isOpen ? '-' : '+'}</span>
+        <span>          
+          <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
+          </span>
       </AccordionTitle>
       <AccordionContent $isOpen={isOpen}>{children}</AccordionContent>
     </AccordionWrapper>

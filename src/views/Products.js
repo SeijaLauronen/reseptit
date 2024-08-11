@@ -9,9 +9,10 @@ import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
 import Container, { IconContainer, IconWrapper } from '../components/Container';
-import { ProductItem } from '../components/Item';
+//import { ProductItem } from '../components/Item';
 import { getCategories, getProducts, getProductById, addProduct, updateProduct, deleteProduct } from '../controller';
 import Toast from '../components/Toast';
+import ProductItemComponent from '../components/ProductItemComponent';
 
 const Products = ({ refresh = false, categoryId }) => {
 
@@ -350,40 +351,17 @@ const Products = ({ refresh = false, categoryId }) => {
                 <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>
                   <div>
                     {displayedProducts(category).map((product, index) => (
-                      <ProductItem
+                      <ProductItemComponent
                         key={product.id}
-                        ref={(el) => productRefs.current[product.id] = el}
-                      >
-                        <span>{highlightText(product.name, filter)}</span>
-                        <div>
-                          <IconContainer>
-                            <IconWrapper onClick={() => handleEditProduct(product)}>
-                              <FontAwesomeIcon icon={faEdit} />
-                            </IconWrapper>
-                            <IconWrapper onClick={() => handleToggleFavorite(product.id)}>
-                              <FontAwesomeIcon
-                                icon={product.isFavorite ? faStarSolid : faStarRegular}
-                                style={{ color: product.isFavorite ? 'gold' : 'gray' }}
-                              />
-                            </IconWrapper>
-                            <IconWrapper
-                              //onClick={() => handleShoppingListPress(product.id)}
-                              onTouchStart={(e) => handleShoppingListPress(e, product)}
-                              onTouchEnd={(e) => handleShoppingListRelease(e, product)}
-                              onTouchMove={(e) => handleTouchMove(e)}
-                              onMouseDown={(e) => handleShoppingListPress(e, product)}
-                              onMouseUp={(e) => handleShoppingListRelease(e, product)}
-                              onContextMenu={(e) => handleContextMenu(e)} // Estää oikean painikkeen valikon
-                            >
-                              <FontAwesomeIcon
-                                icon={faShoppingCart}
-                                style={{ color: product.onShoppingList ? 'green' : 'lightgrey' }}
-                              />
-                            </IconWrapper>
-                          </IconContainer>
-                        </div>
-                      </ProductItem>
-
+                        product={product}
+                        ref={(el) => (productRefs.current[product.id] = el)}
+                        highlightText={highlightText}
+                        filter={filter}
+                        handleEditProduct={handleEditProduct}
+                        handleToggleFavorite={handleToggleFavorite}
+                        handleShoppingListPress={handleShoppingListPress}
+                        handleShoppingListRelease={handleShoppingListRelease}
+                      />
                     ))}
 
                   </div>
@@ -394,39 +372,19 @@ const Products = ({ refresh = false, categoryId }) => {
         ) : (
           <div>
             {sortedProducts().map((product, index) => (
-              <ProductItem
+              <ProductItemComponent
                 key={product.id}
-                ref={(el) => productRefs.current[product.id] = el}
-              >
-                <span>{highlightText(product.name, filter)}</span>
-                <div>
-                  <IconContainer>
-                    <IconWrapper onClick={() => handleEditProduct(product)}>
-                      <FontAwesomeIcon icon={faEdit} />
-                    </IconWrapper>
-                    <IconWrapper onClick={() => handleToggleFavorite(product.id)}>
-                      <FontAwesomeIcon
-                        icon={product.isFavorite ? faStarSolid : faStarRegular}
-                        style={{ color: product.isFavorite ? 'gold' : 'gray' }}
-                      />
-                    </IconWrapper>
-                    <IconWrapper
-                      //onClick={() => handleShoppingListPress(product.id)}
-                      onTouchStart={(e) => handleShoppingListPress(e, product)}
-                      onTouchEnd={(e) => handleShoppingListRelease(e, product)}
-                      onTouchMove={(e) => handleTouchMove(e)}
-                      onMouseDown={(e) => handleShoppingListPress(e, product)}
-                      onMouseUp={(e) => handleShoppingListRelease(e, product)}
-                      onContextMenu={(e) => handleContextMenu(e)} // Estää oikean painikkeen valikon
-                    >
-                      <FontAwesomeIcon
-                        icon={faShoppingCart}
-                        style={{ color: product.onShoppingList ? 'green' : 'lightgrey' }}
-                      />
-                    </IconWrapper>
-                  </IconContainer>
-                </div>
-              </ProductItem>
+                product={product}
+                ref={(el) => (productRefs.current[product.id] = el)}
+                highlightText={highlightText}
+                filter={filter}
+                handleEditProduct={handleEditProduct}
+                handleToggleFavorite={handleToggleFavorite}
+                handleShoppingListPress={handleShoppingListPress}
+                handleShoppingListRelease={handleShoppingListRelease}
+                handleTouchMove={handleTouchMove}
+                handleContextMenu={handleContextMenu}
+              />              
             ))}
           </div>
         )}

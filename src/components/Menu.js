@@ -9,7 +9,7 @@ import DataManagement from '../DataManagement';
 import { getBrowserName } from '../utils/browserUtils';
 import DeviceInfo from './DeviceInfo';
 
-const programVersion = '2024-08-11: 1.193';
+const programVersion = '2024-08-11: 1.194';
 
 const MenuContainer = styled.div`
   position: fixed;
