@@ -4,6 +4,9 @@ import { InputName, Select, InputQuantity, InputUnit } from '../../components/In
 import Toast from '../../components/Toast';
 import { getCategories } from '../../controller';
 import { InputWrapper } from '../../components/Container';
+import { useSettings } from '../../SettingsContext';
+import { useColors } from '../../ColorContext';
+import { ColorItemsWrapper, ColorItemContainer, ColorCheckbox, ColorItem } from '../../components/ColorItem';
 
 const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmount = false }) => {
   const [name, setName] = useState(product.name);
@@ -13,6 +16,10 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
+
+  const { colorCodingEnabled } = useSettings();
+
+  const { colors, selectedColors, toggleColor, setSelectedColors  } = useColors(); //Hook
 
   const fetchAndSetCategories = async () => {
     try {
@@ -27,27 +34,37 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
     fetchAndSetCategories();
   }, []);
 
+  // Alustetaan valitut värit tuotteelle tallennettujen tietojen perusteella
+  useEffect(() => {
+    const initialSelectedColors = Object.keys(colors).filter(colorKey => product[colorKey]);
+    setSelectedColors(initialSelectedColors);
+  }, [product, colors, setSelectedColors]);
 
   const handleSave = () => {
-    if (!editAmount) {      
+    if (!editAmount) {
       product.name = name;
       product.categoryId = parseInt(categoryId, 10);
+      Object.keys(colors).forEach(colorKey => {
+        product[colorKey] = selectedColors.includes(colorKey);
+      });
     }
     else {
       product.quantity = quantity;
       product.unit = unit;
+      
     }
     onSave(product.id, product);
   };
 
 
+
   // transientti props $isOpen ei käytetä, koska EditForm ei ole styled komponentti
   return (
+
     <>
       {error && (
         <Toast message={error} onClose={() => setError('')} />
       )}
-
 
       <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(product.id)} deleteEnabled={!editAmount} >
         {!editAmount && (
@@ -73,6 +90,31 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                 ))}
               </Select>
             </div>
+            {colorCodingEnabled && (
+              <div>
+
+                <label>
+                  Valitse tuotteelle värikoodit:
+                </label>                
+
+                <ColorItemsWrapper>
+                  {Object.keys(colors).map(colorKey => (
+                    <ColorItemContainer key={colorKey}>
+                      <ColorItem color={colors[colorKey]}>
+                        {colorKey || ''}
+                      </ColorItem>
+                      <ColorCheckbox
+                        id={colorKey}
+                        checked={selectedColors.includes(colorKey)}
+                        onChange={() => toggleColor(colorKey)}
+                      />
+                    </ColorItemContainer>
+                  ))}
+                </ColorItemsWrapper>
+
+
+              </div>)
+            }
           </>
         )}
         {editAmount && (
@@ -99,6 +141,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
         )
         }
       </EditForm>
+
     </>
   );
 };
