@@ -18,7 +18,7 @@ export const ColorItem = styled.label`
   padding: 10px;
   width: 4px;
   height : 4px;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
 
   display: flex;
   align-items: center;
@@ -26,8 +26,6 @@ export const ColorItem = styled.label`
   text-align: center;
   font-size: 12px; /* Tekstin koko */
   
-
-
 `;
 
 export const ColorCheckbox = styled.input.attrs({ type: 'checkbox' })`

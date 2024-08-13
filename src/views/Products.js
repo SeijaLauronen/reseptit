@@ -14,6 +14,9 @@ import { getCategories, getProducts, getProductById, addProduct, updateProduct, 
 import Toast from '../components/Toast';
 import ProductItemComponent from '../components/ProductItemComponent';
 
+import { useColors } from '../ColorContext';
+import { ColorItemsWrapper, ColorItemContainer, ColorCheckbox, ColorItem } from '../components/ColorItem';
+
 const Products = ({ refresh = false, categoryId }) => {
 
   const [products, setProducts] = useState([]);
@@ -30,6 +33,9 @@ const Products = ({ refresh = false, categoryId }) => {
   const [error, setError] = useState('');
   const [handledProductId, setHandledProductId] = useState(null); // ID of the newly added or edited product
   const [isShopLongPress, setIsShopLongPress] = useState(false);
+
+  const { colors, selectedColors, toggleColor, setSelectedColors } = useColors(); //Hook
+
 
   const productRefs = useRef({}); // Ref object to hold references to product items
 
@@ -361,6 +367,8 @@ const Products = ({ refresh = false, categoryId }) => {
                         handleToggleFavorite={handleToggleFavorite}
                         handleShoppingListPress={handleShoppingListPress}
                         handleShoppingListRelease={handleShoppingListRelease}
+                        colors={colors}
+                        selectedColors={selectedColors}
                       />
                     ))}
 
@@ -372,21 +380,25 @@ const Products = ({ refresh = false, categoryId }) => {
         ) : (
           <div>
             {sortedProducts().map((product, index) => (
-              <ProductItemComponent
-                key={product.id}
-                product={product}
-                ref={(el) => (productRefs.current[product.id] = el)}
-                highlightText={highlightText}
-                filter={filter}
-                handleEditProduct={handleEditProduct}
-                handleToggleFavorite={handleToggleFavorite}
-                handleShoppingListPress={handleShoppingListPress}
-                handleShoppingListRelease={handleShoppingListRelease}
-                handleTouchMove={handleTouchMove}
-                handleContextMenu={handleContextMenu}
-              />              
+                <ProductItemComponent
+                  key={product.id}
+                  product={product}
+                  ref={(el) => (productRefs.current[product.id] = el)}
+                  highlightText={highlightText}
+                  filter={filter}
+                  handleEditProduct={handleEditProduct}
+                  handleToggleFavorite={handleToggleFavorite}
+                  handleShoppingListPress={handleShoppingListPress}
+                  handleShoppingListRelease={handleShoppingListRelease}
+                  handleTouchMove={handleTouchMove}
+                  handleContextMenu={handleContextMenu}
+                  colors={colors}
+                  selectedColors={selectedColors}
+                />
             ))}
+
           </div>
+
         )}
       </Container>
       <StickyBottom>
