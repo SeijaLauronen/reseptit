@@ -27,8 +27,15 @@ export const GrabbableItem = styled(Item)`
     inset 0 1px 3px rgba(0, 0, 0, 0.08); /* Sisäinen hieno varjo */
 `;
 
-export const ProductItem = styled(Item)`
+
+export const ProductListItem = styled(Item)`
+  display: grid;
+  grid-template-rows: auto auto; /* Ensimmäinen rivi (nimi ja ikonit) ja toinen rivi (värit) */
+  grid-template-columns: 1fr; /* Yksi sarake, joka vie kaiken tilan */
+  gap: 1px; /* Väli osioiden välillä */ 
+  padding-bottom: 5px;;
 `;
+
 
 export const CategoryItem = styled(GrabbableItem)`
 `;

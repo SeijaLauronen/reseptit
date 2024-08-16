@@ -101,7 +101,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                   {Object.keys(colors).map(colorKey => (
                     <ColorItemContainer key={colorKey}>
                       <ColorItem color={colors[colorKey]}>
-                        {colorKey || ''}
+                        {/*colorKey || ''*/}
                       </ColorItem>
                       <ColorCheckbox
                         id={colorKey}

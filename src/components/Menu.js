@@ -11,7 +11,7 @@ import DeviceInfo from './DeviceInfo';
 import { useSettings } from '../SettingsContext';
 import SwitchButtonComponent from './SwitchButtonCompnent';
 
-const programVersion = '2024-08-13: 1.197';
+const programVersion = '2024-08-16: 1.198';
 
 const MenuContainer = styled.div`
   position: fixed;

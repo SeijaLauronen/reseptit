@@ -9,29 +9,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faShoppingCart, faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { IconContainer, IconWrapper } from '../components/Container';
-import { ProductItem } from './Item';
-import { ColorItemsWrapper, ColorItemContainer, ColorCheckbox, ColorItem } from '../components/ColorItem';
-import styled from "styled-components";
-
-const ProductItemGrid = styled(ProductItem)`
-  display: grid;
-  grid-template-rows: auto auto; /* Ensimmäinen rivi (nimi ja ikonit) ja toinen rivi (värit) */
-  grid-template-columns: 1fr; /* Yksi sarake, joka vie kaiken tilan */
-  gap: 10px; /* Väli osioiden välillä */
-`;
-
+import { ProductListItem } from './Item';
+import { ColorItemsWrapper, ColorItemContainer, ColorItem } from '../components/ColorItem';
 
 const ProductItemComponent = forwardRef(
   ({ product, highlightText, filter, handleEditProduct, handleToggleFavorite, handleShoppingListPress, handleShoppingListRelease, handleTouchMove, handleContextMenu, colors, selectedColors }, ref) => (
     <div>
-      <ProductItemGrid ref={ref}>
+      <ProductListItem ref={ref}>
 
         {/* Tämä ekalle riville: */}
        
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className='ProductLine' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <span>{highlightText(product.name, filter)}</span>
           <div>
-            <IconContainer>
+            <IconContainer className='iconContainer'>
               <IconWrapper onClick={() => handleEditProduct(product)}>
                 <FontAwesomeIcon icon={faEdit} />
               </IconWrapper>
@@ -75,7 +66,7 @@ const ProductItemComponent = forwardRef(
 
 
 
-      </ProductItemGrid >
+      </ProductListItem >
 
 
     </div >

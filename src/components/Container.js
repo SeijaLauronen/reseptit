@@ -50,7 +50,7 @@ export const IconContainer = styled.span`
   display: inline-flex;
   flex-direction: column;
   //background-color: yellow;
-  padding: 10px 0px;
+  padding: 10px 0px 0px 10px;
   @media (min-width: 300px) {
     flex-direction: row;    
   }
@@ -59,7 +59,7 @@ export const IconContainer = styled.span`
 export const IconWrapper = styled.span`
   margin-left: 10px;
   margin-right: 10px;
-  margin-top: 10px;
+  margin-top: 10px;  
   padding: 0px 4px;
   cursor: pointer;
   user-select: none; // Estää tekstin valinnan 
