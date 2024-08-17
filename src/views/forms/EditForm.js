@@ -20,7 +20,7 @@ const EditForm = ({ isOpen, onSave, onCancel, onDelete, children, deleteEnabled 
   return (
     <SlideInContainer $isOpen={isOpen}>
       <CloseButtonComponent onClick={onCancel}>Muokkaa</CloseButtonComponent>
-      <FormContainer>
+      
         {children}
         <ButtonGroup>
           <GroupLeft>
@@ -32,7 +32,7 @@ const EditForm = ({ isOpen, onSave, onCancel, onDelete, children, deleteEnabled 
             <OkButton onClick={onSave} />
           </GroupRight>
         </ButtonGroup>
-      </FormContainer>
+     
     </SlideInContainer>
   );
 };

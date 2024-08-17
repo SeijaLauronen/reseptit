@@ -11,17 +11,41 @@ import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { IconContainer, IconWrapper } from '../components/Container';
 import { ProductListItem } from './Item';
 import { ColorItemsWrapper, ColorItemContainer, ColorItem } from '../components/ColorItem';
+import { useSettings } from '../SettingsContext';
 
 const ProductItemComponent = forwardRef(
-  ({ product, highlightText, filter, handleEditProduct, handleToggleFavorite, handleShoppingListPress, handleShoppingListRelease, handleTouchMove, handleContextMenu, colors, selectedColors }, ref) => (
-    <div>
-      <ProductListItem ref={ref}>
+  /* Huom, kun lisätään loogista koodia ja return, pitää olla seuraavan rivin lopussa aaltosulut. Kaarisulku, jos ei returnia : */
+  ({ product, highlightText, filter, handleEditProduct, handleToggleFavorite, handleShoppingListPress, handleShoppingListRelease, handleTouchMove, handleContextMenu, colors, selectedColors }, ref) => {
 
-        {/* Tämä ekalle riville: */}
-       
-        <div className='ProductLine' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-          <span>{highlightText(product.name, filter)}</span>
-          <div>
+    const noColor = { code: '#FFF', name: 'White' }; // Tämä voisi olla myös tuolla ylemäpänä
+    const { colorCodingEnabled } = useSettings();  // Tämä laitetaan funktiokehykseen, on loogista koodia
+    return (
+      <div>
+        <ProductListItem ref={ref}>
+
+          {/* Ensimmäinen sarake: nimi ja värikoodit */}
+          <div style={{ display: 'flex', flexDirection: 'column', gridColumn: '1' }}>
+            <span>{highlightText(product.name, filter)}</span>
+
+            {/* Näytetään värit vain jos tuotteelle on annettu jokin värikoodi */}
+            {colorCodingEnabled && Object.keys(colors).some(colorKey => product[colorKey]) && (
+              <ColorItemsWrapper>
+                {
+                  Object.keys(colors).map(colorKey => (
+                    < ColorItemContainer key={colorKey} >
+                      <ColorItem
+                        color={product[colorKey] ? colors[colorKey] : noColor}>
+                      </ColorItem>
+                    </ColorItemContainer>
+                  ))
+                }
+              </ColorItemsWrapper>
+            )}
+
+          </div>
+
+          {/* Toinen sarake: ikonit */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gridColumn: '2' }}>
             <IconContainer className='iconContainer'>
               <IconWrapper onClick={() => handleEditProduct(product)}>
                 <FontAwesomeIcon icon={faEdit} />
@@ -47,31 +71,11 @@ const ProductItemComponent = forwardRef(
               </IconWrapper>
             </IconContainer>
           </div>
-        </div>
-
-
-        {/* Tämä toiselle riville: */}
-        <div style={{ gridColumn: '1 / span 2' }}>
-          < ColorItemsWrapper>
-            {
-              Object.keys(colors).map(colorKey => (
-                <ColorItemContainer key={colorKey}>
-                  <ColorItem color={colors[colorKey]}>
-                  </ColorItem>
-                </ColorItemContainer>
-              ))
-            }
-          </ColorItemsWrapper >
-        </div>
-
-
-
-      </ProductListItem >
-
-
-    </div >
-
-  )
+          
+        </ProductListItem >
+      </div >
+    );
+  }
 );
 
 export default ProductItemComponent;

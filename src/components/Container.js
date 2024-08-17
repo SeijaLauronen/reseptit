@@ -50,7 +50,7 @@ export const IconContainer = styled.span`
   display: inline-flex;
   flex-direction: column;
   //background-color: yellow;
-  padding: 10px 0px 0px 10px;
+  padding: 5px 0px 5px 10px;
   @media (min-width: 300px) {
     flex-direction: row;    
   }
