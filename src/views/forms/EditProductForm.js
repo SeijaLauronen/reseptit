@@ -6,7 +6,12 @@ import { getCategories } from '../../controller';
 import { InputWrapper } from '../../components/Container';
 import { useSettings } from '../../SettingsContext';
 import { useColors } from '../../ColorContext';
-import { ColorItemsWrapper, ColorItemContainer, ColorCheckbox, ColorItem } from '../../components/ColorItem';
+import { ColorItemsWrapper, ColorItemContainer, ColorItemContainerLabel, ColorItemSelection, ColorCheckbox, ColorItem } from '../../components/ColorItem';
+import styled from 'styled-components';
+
+const StyledDiv = styled.div`
+  margin-bottom: 15px;
+`;
 
 const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmount = false }) => {
   const [name, setName] = useState(product.name);
@@ -19,8 +24,10 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
   const { colorCodingEnabled } = useSettings();
 
-  const { colors, selectedColors, toggleColor, setSelectedColors } = useColors(); //Hook
+  const { colors } = useColors(); //Hook
   const [productSelectedColors, setProductSelectedColors] = useState([]);
+
+  const noColor = { code: '#FFF', name: 'White' };
 
   const fetchAndSetCategories = async () => {
     try {
@@ -61,7 +68,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
     if (!editAmount) {
       product.name = name;
       product.categoryId = parseInt(categoryId, 10);
-      Object.keys(colors).forEach(colorKey => {        
+      Object.keys(colors).forEach(colorKey => {
         product[colorKey] = productSelectedColors.includes(colorKey);
       });
     }
@@ -86,7 +93,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
       <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(product.id)} deleteEnabled={!editAmount} >
         {!editAmount && (
           <>
-            <div>
+            <StyledDiv>
               <label>Nimi </label>
               <InputName
                 type="text"
@@ -94,8 +101,8 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Nimi"
               />
-            </div>
-            <div>
+            </StyledDiv>
+            <StyledDiv>
               <label>Kategoria </label>
               <Select
                 value={categoryId}
@@ -106,31 +113,41 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                   <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
               </Select>
-            </div>
+            </StyledDiv>
             {colorCodingEnabled && (
-              <div>
-
-                <label>
-                  Valitse tuotteelle värikoodit:
-                </label>
+              <StyledDiv>
 
                 <ColorItemsWrapper>
+                  <label>Valitse:</label>
                   {Object.keys(colors).map(colorKey => (
                     <ColorItemContainer key={colorKey}>
-                      <ColorItem color={colors[colorKey]}>
-                        {/*colorKey || ''*/}
-                      </ColorItem>
-                      <ColorCheckbox
-                        id={colorKey}
-                        checked={productSelectedColors.includes(colorKey)}
-                        onChange={() => handleToggleEditColor(colorKey)}
+
+                      <ColorItemSelection
+                        color={colors[colorKey]}
+                        selected={productSelectedColors.includes(colorKey)}
+                        onClick={() => handleToggleEditColor(colorKey)}
                       />
                     </ColorItemContainer>
                   ))}
                 </ColorItemsWrapper>
 
+                <ColorItemsWrapper>
+                  <label>Tuotteen värikoodit:</label>
+                  {Object.keys(colors).map(colorKey => (
 
-              </div>)
+                    <ColorItemContainerLabel key={colorKey} >
+                      <ColorItem color={productSelectedColors.includes(colorKey) ? colors[colorKey] : noColor}>
+                        {/*colorKey || ''*/}
+                      </ColorItem>
+                    </ColorItemContainerLabel>
+
+                  ))}
+                </ColorItemsWrapper>
+
+
+
+
+              </StyledDiv>)
             }
           </>
         )}

@@ -11,7 +11,7 @@ import DeviceInfo from './DeviceInfo';
 import { useSettings } from '../SettingsContext';
 import SwitchButtonComponent from './SwitchButtonCompnent';
 
-const programVersion = '2024-08-19: 1.202';
+const programVersion = '2024-08-19: 1.203';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -115,7 +115,6 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
   const [showDataManagement, setShowDataManagement] = useState(false);
   const [dataManagementAction, setDataManagementAction] = useState('');
 
-  //TODO INFO ei tällä hetkellä käytössä, mutta jätetään se vielä
   const handleOpenInfo = (message) => {
     setInfoMessage(message);
     setIsInfoOpen(true);
@@ -131,7 +130,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
 
   const handleOpenDataManagement = (action) => {
     setShowDataManagement(true);
-    setDataManagementAction(action);
+    setDataManagementAction(action);    
     //onToggleMenu(false); // Suljetaan menu kun data management aukeaa
   };
 
@@ -166,7 +165,6 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
         <MenuHeader>Asetukset</MenuHeader>
         <MenuItemText>
           <label>
- 
             Värikoodit käytössä
           </label>
           <SwitchButtonComponent

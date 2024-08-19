@@ -12,6 +12,14 @@ export const ColorItemContainer = styled.div`
   margin: 0px 2px 2px 2px;
 `;
 
+export const ColorItemContainerLabel = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0px 0px 2px 2px;
+  padding: 6px 0px 2px 2px;
+`;
+
 export const ColorItem = styled.label`
   background-color: ${({ color }) => color.code || '#000'};
   color: ${({ color }) => color.name === 'Black' ? '#FFF' : '#000'};
