@@ -29,34 +29,16 @@ export const ColorItem = styled.label`
 `;
 
 
-
 export const ColorItemSelection = styled(ColorItem)`
-width: 26px;
-height : 20px;
-margin-right: 6px;
-margin-left: 10px;
-margin-top: 4px;
-//border: none;
-  //border: ${({ selected }) => (selected ? '2px solid black' : '2px dashed grey')};
-
-  //border: ${({ color, selected }) => selected ? `2px solid ${color.code || '#000'}` : 'none'};
-
-
+  width: 26px;
+  height : 18px;
+  margin-right: 6px;
+  margin-left: 10px;
+  margin-top: 4px;
   filter: ${({ selected }) => (selected ? 'brightness(1.1)' : 'brightness(85%)')};
   outline: ${({ selected }) => (selected ? '1px solid black' : 'none')};
-  border-radius: ${({ selected }) => (selected ? 'none' : '6px')};
-  //border-radius: 6px;
-
-
-  //outline: ${({ color, selected }) => selected ? `3px solid ${color.code || '#000'}` : 'none'};
-
-
-  //padding: ${({ selected }) => (selected ? '8px' : '4px')};
-
-  /* Optional: You can add a transition for a smoother visual change */
-  //transition: border-color 0.3s;
+  border-radius: ${({ selected }) => (selected ? 'none' : '10px')};
 `;
-
 
 
 export const ColorCheckbox = styled.input.attrs({ type: 'checkbox' })`

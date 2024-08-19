@@ -1,11 +1,15 @@
 import styled from 'styled-components';
+//#ffffc4 vaalea keltainen
+//#e1f5eb vaalea vihreä
+//#673ab7 violetti
+//#daf7f7 vaalea turkoosi
 
 const StickyTop = styled.div`
 
     position: fixed;
     top: 52px;
     left: 0;
-    background-color: #ffffc4;
+    background-color: #e1f5eb;
     padding: 6px 40px;
     display: flex;
     justify-content: space-between;
@@ -40,8 +44,6 @@ export const ProductStickyTop = styled(StickyTop) `
   .filter-row {
     grid-column: 1 / span 2; /* Vie koko rivin */
     display: flex;
-    //display: ${({ $showFilterRow }) => $showFilterRow ? 'flex' : 'none'};
-    //visibility: ${({ $showFilterRow }) => $showFilterRow ? 'visible' : 'hidden'};
     gap: 10px; /* Väli elementtien välillä */
   }
 

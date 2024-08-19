@@ -1,4 +1,8 @@
 import styled from 'styled-components';
+//#ffffc4 vaalea keltainen
+//#e1f5eb vaalea vihreä
+//#673ab7 violetti
+//#daf7f7 vaalea turkoosi
 
 const StickyBottom = styled.div`
   position: fixed;
@@ -8,7 +12,7 @@ const StickyBottom = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px;
-  background-color: #ffffc4;//#f0f5ed;/*#ffffe0;*/ /*#f8f8f8;*/
+  background-color: #e1f5eb;
   box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   box-sizing: border-box; /* Ensure padding is included in width */

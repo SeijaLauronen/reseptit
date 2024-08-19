@@ -16,6 +16,11 @@ import { useColors } from '../ColorContext';
 import { ColorItemsWrapper, ColorItemContainer, ColorItemSelection } from '../components/ColorItem';
 import { useSettings } from '../SettingsContext';
 import FilterWithCrossIcon from '../components/FilterIcon';
+import SwitchButtonComponent from '../components/SwitchButtonCompnent';
+
+// TODO kun tekee refresh ja menee tuotesivulle, tulee (filteri-ikonista?):
+// Received `false` for a non-boolean attribute `enabled`.
+// If you want to write it to the DOM, pass a string instead: enabled="false" or enabled={value.toString()}.
 
 const Products = ({ refresh = false, categoryId }) => {
 
@@ -366,14 +371,16 @@ const Products = ({ refresh = false, categoryId }) => {
             <b>{selectedCategoryName && `${selectedCategoryName}:`}Tuotteet</b>
 
             {!selectedCategoryId && (
-              <label>
-                <input
-                  type="checkbox"
+              <>
+                <label>                  
+                  Kategoriat
+                </label>
+                <SwitchButtonComponent
                   checked={showByCategory}
                   onChange={handleShowByCategory}
                 />
-                Kategorioittain
-              </label>
+              </>
+
             )}
             <IconWrapper onClick={handleShowFavorites}>
               <FontAwesomeIcon
@@ -384,13 +391,13 @@ const Products = ({ refresh = false, categoryId }) => {
           </div>
 
           {colorCodingEnabled && (
-            <div className='filter-row'>              
+            <div className='filter-row'>
 
-            <FilterWithCrossIcon 
-            enabled = {selectedColors.length > 0} 
-            onClick = {handleFilterClick}
-            />
-              
+              <FilterWithCrossIcon
+                enabled={selectedColors.length > 0}
+                onClick={handleFilterClick}
+              />
+
               <ColorItemsWrapper>
                 {Object.keys(colors).map(colorKey => (
                   <ColorItemContainer key={colorKey}>
