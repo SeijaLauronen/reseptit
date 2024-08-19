@@ -19,6 +19,7 @@ const ProductItemComponent = forwardRef(
 
     const noColor = { code: '#FFF', name: 'White' }; // Tämä voisi olla myös tuolla ylemäpänä
     const { colorCodingEnabled } = useSettings();  // Tämä laitetaan funktiokehykseen, on loogista koodia
+
     return (
       <div>
         <ProductListItem ref={ref}>
@@ -71,7 +72,7 @@ const ProductItemComponent = forwardRef(
               </IconWrapper>
             </IconContainer>
           </div>
-          
+
         </ProductListItem >
       </div >
     );

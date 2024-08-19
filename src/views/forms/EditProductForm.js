@@ -19,7 +19,8 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
   const { colorCodingEnabled } = useSettings();
 
-  const { colors, selectedColors, toggleColor, setSelectedColors  } = useColors(); //Hook
+  const { colors, selectedColors, toggleColor, setSelectedColors } = useColors(); //Hook
+  const [productSelectedColors, setProductSelectedColors] = useState([]);
 
   const fetchAndSetCategories = async () => {
     try {
@@ -35,23 +36,39 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
   }, []);
 
   // Alustetaan valitut värit tuotteelle tallennettujen tietojen perusteella
+  /*
   useEffect(() => {
     const initialSelectedColors = Object.keys(colors).filter(colorKey => product[colorKey]);
     setSelectedColors(initialSelectedColors);
   }, [product, colors, setSelectedColors]);
+  */
+
+  useEffect(() => {
+    const initialProductSelectedColors = Object.keys(colors).filter(colorKey => product[colorKey]);
+    setProductSelectedColors(initialProductSelectedColors);
+  }, [product, colors]);
+
+
+  const handleToggleEditColor = (colorKey) => {
+    if (productSelectedColors.includes(colorKey)) {
+      setProductSelectedColors(productSelectedColors.filter(key => key !== colorKey));
+    } else {
+      setProductSelectedColors([...productSelectedColors, colorKey]);
+    }
+  };
 
   const handleSave = () => {
     if (!editAmount) {
       product.name = name;
       product.categoryId = parseInt(categoryId, 10);
-      Object.keys(colors).forEach(colorKey => {
-        product[colorKey] = selectedColors.includes(colorKey);
+      Object.keys(colors).forEach(colorKey => {        
+        product[colorKey] = productSelectedColors.includes(colorKey);
       });
     }
     else {
       product.quantity = quantity;
       product.unit = unit;
-      
+
     }
     onSave(product.id, product);
   };
@@ -95,7 +112,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
                 <label>
                   Valitse tuotteelle värikoodit:
-                </label>                
+                </label>
 
                 <ColorItemsWrapper>
                   {Object.keys(colors).map(colorKey => (
@@ -105,8 +122,8 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                       </ColorItem>
                       <ColorCheckbox
                         id={colorKey}
-                        checked={selectedColors.includes(colorKey)}
-                        onChange={() => toggleColor(colorKey)}
+                        checked={productSelectedColors.includes(colorKey)}
+                        onChange={() => handleToggleEditColor(colorKey)}
                       />
                     </ColorItemContainer>
                   ))}

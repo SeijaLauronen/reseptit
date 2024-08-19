@@ -2,14 +2,14 @@ import React, { createContext, useState, useContext } from 'react';
 
 // Väriobjekti, jossa värit määritellään vaiheilla
 const colors = {
-    v1: { code: '#f5ec42', name: 'Yellow' },
-    v2: { code: '#369e3b', name: 'Green' },
-    v3: { code: '#db1616', name: 'Red' },
+    c1: { code: '#f5ec42', name: 'Yellow' },
+    c2: { code: '#369e3b', name: 'Green' },
+    c3: { code: '#db1616', name: 'Red' },
     /*
-    v4: { code: '#00c3ff', name: 'Blue' },
-    v5: { code: '#929596', name: 'Grey' },  
-    */     
-    k: { code: '#000', name: 'Black' },
+    c4: { code: '#00c3ff', name: 'Blue' },
+    grey: { code: '#929596', name: 'Grey' },
+    */
+    black: { code: '#000', name: 'Black' },
 };
 
 // Väri konteksti

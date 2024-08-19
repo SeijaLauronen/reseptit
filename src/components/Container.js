@@ -1,4 +1,4 @@
-import styled from 'styled-components'; 
+import styled from 'styled-components';
 
 
 //DOM-elementtiin liittyvä styled-component: Käytetään transientteja propseja, eli $ "isJotain" eteen, jotta ne eivät välity tuntemattomina DOM:lle
@@ -11,6 +11,10 @@ const Container = styled.div`
 `;
 export default Container;
 
+// Lisää tilaa ylös, koska värifiltteri mahdollinen
+export const ProductContainer = styled(Container)`
+  padding-top: 80px;
+`;
 
 export const FormContainer = styled.div`
 padding: 20px;

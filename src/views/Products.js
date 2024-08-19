@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faShoppingCart, faStar as faStarSolid, faTimes, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarSolid, faTimes, faMagnifyingGlass, faFilter, faFunnelDollar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import EditProductForm from './forms/EditProductForm';
 import Accordion from '../components/Accordion';
-import StickyTop from '../components/StickyTop';
+import { ProductStickyTop } from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
-import Container, { IconContainer, IconWrapper } from '../components/Container';
-//import { ProductItem } from '../components/Item';
+import Container, { ProductContainer, IconWrapper } from '../components/Container';
 import { getCategories, getProducts, getProductById, addProduct, updateProduct, deleteProduct } from '../controller';
 import Toast from '../components/Toast';
 import ProductItemComponent from '../components/ProductItemComponent';
-
 import { useColors } from '../ColorContext';
-import { ColorItemsWrapper, ColorItemContainer, ColorCheckbox, ColorItem } from '../components/ColorItem';
+import { ColorItemsWrapper, ColorItemContainer, ColorItemSelection } from '../components/ColorItem';
+import { useSettings } from '../SettingsContext';
+import FilterWithCrossIcon from '../components/FilterIcon';
 
 const Products = ({ refresh = false, categoryId }) => {
 
@@ -33,8 +33,9 @@ const Products = ({ refresh = false, categoryId }) => {
   const [error, setError] = useState('');
   const [handledProductId, setHandledProductId] = useState(null); // ID of the newly added or edited product
   const [isShopLongPress, setIsShopLongPress] = useState(false);
+  const { colorCodingEnabled } = useSettings();
 
-  const { colors, selectedColors, toggleColor, setSelectedColors } = useColors(); //Hook
+  const { colors, selectedColors, toggleColor, setSelectedColors } = useColors(); //Hook For filtering in Products
 
 
   const productRefs = useRef({}); // Ref object to hold references to product items
@@ -254,11 +255,30 @@ const Products = ({ refresh = false, categoryId }) => {
     });
   }
 
+  // TODO, debugatessa: Products.js:257 Warning: Cannot update during an existing state transition (such as within `render`). 
+  // Render methods should be a pure function of props and state.
   const displayedProducts = (category) => {
     let filteredProducts = category.products;
     if (showFavorites) {
       filteredProducts = filteredProducts.filter(product => product.isFavorite);
     }
+
+    // Suodata väreillä
+    return colorFilteredProducts(filteredProducts);
+  };
+
+  const colorFilteredProducts = (products) => {
+
+    let filteredProducts = products;
+    if (selectedColors.length > 0 && colorCodingEnabled) {
+      // Suodata väreillä
+      filteredProducts = filteredProducts.filter(product =>
+        Object.keys(colors).some(colorKey =>
+          product[colorKey] && selectedColors.includes(colorKey)
+        )
+      );
+    }
+
     return filteredProducts;
   };
 
@@ -306,6 +326,20 @@ const Products = ({ refresh = false, categoryId }) => {
     );
   };
 
+
+  const handleFilterClick = () => {
+    if (selectedColors.length > 0) {
+      setSelectedColors([]); // Tyhjentää värivalinnat
+    }
+  };
+
+
+  const MyContainer = (props) => {
+    return colorCodingEnabled ?
+      <ProductContainer {...props} /> :
+      <Container {...props} />;
+  };
+
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   // EditProductForm ei ole styled komponentti, ei käytetä transienttia propsia
   return (
@@ -326,10 +360,11 @@ const Products = ({ refresh = false, categoryId }) => {
         />
       )}
 
-      <Container $isEditFormOpen={editingProduct}>
-        <StickyTop>
-          <b>{selectedCategoryName && `${selectedCategoryName}:`}Tuotteet</b>
-          <div>
+      <MyContainer $isEditFormOpen={editingProduct}>
+        <ProductStickyTop $showFilterRow={colorCodingEnabled}>
+          <div className='topHeader'>
+            <b>{selectedCategoryName && `${selectedCategoryName}:`}Tuotteet</b>
+
             {!selectedCategoryId && (
               <label>
                 <input
@@ -347,7 +382,31 @@ const Products = ({ refresh = false, categoryId }) => {
               />
             </IconWrapper>
           </div>
-        </StickyTop>
+
+          {colorCodingEnabled && (
+            <div className='filter-row'>              
+
+            <FilterWithCrossIcon 
+            enabled = {selectedColors.length > 0} 
+            onClick = {handleFilterClick}
+            />
+              
+              <ColorItemsWrapper>
+                {Object.keys(colors).map(colorKey => (
+                  <ColorItemContainer key={colorKey}>
+                    <ColorItemSelection
+                      color={colors[colorKey]}
+                      selected={selectedColors.includes(colorKey)}
+                      onClick={() => toggleColor(colorKey)}
+                    >
+                    </ColorItemSelection>
+                  </ColorItemContainer>
+                ))}
+              </ColorItemsWrapper>
+            </div>
+          )}
+
+        </ProductStickyTop>
 
         {showByCategory ? (
           groupedProducts
@@ -379,28 +438,28 @@ const Products = ({ refresh = false, categoryId }) => {
             ))
         ) : (
           <div>
-            {sortedProducts().map((product, index) => (
-                <ProductItemComponent
-                  key={product.id}
-                  product={product}
-                  ref={(el) => (productRefs.current[product.id] = el)}
-                  highlightText={highlightText}
-                  filter={filter}
-                  handleEditProduct={handleEditProduct}
-                  handleToggleFavorite={handleToggleFavorite}
-                  handleShoppingListPress={handleShoppingListPress}
-                  handleShoppingListRelease={handleShoppingListRelease}
-                  handleTouchMove={handleTouchMove}
-                  handleContextMenu={handleContextMenu}
-                  colors={colors}
-                  selectedColors={selectedColors}
-                />
+            {colorFilteredProducts(sortedProducts()).map((product, index) => (
+              <ProductItemComponent
+                key={product.id}
+                product={product}
+                ref={(el) => (productRefs.current[product.id] = el)}
+                highlightText={highlightText}
+                filter={filter}
+                handleEditProduct={handleEditProduct}
+                handleToggleFavorite={handleToggleFavorite}
+                handleShoppingListPress={handleShoppingListPress}
+                handleShoppingListRelease={handleShoppingListRelease}
+                handleTouchMove={handleTouchMove}
+                handleContextMenu={handleContextMenu}
+                colors={colors}
+                selectedColors={selectedColors}
+              />
             ))}
 
           </div>
 
         )}
-      </Container>
+      </MyContainer>
       <StickyBottom>
 
         <IconWrapper >
