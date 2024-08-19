@@ -9,6 +9,7 @@ import helpTexts from './helpTexts';
 import ConfirmDialog from './components/ConfirmDialog';
 import Toast from './components/Toast';
 import MyErrorBoundary from './components/ErrorBoundary';
+import { useSettings } from './SettingsContext';
 
 //TODO BoldedParagraph teksteineen komponentiksi
 
@@ -109,7 +110,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
           await handleImportData(content);
           setLoading(false);
           setSuccess(true);
-          setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
+          setConfirmDialog({ isOpen: false, message: '', onConfirm: null });          
         },
       });
 
@@ -138,6 +139,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
     setSavedFilename(filename);
   };
 
+  const { toggleColorCoding } = useSettings();
   const handleLoadExample = async () => {
 
     setConfirmDialog({
@@ -146,6 +148,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
       onConfirm: async () => {
         setLoading(true);
         await handleImportData(exampleData);
+        toggleColorCoding(); // Ota värikoodit käyttöön latauksen jälkeen
         setLoading(false);
         setSuccess(true);
         setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
