@@ -10,7 +10,7 @@ const StickyTop = styled.div`
     top: 52px;
     left: 0;
     background-color: #e1f5eb;
-    padding: 6px 40px;
+    padding: 6px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;    
@@ -45,6 +45,10 @@ export const ProductStickyTop = styled(StickyTop) `
     grid-column: 1 / span 2; /* Vie koko rivin */
     display: flex;
     gap: 10px; /* Väli elementtien välillä */
+    //border: solid grey 1px;
+    background-color:#bfe0c8;//#f1f2bd; //'#447877'; //'#bfe0c8'; //#edfaf1;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding-left: 8px;
   }
 
 `;

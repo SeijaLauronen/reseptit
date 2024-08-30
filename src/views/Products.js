@@ -41,7 +41,7 @@ const Products = ({ refresh = false, categoryId }) => {
   const { colorCodingEnabled } = useSettings();
 
   const { colors, selectedColors, toggleColor, setSelectedColors } = useColors(); //Hook For filtering in Products
-
+  const noColor = { code: '#e1f5eb', name: 'NoColor' }; // Taustan värinen
 
   const productRefs = useRef({}); // Ref object to hold references to product items
 
@@ -273,19 +273,23 @@ const Products = ({ refresh = false, categoryId }) => {
   };
 
   const colorFilteredProducts = (products) => {
-
     let filteredProducts = products;
+  
     if (selectedColors.length > 0 && colorCodingEnabled) {
-      // Suodata väreillä
-      filteredProducts = filteredProducts.filter(product =>
-        Object.keys(colors).some(colorKey =>
+      filteredProducts = filteredProducts.filter(product => {
+        // Tarkista, onko tuote värikoodien joukossa tai onko se ilman värikoodia
+        const hasSelectedColor = Object.keys(colors).some(colorKey =>
           product[colorKey] && selectedColors.includes(colorKey)
-        )
-      );
+        );
+        const noColorSelected = selectedColors.includes('noColor') && !Object.keys(colors).some(colorKey => product[colorKey]);
+  
+        return hasSelectedColor || noColorSelected;
+      });
     }
-
+  
     return filteredProducts;
   };
+
 
   const sortedProducts = () => {
 
@@ -372,7 +376,7 @@ const Products = ({ refresh = false, categoryId }) => {
 
             {!selectedCategoryId && (
               <>
-                <label>                  
+                <label>
                   Kategoriat
                 </label>
                 <SwitchButtonComponent
@@ -397,11 +401,11 @@ const Products = ({ refresh = false, categoryId }) => {
                 enabled={selectedColors.length > 0}
                 onClick={handleFilterClick}
               />
-
-              <ColorItemsWrapper>
+              <ColorItemsWrapper className='CIWrapper'>
                 {Object.keys(colors).map(colorKey => (
-                  <ColorItemContainer key={colorKey}>
+                  <ColorItemContainer key={colorKey} className='CIContainer'>
                     <ColorItemSelection
+                      className='CISelection'
                       color={colors[colorKey]}
                       selected={selectedColors.includes(colorKey)}
                       onClick={() => toggleColor(colorKey)}
@@ -409,6 +413,18 @@ const Products = ({ refresh = false, categoryId }) => {
                     </ColorItemSelection>
                   </ColorItemContainer>
                 ))}
+
+                <ColorItemContainer className='CIContainer'>
+                  <ColorItemSelection
+                    className='CISelection'
+                    color={noColor}
+                    selected={selectedColors.includes('noColor')}
+                    onClick={() => toggleColor('noColor')}
+                  >
+                  </ColorItemSelection>
+                </ColorItemContainer>
+
+
               </ColorItemsWrapper>
             </div>
           )}

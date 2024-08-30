@@ -39,13 +39,23 @@ export const ColorItem = styled.label`
 
 export const ColorItemSelection = styled(ColorItem)`
   width: 26px;
-  height : 18px;
-  margin-right: 6px;
-  margin-left: 10px;
+  height : 12px;
+  margin-right: 4px;
+  margin-left: 4px;
   margin-top: 4px;
-  filter: ${({ selected }) => (selected ? 'brightness(1.1)' : 'brightness(85%)')};
+  //border: solid grey 1px;  
+  border: ${({ color }) => color.code || '#000'};
+  filter: ${({ color, selected }) => 
+    color.name === 'NoColor' 
+      ? undefined 
+      : selected 
+        ? 'brightness(1.1)' 
+        : 'brightness(85%)'};
   outline: ${({ selected }) => (selected ? '1px solid black' : 'none')};
   border-radius: ${({ selected }) => (selected ? 'none' : '10px')};
+  box-shadow: 
+    0px 4px 8px rgba(0, 0, 0, 0), //Ulkoinen varjo
+    inset 0px -1px 4px 2px rgba(0, 0, 0, 0.2); // Sisäinen varjo: Vaaka-siirtymä, Pysty-siirtymä, Sumennus-säde, Leviämis-säde
 `;
 
 
