@@ -139,7 +139,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
     setSavedFilename(filename);
   };
 
-  const { toggleColorCoding } = useSettings();
+  const { setColorCodingEnabled } = useSettings();
   const handleLoadExample = async () => {
 
     setConfirmDialog({
@@ -148,7 +148,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
       onConfirm: async () => {
         setLoading(true);
         await handleImportData(exampleData);
-        toggleColorCoding(); // Ota värikoodit käyttöön latauksen jälkeen
+        setColorCodingEnabled(true); // Ota värikoodit käyttöön latauksen jälkeen
         setLoading(false);
         setSuccess(true);
         setConfirmDialog({ isOpen: false, message: '', onConfirm: null });

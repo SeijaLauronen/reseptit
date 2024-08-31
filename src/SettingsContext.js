@@ -17,7 +17,7 @@ export const SettingsProvider = ({ children }) => {
   };
 
   return (
-    <SettingsContext.Provider value={{ colorCodingEnabled, toggleColorCoding }}>
+    <SettingsContext.Provider value={{ colorCodingEnabled, toggleColorCoding, setColorCodingEnabled }}>
       {children}
     </SettingsContext.Provider>
   );
