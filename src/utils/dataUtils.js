@@ -90,8 +90,8 @@
     for (const line of lines) {
       if (line.trim() === '') continue;
   
-      if (line.endsWith(':')) {
-        const categoryName = line.slice(0, -1).trim();
+      if (line.trim().endsWith(':')) {
+        const categoryName = line.trim().slice(0, -1);
         if (categoryName === noCategoryName) {
           currentCategory = null;
         } else {

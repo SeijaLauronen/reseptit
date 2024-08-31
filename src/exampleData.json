@@ -151,6 +151,15 @@
       "name": "Sukat",
       "categoryId": 6,
       "id": 13
+    },
+    {
+      "name": "Avokado",
+      "categoryId": 1,
+      "id": 316,
+      "c1": false,
+      "c2": false,
+      "c3": true,
+      "black": false
     }
   ]
 }

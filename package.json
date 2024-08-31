@@ -57,7 +57,9 @@
     "@babel/preset-env": "^7.25.0",
     "@babel/preset-react": "^7.24.7",
     "babel-jest": "^29.7.0",
+    "fake-indexeddb": "^6.0.0",
     "gh-pages": "^6.1.1",
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "structured-clone": "^0.2.2"
   }
 }
