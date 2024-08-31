@@ -118,20 +118,6 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
               <StyledDiv>
 
                 <ColorItemsWrapper>
-                  <label>Valitse:</label>
-                  {Object.keys(colors).map(colorKey => (
-                    <ColorItemContainer key={colorKey}>
-
-                      <ColorItemSelection
-                        color={colors[colorKey]}
-                        selected={productSelectedColors.includes(colorKey)}
-                        onClick={() => handleToggleEditColor(colorKey)}
-                      />
-                    </ColorItemContainer>
-                  ))}
-                </ColorItemsWrapper>
-
-                <ColorItemsWrapper>
                   <label>Tuotteen värikoodit:</label>
                   {Object.keys(colors).map(colorKey => (
 
@@ -144,8 +130,19 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                   ))}
                 </ColorItemsWrapper>
 
+                <ColorItemsWrapper>
+                  <label>Valitse:</label>
+                  {Object.keys(colors).map(colorKey => (
+                    <ColorItemContainer key={colorKey}>
 
-
+                      <ColorItemSelection
+                        color={colors[colorKey]}
+                        selected={productSelectedColors.includes(colorKey)}
+                        onClick={() => handleToggleEditColor(colorKey)}
+                      />
+                    </ColorItemContainer>
+                  ))}
+                </ColorItemsWrapper>
 
               </StyledDiv>)
             }

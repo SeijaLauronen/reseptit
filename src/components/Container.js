@@ -2,25 +2,24 @@ import styled from 'styled-components';
 
 
 //DOM-elementtiin liittyvä styled-component: Käytetään transientteja propseja, eli $ "isJotain" eteen, jotta ne eivät välity tuntemattomina DOM:lle
+// TODO tarkista poikkeus isPrintOpen
 const Container = styled.div`
   padding: 55px 5px;
   opacity: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 0.5 : 1)};
   pointer-events: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 'none' : 'auto')};
   transition: opacity 0.3s ease-in-out;
-  //background-color: green;
 `;
 export default Container;
 
 // Lisää tilaa ylös, koska värifiltteri mahdollinen
 export const ProductContainer = styled(Container)`
-  padding-top: 80px;
+  padding-top: 90px;
 `;
 
 export const FormContainer = styled.div`
 padding: 20px;
 background-color: #fff;
 margin: 20px 0;
-//background-color: blue;
 `;
 
 export const ScrollableFormContainer = styled(FormContainer)`

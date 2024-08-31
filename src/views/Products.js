@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar as faStarSolid, faTimes, faMagnifyingGlass, faFilter, faFunnelDollar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarSolid, faTimes, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import EditProductForm from './forms/EditProductForm';
 import Accordion from '../components/Accordion';
@@ -156,7 +156,7 @@ const Products = ({ refresh = false, categoryId }) => {
       const elementPosition = element.getBoundingClientRect().top;
 
       // Dynaaminen offset, koska näppäimistö vie tilaa. visualViewport ei sisällä on-screen näppäimistöä
-      const newOffset = window.visualViewport ? window.visualViewport.height / 2 : offset;
+      //const newOffset = window.visualViewport ? window.visualViewport.height / 2 : offset;
       //const offsetPosition = elementPosition + window.scrollY - newOffset; // ei toimi toivotusti 
       const offsetPosition = elementPosition + window.scrollY - offset;
 
@@ -274,7 +274,7 @@ const Products = ({ refresh = false, categoryId }) => {
 
   const colorFilteredProducts = (products) => {
     let filteredProducts = products;
-  
+
     if (selectedColors.length > 0 && colorCodingEnabled) {
       filteredProducts = filteredProducts.filter(product => {
         // Tarkista, onko tuote värikoodien joukossa tai onko se ilman värikoodia
@@ -282,11 +282,11 @@ const Products = ({ refresh = false, categoryId }) => {
           product[colorKey] && selectedColors.includes(colorKey)
         );
         const noColorSelected = selectedColors.includes('noColor') && !Object.keys(colors).some(colorKey => product[colorKey]);
-  
+
         return hasSelectedColor || noColorSelected;
       });
     }
-  
+
     return filteredProducts;
   };
 
@@ -375,7 +375,8 @@ const Products = ({ refresh = false, categoryId }) => {
             <b>{selectedCategoryName && `${selectedCategoryName}:`}Tuotteet</b>
 
             {!selectedCategoryId && (
-              <>
+
+              <div className="category-switch">
                 <label>
                   Kategoriat
                 </label>
@@ -383,7 +384,7 @@ const Products = ({ refresh = false, categoryId }) => {
                   checked={showByCategory}
                   onChange={handleShowByCategory}
                 />
-              </>
+              </div>
 
             )}
             <IconWrapper onClick={handleShowFavorites}>
@@ -398,7 +399,7 @@ const Products = ({ refresh = false, categoryId }) => {
             <div className='filter-row'>
 
               <FilterWithCrossIcon
-                enabled={selectedColors.length > 0}
+                $filterEnabled={selectedColors.length > 0}
                 onClick={handleFilterClick}
               />
               <ColorItemsWrapper className='CIWrapper'>

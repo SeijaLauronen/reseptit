@@ -13,7 +13,7 @@ const helpTexts = {
 
       <b>Kategoriat</b>
       <p>
-        Voit lisätä mieleisiäsi kategorioita, kuten Hedelemät, Vihannekset, Leivät jne.
+        Voit lisätä mieleisiäsi kategorioita, kuten Hedelmät, Vihannekset, Leivät jne.
       </p><p>
         Voit muuttaa kategogorioiden järjestystä raahaamalla kategorian sopivaan kohtaan.
       </p><p>

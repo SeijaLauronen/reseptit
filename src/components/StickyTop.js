@@ -23,7 +23,7 @@ const StickyTop = styled.div`
 
 export default StickyTop;
 
-export const ProductStickyTop = styled(StickyTop) `
+export const ProductStickyTop = styled(StickyTop)`
 
   display: grid;
   grid-template-rows: auto auto ; /* Kaksi riviä */
@@ -40,6 +40,12 @@ export const ProductStickyTop = styled(StickyTop) `
     align-items: center;
   }
 
+  .category-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Väli labelin ja switchin välillä */
+  }
+  
   /* Alempi rivi showFilterRow */
   .filter-row {
     grid-column: 1 / span 2; /* Vie koko rivin */
@@ -49,6 +55,8 @@ export const ProductStickyTop = styled(StickyTop) `
     background-color:#bfe0c8;//#f1f2bd; //'#447877'; //'#bfe0c8'; //#edfaf1;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     padding-left: 8px;
+    padding-top: 6px;
+    padding-bottom: 2px;
   }
 
 `;
