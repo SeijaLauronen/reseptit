@@ -36,7 +36,7 @@ const helpTexts = {
       <p>
         Jos tulit sivulle <b>alavalikon kautta</b>, näytetään kaikki tuotteet. Tällöin uudelle tuotteelle
         ei anneta kategoriaa, mutta voit asettaa sen kynän kuvaa klikkaamalla.
-        Laittamalla ruksin "Kategorioittain" kohtaan, tuotteet näytetään kategorioittain
+        Asettamalla yläreunasta "Kategoriat" näkymään, tuotteet näytetään kategorioittain
         ja ylimpänä ne, joille ei ole asetettu kategoriaa.
       </p>
       <p>
