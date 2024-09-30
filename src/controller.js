@@ -2,7 +2,7 @@ import { fetchCategories, addCategory as dbAddCategory, getCategoryById as dbGet
 import { fetchProducts, getProductById as dbGetProductById, addProduct as dbAddProduct, updateProduct as dbUpdateProduct, updateProducts as dbUpdateProducts, deleteProduct as dbDeleteProduct } from './dbUtils';
 import { clearDatabase } from './dbUtils'; //TODO tarvitaankohan
 import { importDataToDatabase, exportDataFromDatabase, loadExampleDataToDatabase } from './dbUtils';
-
+import { upsertColorDefinition as dbUpsertColorDefinition, getColorDefinition as dbGetColorDefinition}  from './dbUtils';
 
 export const handleImportData = async (data) => {
   try {
@@ -21,7 +21,6 @@ export const handleExportData = async () => {
 export const handleLoadExample = async () => {
   return await loadExampleDataToDatabase();
 };
-
 
 
 const validateCategory = (category) => {
@@ -144,6 +143,37 @@ export const updateProductField = async (id, field, value) => {
   product[field] = value;
   await dbUpdateProduct(id, product);
 };
+
+
+// Validointifunktio värin lisämääreille
+const validateColorDefinition = (colorId, definition) => {
+  if (!colorId || colorId.trim() === '') {
+      return 'Color ID on pakollinen tieto';
+  }
+  if (!definition) {
+      return 'Värin lisämääre on pakollinen';
+  }
+  return null;
+};
+
+// Lisää tai päivitä värin lisämääre
+export const upsertColorDefinition = async (colorId, definition) => {
+  const error = validateColorDefinition(colorId, definition);
+  if (error) {
+      throw new Error(error);
+  }
+  await dbUpsertColorDefinition(colorId, definition);
+};
+
+// Hae värin lisämääre tietokannasta
+export const getColorDefinition = async (colorId) => {
+  const colorDefinition = await dbGetColorDefinition(colorId);
+  return colorDefinition;
+};
+
+
+
+
 
 //Tietokannan tyhjennys
 export const deleteAllData = async (data) => {

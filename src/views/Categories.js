@@ -11,6 +11,7 @@ import { AddButton } from '../components/Button';
 import Container, { IconContainer, IconWrapper } from '../components/Container';
 import { CategoryItem } from '../components/Item';
 import Toast from '../components/Toast'; 
+import MyErrorBoundary from '../components/ErrorBoundary';
 
 const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
   const [categories, setCategories] = useState([]);
@@ -94,6 +95,7 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
   // Container in styled komponentti, käytetään transientti props $isJotain...
   // transientti props $isOpen ei käytetä, koska EditCategoryForm ei ole styled komponentti
   return (
+    <MyErrorBoundary>
     <>  
       { error && (
         <Toast message={error} onClose={() => setError('')} />
@@ -159,6 +161,7 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
         <AddButton onClick={handleAddCategory}/>
       </StickyBottom>      
     </>
+    </MyErrorBoundary>
   );
 };
 

@@ -10,8 +10,10 @@ import { getBrowserName } from '../utils/browserUtils';
 import DeviceInfo from './DeviceInfo';
 import { useSettings } from '../SettingsContext';
 import SwitchButtonComponent from './SwitchButtonCompnent';
+import ColorManagement from '../ColorManagement';
+import Toast from './Toast';
 
-const programVersion = '2024-09-01: 1.210';
+const programVersion = '2024-09-30: 1.212';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -108,12 +110,12 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
 
   const { colorCodingEnabled, toggleColorCoding } = useSettings();
 
-
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   //const [infoMessage, setInfoMessage] = useState('');
   const [infoMessage, setInfoMessage] = useState(null);
   const [showDataManagement, setShowDataManagement] = useState(false);
   const [dataManagementAction, setDataManagementAction] = useState('');
+  const [showColorManagement, setShowColorManagement] = useState(false);
 
   const handleOpenInfo = (message) => {
     setInfoMessage(message);
@@ -130,7 +132,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
 
   const handleOpenDataManagement = (action) => {
     setShowDataManagement(true);
-    setDataManagementAction(action);    
+    setDataManagementAction(action);
     //onToggleMenu(false); // Suljetaan menu kun data management aukeaa
   };
 
@@ -143,6 +145,21 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
       onToggleMenu(false);
     }
   };
+
+  const handleOpenColorManagement = () => {
+    setShowColorManagement(true);
+  };
+
+  const handleCloseColorManagement = (refresh) => {
+
+    setShowColorManagement(false);
+    //Todo onkohan refresh tarpeen
+    if (refresh) {
+      onDatabaseCleared(); // refresh kutsu App.js:lle
+      onToggleMenu(false);
+    }
+
+  }
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle, esim $isOpen
   // tai käytetään pieniä kirjaimia kuten fillspace eikä fillSpace
@@ -170,14 +187,15 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
           <SwitchButtonComponent
             checked={colorCodingEnabled}
             onChange={toggleColorCoding}
-            /*
-            onColor="#00ff00"
-            offColor="#ff0000"
-            onHandleColor="#0000ff"
-            offHandleColor="#ffffff"
-            */
+          /*
+          onColor="#00ff00"
+          offColor="#ff0000"
+          onHandleColor="#0000ff"
+          offHandleColor="#ffffff"
+          */
           />
         </MenuItemText>
+        <MenuItem onClick={() => handleOpenColorManagement()}>Värien määrittely<ChevronIcon /></MenuItem>
         <MenuHeader>Tietoja</MenuHeader>
         <MenuItemText>Sovellus: Ostokset</MenuItemText>
         <MenuItemText>Versio: {programVersion}</MenuItemText>
@@ -196,6 +214,11 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
         isOpen={showDataManagement}
         action={dataManagementAction}
         onClose={handleCloseDataManagement}
+      />
+
+      <ColorManagement
+        isOpen={showColorManagement}
+        onClose={handleCloseColorManagement}
       />
 
     </>

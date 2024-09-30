@@ -10,6 +10,7 @@ import helpTexts from './helpTexts';
 import DisabledOverlay from './components/DisabledOverlay';
 
 const App = () => {
+
   const [refresh, setRefresh] = useState(false);
   const [view, setView] = useState('categories'); // Lisätty view-tila
   const [isMenuOpen, setIsMenuOpen] = useState(false);

@@ -28,7 +28,8 @@ const AccordionContent = styled.div`
   display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
 `;
 
-const Accordion = ({ title, children, defaultExpanded = false }) => {
+//Huom! ei tarveitse antaa kaikkia propseja!! Erilainen kuin funktio. Esim colorItem voi puuttua
+const Accordion = ({ title, colorItem, children, defaultExpanded = false }) => {
   const [isOpen, setIsOpen] = useState(defaultExpanded);
 
   const toggleAccordion = () => {
@@ -38,10 +39,13 @@ const Accordion = ({ title, children, defaultExpanded = false }) => {
   return (
     <AccordionWrapper>
       <AccordionTitle onClick={toggleAccordion}>
-        {title}
-        <span>          
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {colorItem}
+          <span style={{ marginLeft: '10px' }}>{title}</span>
+        </div>
+        <span>
           <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
-          </span>
+        </span>
       </AccordionTitle>
       <AccordionContent $isOpen={isOpen}>{children}</AccordionContent>
     </AccordionWrapper>

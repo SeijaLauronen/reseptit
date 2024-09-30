@@ -1,6 +1,6 @@
 // dbUtils.js
 import { getDB } from './database';
-const STORE_NAMES = ['categories', 'products']; // Määritä taulujen nimet, TODO kumpaanko näm laitetaan, on myös database.js
+const STORE_NAMES = ['categories', 'products', 'colordefinitions']; // Määritä taulujen nimet, TODO kumpaanko näm laitetaan, on myös database.js
 
 //TODO eri taulujen operaatioit voisi yhdistää lähettämällä taulun nimen ja tietueen parametirnä
 
@@ -157,21 +157,82 @@ export const deleteProduct = async (id) => {
   }
 };
 
+
+// Lisää tai päivitä värin lisämääreet
+export const upsertColorDefinition = async (colorId, definition) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('colordefinitions', 'readwrite');
+    const store = tx.objectStore('colordefinitions');
+
+    // Tarkista, onko väri jo olemassa
+    const existingDefinition = await store.get(colorId);
+
+    if (existingDefinition) {
+      // Päivitä olemassa oleva tietue
+      Object.assign(existingDefinition, definition);
+      await store.put(existingDefinition);
+    } else {
+      // Lisää uusi tietue
+      const newDefinition = { colorId, ...definition };
+      await store.add(newDefinition);
+    }
+  } catch (err) {
+    console.error('Error upserting color definition:', err);
+    throw new Error('Virhe lisättäessä tai päivitettäessä värin määrittelyä: ' + err);
+  }
+};
+
+
+// Hae värin lisämääreet värikoodin perusteella
+export const getColorDefinition = async (colorId) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('colordefinitions', 'readonly');
+    const store = tx.objectStore('colordefinitions');
+    return await store.get(colorId);
+  } catch (err) {
+    console.error('Error fetching color definition:', err);
+    throw new Error('Virhe haettaessa värin määrittelyä: ' + err);
+  }
+};
+
+export const fetchColorDefinitions = async () => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('colordefinitions', 'readonly');
+    const store = tx.objectStore('colordefinitions');
+    return await store.getAll();
+  } catch (err) {
+    console.error('Error fetching color definitions:', err);
+    throw new Error('Virhe haettaessa värin määrittelyä: ' + err);
+  }
+};
+
+
 //TODO tämä on myös tuolla database.js:ssä Valitse jompi kumpi
 // TODO käytetään vakioita, luupataan se
 export const clearDatabase = async () => {
-  const db = await getDB();
-  if (db.objectStoreNames.contains('categories')) {
-    await db.clear('categories');
-  }
-  if (db.objectStoreNames.contains('products')) {
-    await db.clear('products');
-  }
-  if (db.objectStoreNames.contains('recipes')) {
-    await db.clear('recipes');
-  }
-  if (db.objectStoreNames.contains('days')) {
-    await db.clear('days');
+  try {
+    const db = await getDB();
+    if (db.objectStoreNames.contains('categories')) {
+      await db.clear('categories');
+    }
+    if (db.objectStoreNames.contains('products')) {
+      await db.clear('products');
+    }
+    if (db.objectStoreNames.contains('recipes')) {
+      await db.clear('recipes');
+    }
+    if (db.objectStoreNames.contains('days')) {
+      await db.clear('days');
+    }
+    if (db.objectStoreNames.contains('colordefinitions')) {
+      await db.clear('colordefinitions');
+    }
+  } catch (err) {
+    console.error('Error clearing DB:', err);
+    throw new Error('Virhe tietojen poistamisessa: ' + err.message);
   }
 };
 
@@ -200,29 +261,39 @@ export const importDataToDatabase = async (data) => {
 };
 
 export const exportDataFromDatabase = async () => {
-  const db = await getDB();
-  const result = {};
-  for (const storeName of STORE_NAMES) {
-    const tx = db.transaction(storeName, 'readonly');
-    const store = tx.objectStore(storeName);
-    const data = await store.getAll();
-    result[storeName] = data;
-    await tx.done;
+  try {
+    const db = await getDB();
+    const result = {};
+    for (const storeName of STORE_NAMES) {
+      const tx = db.transaction(storeName, 'readonly');
+      const store = tx.objectStore(storeName);
+      const data = await store.getAll();
+      result[storeName] = data;
+      await tx.done;
+    }
+    return result;
+  } catch (err) {
+    console.error('Error exporting data:', err);
+    throw new Error('Virhe tietojen hakemisessa: ' + err.message);
   }
-  return result;
 };
 
 export const loadExampleDataToDatabase = async (exampleData) => {
-  const db = await getDB();
-  for (const storeName of STORE_NAMES) {
-    const tx = db.transaction(storeName, 'readwrite');
-    const store = tx.objectStore(storeName);
-    await store.clear(); // Tyhjennä taulu ennen esimerkkiaineiston lisäämistä
-    const items = exampleData[storeName] || [];
-    for (const item of items) {
-      await store.add(item);
+  try {
+    const db = await getDB();
+    for (const storeName of STORE_NAMES) {
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      await store.clear(); // Tyhjennä taulu ennen esimerkkiaineiston lisäämistä
+      const items = exampleData[storeName] || [];
+      for (const item of items) {
+        await store.add(item);
+      }
+      await tx.done;
     }
-    await tx.done;
+  } catch (err) {
+    console.error('Error loading exampledata:', err);
+    throw new Error('Virhe esimerkkitietojen lataamisessa: ' + err.message);
   }
 };
 

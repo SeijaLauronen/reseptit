@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { upsertColorDefinition as controllerUpsertColorDefinition, getColorDefinition as controllerGetColorDefinition } from './controller';
 
 // Väriobjekti, jossa värit määritellään vaiheilla
 const colors = {
@@ -19,6 +20,8 @@ const ColorContext = createContext();
 export const ColorProvider = ({ children }) => {
     // Alkuperäiset valitut värit, joissa jokainen vaihe on taulukko valituista väreistä
     const [selectedColors, setSelectedColors] = useState([]);
+    const [colorDefinitions, setColorDefinitions] = useState({});
+    const [errorState, setErrorState] = useState(null);
 
     const toggleColor = (color) => {
         setSelectedColors(prevColors =>
@@ -28,8 +31,66 @@ export const ColorProvider = ({ children }) => {
         );
     };
 
+
+    // Funktio värin lisämääreen asettamiseen ja tallentamiseen
+    const setColorDefinition = async (colorId, definition) => {
+        try {
+            // Päivitä paikallinen tila
+            setColorDefinitions(prevDefinitions => ({
+                ...prevDefinitions,
+                [colorId]: definition
+            }));
+
+            // Lisää tai päivitä IndexedDB:ssä käyttämällä controllerin funktiota
+            await controllerUpsertColorDefinition(colorId, definition);
+        } catch (error) {
+            console.error('Virhe tallennettaessa värin määrittelyä:', error);
+            //setErrorState(`Virhe tallennettaessa väriä ${colorId}: ${error.message}`);            
+            throw new Error('Virhe tallennettaessa värin määrittelyä: ' + error);
+        }
+    };
+
+    // Funktio haetaan värin lisämääre, jos sellainen on tallennettu
+    const loadColorDefinition = async (colorId) => {
+        try {
+            const definition = await controllerGetColorDefinition(colorId);
+            if (definition) {
+                setColorDefinitions(prevDefinitions => ({
+                    ...prevDefinitions,
+                    [colorId]: definition
+                }));
+            }
+        } catch (error) {
+            console.error('Virhe haettaessa värin määrittelyä:', error);
+            setErrorState(`Virhe haettaessa värin määrittelyä ${colorId}: ${error.message}`);
+            //throw new Error('Virhe haettaessa värin määrittelyä: ' + error);
+            
+        }
+
+    };
+
+
+    //TODO, ei ladata tässä
+    
+    useEffect(() => {
+        // Esimerkki siitä, miten voi ladata värin lisämääreitä, kun komponentti ladataan
+        Object.keys(colors).forEach(colorId => {
+            loadColorDefinition(colorId);
+        });
+        
+    }, []);
+    
+
     return (
-        <ColorContext.Provider value={{ colors, selectedColors, toggleColor, setSelectedColors }}>
+        <ColorContext.Provider value={{
+            colors,
+            selectedColors,
+            toggleColor,
+            setSelectedColors,
+            setColorDefinition,
+            colorDefinitions,
+            errorState
+        }}>
             {children}
         </ColorContext.Provider>
     );
