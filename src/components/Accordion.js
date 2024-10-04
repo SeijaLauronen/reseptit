@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,23 +28,37 @@ const AccordionContent = styled.div`
   display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
 `;
 
-//Huom! ei tarveitse antaa kaikkia propseja!! Erilainen kuin funktio. Esim colorItem voi puuttua
-const Accordion = ({ title, colorItem, children, defaultExpanded = false }) => {
+//Huom! ei tarvitse antaa kaikkia propseja!! Erilainen kuin funktio. Esim colorItem voi puuttua
+const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false, isOpenExternally = null }) => {
   const [isOpen, setIsOpen] = useState(defaultExpanded);
 
+  useEffect(() => {
+    if (isOpenExternally !== null) {
+      //setIsOpen(isOpenExternally);
+      setIsOpen(true);
+    }
+  }, [isOpenExternally]);
+
+
   const toggleAccordion = () => {
-    setIsOpen(!isOpen);
+    // Jos accordion avattiin ulkoisesti, annetaan käyttäjän hallita
+    //if (isOpenExternally === null) {
+      setIsOpen(!isOpen); // Toggle manuaalisesti käyttäjän toimesta
+    //}
   };
 
   return (
     <AccordionWrapper>
       <AccordionTitle onClick={toggleAccordion}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}> {/* Vie lopun käytettävissä olevan tilan, jolloin muut pysyy oikeassa laidassa*/}
           {colorItem}
           <span style={{ marginLeft: '10px' }}>{title}</span>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>{/* Justify oikeaan reunaan */}
+          {icons}
+        </div>
         <span>
-          <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
+          <FontAwesomeIcon style={{ marginLeft: '10px' }} icon={isOpen ? faChevronUp : faChevronDown} />
         </span>
       </AccordionTitle>
       <AccordionContent $isOpen={isOpen}>{children}</AccordionContent>

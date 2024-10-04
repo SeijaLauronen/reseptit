@@ -2,23 +2,28 @@ import React, { useState, useEffect } from 'react';
 import MyErrorBoundary from './components/ErrorBoundary';
 import { SlideInContainerRight } from './components/Container';
 import Toast from './components/Toast';
-import { CloseButtonComponent } from './components/Button';
+import { CloseButtonComponent, SaveButton, UndoButton } from './components/Button';
 import { ColorItemSelection } from './components/ColorItem';
 import { useColors } from './ColorContext';
 import { InputColorShortName, InputTextArea } from './components/Input';
 import { ScrollableFormContainer, ButtonGroup, GroupLeft, GroupRight, IconContainer, IconWrapper } from './components/Container';
 import { CancelButton } from './components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faSave, faUndo, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import Accordion from './components/Accordion';
+import ConfirmDialog from './components/ConfirmDialog';
 
 const ColorManagement = ({ isOpen, onClose }) => {
-    const [error, setError] = useState(''); // Paikallinen virhetila
     const { colors, colorDefinitions, setColorDefinition, errorState } = useColors();
+    const [error, setError] = useState(''); // Paikallinen virhetila    
     const [editingColor, setEditingColor] = useState(null); // Editoitava väri
     const [tempShortName, setTempShortName] = useState(''); // Tilapäinen lyhenteen tila
     const [tempColorInfo, setTempColorInfo] = useState(''); // Tilapäinen värin selitteen tila
     const [isModified, setIsModified] = useState(false); // Seurataan, onko muutoksia tehty
+    const [accordionAction, setAccordionAction] = useState(null); // Painettu värin kohdalla save tai peruuta ikonia   
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null, onCancel: null });
+
+    //TODO Accordion ei suoraan avaudu Editillä, jos on ensin käsin suljettu, miksi...?
 
     useEffect(() => {
         if (errorState) {
@@ -29,6 +34,8 @@ const ColorManagement = ({ isOpen, onClose }) => {
     useEffect(() => {
         if (isOpen) {
             setError('');
+            setEditingColor(null); // Nollataan editointi
+            setIsModified(false); // Resetoidaan muutostila
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
@@ -43,7 +50,8 @@ const ColorManagement = ({ isOpen, onClose }) => {
         setEditingColor(colorKey);
         setTempShortName(colorDefinitions[colorKey]?.shortname || ''); // Alustetaan lyhenne
         setTempColorInfo(colorDefinitions[colorKey]?.colorinfo || ''); // Alustetaan selite
-        setIsModified(false); // Alustetaan muutostila
+        setIsModified(false); // Alustetaan muutostila  
+        setAccordionAction(colorKey);
     };
 
     const handleSaveColor = async (colorKey, event) => {
@@ -57,32 +65,54 @@ const ColorManagement = ({ isOpen, onClose }) => {
         } catch (err) {
             setError(err.message);
         }
+        setAccordionAction(colorKey);
     };
 
-    const handleCancelEdit = (event) => {
+    const handleCancelEdit = (colorKey, event) => {
         event.stopPropagation(); // Estetään tapahtuman eteneminen Accordionille
         setEditingColor(null); // Peru editointi
         setIsModified(false); // Resetoidaan muutostila
+        setAccordionAction(colorKey);
     };
+
 
     const handleClose = () => {
         if (isModified) {
-            const confirmClose = window.confirm("Olet tehnyt muutoksia. Haluatko tallentaa muutokset ennen sulkemista?");
-            if (confirmClose) {
-                if (editingColor) {
-                    handleSaveColor(editingColor);
-                }
-            } else {
-                setEditingColor(null); // Poistutaan editointitilasta
-            }
+            setConfirmDialog({
+                isOpen: true,
+                message: 'Olet tehnyt muutoksia. Haluatko tallentaa muutokset ennen sulkemista?',
+                onConfirm: () => {
+                    if (editingColor) {
+                        handleSaveColor(editingColor);
+                    }
+                    setConfirmDialog({ isOpen: false, message: '', onConfirm: null, onCancel: null });
+                    setEditingColor(null);
+                    setIsModified(false);
+                    onClose(false);
+
+                },
+                onCancel: () => {
+                    setConfirmDialog({ isOpen: false, message: '', onConfirm: null, onCancel: null });
+                },
+            });
+
+        } else {
+            onClose(false); // Suljetaan ilman tallennusta, jos peruutetaan tai muutoksia ei ole tehty TODO Tarkista vielä, mitä tämä tekee
         }
-        onClose(false); // Suljetaan ilman tallennusta, jos peruutetaan tai muutoksia ei ole tehty
-    };
+    }
+
+    const handleUndoConfirm = () => {
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: null, onCancel: null });
+        setEditingColor(null);
+        setIsModified(false);
+        onClose(false);
+    }
 
     const handleFieldChange = (setter) => (e) => {
         setter(e.target.value);
         setIsModified(true); // Päivitetään muutostila
     };
+
 
     return (
         <MyErrorBoundary>
@@ -105,41 +135,50 @@ const ColorManagement = ({ isOpen, onClose }) => {
                                     selected={true}
                                 />
                             }
-                            title={
+                            title={colorDefinitions[colorKey]?.shortname || ''}
+                            icons={
                                 <>
-                                    {colors[colorKey].name}
                                     {editingColor === null && (
-                                        <IconWrapper onClick={(event) => handleEditColor(colorKey, event)}>
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </IconWrapper>
+                                        <IconContainer>
+                                            <IconWrapper onClick={(event) => handleEditColor(colorKey, event)}>
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </IconWrapper>
+                                        </IconContainer>
                                     )}
 
                                     {editingColor === colorKey && (
                                         <>
                                             <IconContainer>
                                                 <IconWrapper onClick={(event) => handleSaveColor(colorKey, event)}>
-                                                    <FontAwesomeIcon icon={faSave} />
+                                                    <FontAwesomeIcon
+                                                        icon={faSave}
+                                                        style={{ color: 'green' }}
+                                                    />
                                                 </IconWrapper>
-                                                <IconWrapper onClick={(event) => handleCancelEdit(event)}>
-                                                    <FontAwesomeIcon icon={faTimes} />
+                                                <IconWrapper onClick={(event) => handleCancelEdit(colorKey, event)}>
+                                                    <FontAwesomeIcon
+                                                        icon={faUndo}
+                                                        style={{ color: 'blue' }}
+                                                    />
                                                 </IconWrapper>
                                             </IconContainer>
                                         </>
                                     )}
                                 </>
                             }
+                            isOpenExternally={accordionAction === colorKey || editingColor === colorKey} // Avataan Accordion kun kyseistä väriä editoidaan. TODO No tämä taas aiheuttaa sen, että sulkeutuu, kun editoitu                            
                             defaultExpanded={true}
-                            disabled={editingColor !== null && editingColor !== colorKey} // Disable other accordions
+                            disabled={editingColor !== null && editingColor !== colorKey} // Disable other accordions, TODO ei tämä tainnut toimia
                         >
                             {editingColor === colorKey ? (
                                 <>
-                                    <label>Värin lyhenne:</label>
+                                    <label><strong>Lyhenne:</strong></label>
                                     <InputColorShortName
                                         value={tempShortName}
                                         onChange={handleFieldChange(setTempShortName)} // Muutostilan päivitys
                                         placeholder="Lyhenne"
                                     />
-                                    <label>Värin selite:</label>
+                                    <br /><label><strong>Selite:</strong></label><br />
                                     <InputTextArea
                                         value={tempColorInfo}
                                         onChange={handleFieldChange(setTempColorInfo)} // Muutostilan päivitys
@@ -148,8 +187,8 @@ const ColorManagement = ({ isOpen, onClose }) => {
                                 </>
                             ) : (
                                 <>
-                                    <p><strong>Lyhenne:</strong> {colorDefinitions[colorKey]?.shortname || 'Ei määritelty'}</p>
-                                    <p><strong>Selite:</strong> {colorDefinitions[colorKey]?.colorinfo || 'Ei määritelty'}</p>
+                                    <strong>Lyhenne:</strong> {colorDefinitions[colorKey]?.shortname || ''}<br />
+                                    <strong>Selite:</strong> {colorDefinitions[colorKey]?.colorinfo || ''}
                                 </>
                             )}
                         </Accordion>
@@ -162,6 +201,19 @@ const ColorManagement = ({ isOpen, onClose }) => {
                         <CancelButton onClick={handleClose}>Sulje</CancelButton>
                     </GroupRight>
                 </ButtonGroup>
+
+                <ConfirmDialog
+                    isOpen={confirmDialog.isOpen}
+                    message={confirmDialog.message}
+                    onConfirm={confirmDialog.onConfirm}
+                    onCancel={confirmDialog.onCancel}
+                    LeftButtonComponent={SaveButton}
+                    leftButtonText=' '
+                    MiddleButtonComponent={UndoButton}
+                    middleButtonText='Hylkää'
+                    onMiddleButtonAction={handleUndoConfirm}
+                />
+
             </SlideInContainerRight>
         </MyErrorBoundary>
     );

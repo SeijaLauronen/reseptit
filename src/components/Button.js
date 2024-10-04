@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion, faCopy, faPaste, faShare } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion, faCopy, faPaste, faShare, faUndo } from '@fortawesome/free-solid-svg-icons';
 
 const Button = styled.button`
   background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#007BFF')};
@@ -76,6 +76,16 @@ export const AddButton = (props) => <IconButtonGreen icon={faPlus} defaultText="
 
 export const CancelButton = styled(props => (
   <ButtonComponent icon={faTimes} defaultText="Peruuta" {...props} />
+))`
+  background-color: #cbcec9;
+  color: black;
+  &:hover {
+    background-color: #a8a9a8;
+  }
+`;
+
+export const UndoButton = styled(props => (
+  <ButtonComponent icon={faUndo} defaultText="Peru muutokset" {...props} />
 ))`
   background-color: #cbcec9;
   color: black;
