@@ -36,12 +36,13 @@ export const ColorItem = styled.label`
   border: solid black 1px;
 `;
 
-
+//Värifiltteririvin määritykset Tuotesivulla
 export const ColorItemSelection = styled(ColorItem)`
-  width: 26px;
+  font-size: 12px; /* Tekstin koko */
+  width: 38px; /* 26 */
   height : 12px;
-  margin-right: 4px;
-  margin-left: 4px;
+  margin-right: 1px; /* 4 */
+  margin-left: 1px; /* 4 */
   margin-top: 4px;
   //border: solid grey 1px;  
   border: ${({ color }) => color.code || '#000'};

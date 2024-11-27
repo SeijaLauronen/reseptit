@@ -40,7 +40,7 @@ const Products = ({ refresh = false, categoryId }) => {
   const [isShopLongPress, setIsShopLongPress] = useState(false);
   const { colorCodingEnabled } = useSettings();
 
-  const { colors, selectedColors, toggleColor, setSelectedColors } = useColors(); //Hook For filtering in Products
+  const { colors, selectedColors, toggleColor, setSelectedColors, colorDefinitions } = useColors(); //Hook For filtering in Products
   const noColor = { code: '#e1f5eb', name: 'NoColor' }; // Taustan värinen
 
   const productRefs = useRef({}); // Ref object to hold references to product items
@@ -410,7 +410,7 @@ const Products = ({ refresh = false, categoryId }) => {
                       color={colors[colorKey]}
                       selected={selectedColors.includes(colorKey)}
                       onClick={() => toggleColor(colorKey)}
-                    >
+                    > {colorDefinitions[colorKey]?.shortname || ''}
                     </ColorItemSelection>
                   </ColorItemContainer>
                 ))}
@@ -421,10 +421,9 @@ const Products = ({ refresh = false, categoryId }) => {
                     color={noColor}
                     selected={selectedColors.includes('noColor')}
                     onClick={() => toggleColor('noColor')}
-                  >
+                  >Väritön
                   </ColorItemSelection>
                 </ColorItemContainer>
-
 
               </ColorItemsWrapper>
             </div>
