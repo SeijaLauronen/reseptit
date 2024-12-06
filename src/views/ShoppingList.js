@@ -254,7 +254,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                     <InputQuantity
                       disabled={isPrintOpen}
                       type="number"
-                      step="0.5"
+                      // inputMode="decimal"  // Lisätään tämä, että kännykällä hyväksyy desimaalierottimen
+                      step="any" //vaihtoehtoisesti voidaan laittaa tämä, niin hyväksyy desimaalit
                       min="0"
                       value={product.quantity || ''}
                       onChange={(e) => handleQuantityChange(product.id, e.target.value)}
