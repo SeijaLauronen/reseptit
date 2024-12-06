@@ -251,15 +251,24 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                   />
                   <span>{product.name}</span>
                   <InputWrapper>
-                    <InputQuantity 
+                    <InputQuantity
                       lang="fi-FI"  //jotta hyväksyy pisteen puhelimen näppikseltä
                       disabled={isPrintOpen}
-                      type="number"
-                      inputMode="decimal"  // Lisätään tämä, että kännykällä hyväksyy desimaalierottimen
-                      step="any" //vaihtoehtoisesti voidaan laittaa tämä, niin hyväksyy desimaalit
+                      type="text" //"number" ei hyväksy pistettä, siksi laitetaan text
+                      inputMode="decimal"  // tällä saadaan kuitenkin numeronäppäimistö mobiilissa
+                      step="any" //vaihtoehtoisesti voidaan laittaa tämä, niin hyväksyy desimaalit (?)
                       min="0"
                       value={product.quantity || ''}
-                      onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                      onChange={(e) => {
+                        let value = e.target.value;
+                        if (/^[0-9]*[.,]?[0-9]*$/.test(value)) {
+                          // ei toimi... 
+                          //const value = e.target.value.replace('.', ','); // Korvaa piste pilkulla
+                          // value = value.replace('.', ','); // tämä, jos target luettiin jo?
+                          handleQuantityChange(product.id, value)                          
+                          //handleQuantityChange(product.id, e.target.value)
+                        }
+                      }}
                       placeholder="Määrä"
                     />
                     <InputUnit
@@ -334,5 +343,6 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     </>
   );
 };
+
 
 export default ShoppingList;
