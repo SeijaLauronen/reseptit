@@ -251,7 +251,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                   />
                   <span>{product.name}</span>
                   <InputWrapper>
-                    <InputQuantity
+                    <InputQuantity 
+                      lang="en-US"  //jotta hyväksyy pisteen puhelimen näppikseltä
                       disabled={isPrintOpen}
                       type="number"
                       // inputMode="decimal"  // Lisätään tämä, että kännykällä hyväksyy desimaalierottimen
