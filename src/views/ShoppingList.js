@@ -255,7 +255,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                       lang="en-US"  //jotta hyväksyy pisteen puhelimen näppikseltä
                       disabled={isPrintOpen}
                       type="number"
-                      // inputMode="decimal"  // Lisätään tämä, että kännykällä hyväksyy desimaalierottimen
+                      inputMode="decimal"  // Lisätään tämä, että kännykällä hyväksyy desimaalierottimen
                       step="any" //vaihtoehtoisesti voidaan laittaa tämä, niin hyväksyy desimaalit
                       min="0"
                       value={product.quantity || ''}
