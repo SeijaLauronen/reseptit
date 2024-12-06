@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { OkButton, DeleteButton, CloseButtonComponent } from '../../components/Button';
-import { FormContainer, ButtonGroup, GroupLeft, GroupRight, SlideInContainerRight as SlideInContainer } from '../../components/Container';
+import { ButtonGroup, GroupLeft, GroupRight, SlideInContainerRight as SlideInContainer } from '../../components/Container';
 
 // TODO: Tässä ei jostain syystä liukuminen toteudu, vaikka Info-komponentissa samanlainen toteutuu
 
@@ -18,7 +18,7 @@ const EditForm = ({ isOpen, onSave, onCancel, onDelete, children, deleteEnabled 
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (
-    <SlideInContainer $isOpen={isOpen}>
+    <SlideInContainer $isOpen={isOpen} className='SlideInContainer'>
       <CloseButtonComponent onClick={onCancel}>Muokkaa</CloseButtonComponent>
       
         {children}

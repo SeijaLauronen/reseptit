@@ -13,7 +13,7 @@ import SwitchButtonComponent from './SwitchButtonCompnent';
 import ColorManagement from '../ColorManagement';
 import Toast from './Toast';
 
-const programVersion = '2024-11-27: 1.214';
+const programVersion = '2024-12-06: 1.215';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -48,8 +48,10 @@ const MenuList = styled.ul`
   top: 50px; /* Alkaa menupalkin alapuolelta */
   left: 0;
   width: 250px;
-  height: calc(100% - 50px); /* Korkeus suhteutettu menupalkkiin */
+  /*height: calc(100% - 50px);*/ /* Korkeus suhteutettu menupalkkiin */
+  max-height: calc(100% - 50px); /* Varmistaa, että menu ei mene yli */
   background-color: white;
+  overflow-y: auto; /* Lisää vierityspalkin, jos sisältö ylittää korkeuden */
   transform: ${({ $isOpen }) => ($isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   transition: transform 0.3s ease-in-out;
   z-index: 999;
@@ -200,6 +202,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
         <MenuItemText>Sovellus: Ostokset</MenuItemText>
         <MenuItemText>Versio: {programVersion}</MenuItemText>
         <MenuItem onClick={() => handleOpenInfo(<DeviceInfo></DeviceInfo>)}>Selaimesi: {getBrowserName()} <ChevronIcon /></MenuItem>
+        <MenuHeader></MenuHeader>
       </MenuList>
 
 

@@ -130,7 +130,8 @@ export const deleteProduct = async (id) => {
 };
 
 export const getProductsOnShoppingList = async () => {
-  const products = await fetchProducts();
+  //const products = await fetchProducts();
+  const products = await getProducts(); //Valmiiksi lajiteltu aakkosittain!
   return products.filter(product => product.onShoppingList);
 };
 

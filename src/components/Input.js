@@ -14,11 +14,18 @@ const InputAdd = styled(Input)`
 export default InputAdd;
 
 export const InputQuantity = styled(Input)`
-    width: 60px;      
+    width: 40px;   
+    &::placeholder {
+    font-size: 9px; /* Pienennä placeholder-tekstin kokoa */
+    /*color: #999;*/ /* Vaihda tarvittaessa placeholderin väri */
+  }   
 `;
 
 export const InputUnit = styled(Input)`
-    width: 50px;      
+    width: 40px;    
+    &::placeholder {
+    font-size: 9px; /* Pienennä placeholder-tekstin kokoa */    
+  }    
 `;
 
 export const InputName = styled(Input)`

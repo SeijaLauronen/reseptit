@@ -254,6 +254,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                     <InputQuantity
                       disabled={isPrintOpen}
                       type="number"
+                      step="0.5"
+                      min="0"
                       value={product.quantity || ''}
                       onChange={(e) => handleQuantityChange(product.id, e.target.value)}
                       placeholder="Määrä"
@@ -289,7 +291,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         </Container>
       </DisabledOverlay>
 
-      <SlideInContainerRight $isOpen={isPrintOpen}>
+      <SlideInContainerRight $isOpen={isPrintOpen} className='SlideInContainerRight'>
         <CloseButtonComponent onClick={handleClosePrint}></CloseButtonComponent>
 
         <textarea
