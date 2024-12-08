@@ -11,9 +11,8 @@ import DeviceInfo from './DeviceInfo';
 import { useSettings } from '../SettingsContext';
 import SwitchButtonComponent from './SwitchButtonCompnent';
 import ColorManagement from '../ColorManagement';
-import Toast from './Toast';
 
-const programVersion = '2024-12-06: 1.221';
+const programVersion = '2024-12-08: 1.222';
 
 const MenuContainer = styled.div`
   position: fixed;
