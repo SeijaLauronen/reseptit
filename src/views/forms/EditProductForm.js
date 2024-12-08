@@ -12,6 +12,11 @@ import styled from 'styled-components';
 const StyledDiv = styled.div`
   margin-bottom: 15px;
 `;
+const Separator = styled.div`
+  margin-top: 15px;
+  background-color: lightgrey;
+  height: 2px;
+`;
 
 const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmount = false }) => {
   const [name, setName] = useState(product.name);
@@ -24,7 +29,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
   const { colorCodingEnabled } = useSettings();
 
-  const { colors } = useColors(); //Hook
+  const { colors, colorDefinitions } = useColors(); //Hook
   const [productSelectedColors, setProductSelectedColors] = useState([]);
 
   const noColor = { code: '#FFF', name: 'White' };
@@ -94,7 +99,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
         {!editAmount && (
           <>
             <StyledDiv>
-              <label>Nimi </label>
+              <label>Nimi: </label>
               <InputName
                 type="text"
                 value={name}
@@ -103,7 +108,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
               />
             </StyledDiv>
             <StyledDiv>
-              <label>Kategoria </label>
+              <label>Kategoria: </label>
               <Select
                 value={categoryId}
                 onChange={(e) => setCategoryId(parseInt(e.target.value, 10))}
@@ -113,25 +118,22 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                   <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
               </Select>
+              
             </StyledDiv>
             {colorCodingEnabled && (
               <StyledDiv>
-
-                <ColorItemsWrapper>
-                  <label>Tuotteen värikoodit:</label>
+                <Separator className='Separator'/>
+                <ColorItemsWrapper className='ColorItemsWrapper'>
+                  <label>Tuotteen värikoodit: </label>
                   {Object.keys(colors).map(colorKey => (
-
                     <ColorItemContainerLabel key={colorKey} >
-                      <ColorItem color={productSelectedColors.includes(colorKey) ? colors[colorKey] : noColor}>
-                        {/*colorKey || ''*/}
-                      </ColorItem>
+                      <ColorItem color={productSelectedColors.includes(colorKey) ? colors[colorKey] : noColor}/>                      
                     </ColorItemContainerLabel>
-
                   ))}
                 </ColorItemsWrapper>
 
-                <ColorItemsWrapper>
-                  <label>Valitse:</label>
+                <ColorItemsWrapper className='ColorItemsWrapper'>
+                  <label>Valitse: </label>
                   {Object.keys(colors).map(colorKey => (
                     <ColorItemContainer key={colorKey}>
 
@@ -139,10 +141,13 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                         color={colors[colorKey]}
                         selected={productSelectedColors.includes(colorKey)}
                         onClick={() => handleToggleEditColor(colorKey)}
-                      />
+                      >{colorDefinitions[colorKey]?.shortname || ''}
+                      </ColorItemSelection>
                     </ColorItemContainer>
                   ))}
                 </ColorItemsWrapper>
+
+                <Separator className='Separator'/>
 
               </StyledDiv>)
             }
