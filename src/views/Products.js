@@ -21,6 +21,7 @@ import SwitchButtonComponent from '../components/SwitchButtonCompnent';
 // TODO kun tekee refresh ja menee tuotesivulle, tulee (filteri-ikonista?):
 // Received `false` for a non-boolean attribute `enabled`.
 // If you want to write it to the DOM, pass a string instead: enabled="false" or enabled={value.toString()}.
+// TODO ostoskorin klikkamisesta tulee "Passiivinen kuuntelija virhe" e.PreventDefaultista...
 
 const Products = ({ refresh = false, categoryId }) => {
 

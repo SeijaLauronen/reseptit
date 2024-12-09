@@ -6,9 +6,9 @@ const Info = ({ isOpen, onCancel, children }) => {
   
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'; //sivun taustarullaus (scrolling) estetään
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = 'auto'; //sivun taustarullaus normaaliksi
     }
     return () => {
       document.body.style.overflow = 'auto';

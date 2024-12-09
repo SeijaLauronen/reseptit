@@ -32,7 +32,7 @@ const ProductItemComponent = forwardRef(
             {colorCodingEnabled && Object.keys(colors).some(colorKey => product[colorKey]) && (
               <ColorItemsWrapper>
                 {
-                  Object.keys(colors).map(colorKey => (                    
+                  Object.keys(colors).map(colorKey => (
                     < ColorItemContainer key={colorKey} >
                       <ColorItem
                         color={product[colorKey] ? colors[colorKey] : noColor}>
@@ -68,7 +68,8 @@ const ProductItemComponent = forwardRef(
                 <FontAwesomeIcon
                   icon={faShoppingCart}
                   style={{ color: product.onShoppingList ? 'green' : 'lightgrey' }}
-                />
+                />                  
+                
               </IconWrapper>
             </IconContainer>
           </div>

@@ -12,6 +12,7 @@ import Info from '../components/Info';
 import Toast from '../components/Toast';
 import DisabledOverlay from '../components/DisabledOverlay';
 import { importShoppinglistData } from '../utils/dataUtils';
+import { useSettings } from '../SettingsContext';
 
 const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [products, setProducts] = useState([]); //ostolistalla olevat tuotteet
@@ -25,6 +26,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [error, setError] = useState('');
   const [shoppingListText, setShoppingListText] = useState('');
   const [importText, setImportText] = useState('');
+  const {keepQuantityEnabled } = useSettings();
   const noCategoryName = "Ei kategoriaa";
 
   const handleOpenInfo = (message) => {
@@ -117,7 +119,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
       const updatedProducts = selectedProductsArray.map(product => ({
         ...product,
         onShoppingList: false,
-        selected: false
+        selected: false,
+        quantity: keepQuantityEnabled? product.quantity : ""
       }));
 
       await updateProducts(updatedProducts);

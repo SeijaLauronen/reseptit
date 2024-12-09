@@ -11,8 +11,9 @@ import DeviceInfo from './DeviceInfo';
 import { useSettings } from '../SettingsContext';
 import SwitchButtonComponent from './SwitchButtonCompnent';
 import ColorManagement from '../ColorManagement';
+import SettingsManagement from '../SettingsManagement';
 
-const programVersion = '2024-12-08: 1.222';
+const programVersion = '2024-12-09: 1.223';
 
 const MenuContainer = styled.div`
   position: fixed;
@@ -117,6 +118,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
   const [showDataManagement, setShowDataManagement] = useState(false);
   const [dataManagementAction, setDataManagementAction] = useState('');
   const [showColorManagement, setShowColorManagement] = useState(false);
+  const [showSettingsManagement, setShowSettingsManagement] = useState(false);
 
   const handleOpenInfo = (message) => {
     setInfoMessage(message);
@@ -160,6 +162,19 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
       onToggleMenu(false);
     }
 
+  };
+
+  const handleOpenSettingsManagement = () => {
+    setShowSettingsManagement(true);
+  };
+
+  const handleCloseSettingsManagement = (refresh) => {
+    setShowSettingsManagement(false);
+    //Todo onkohan refresh tarpeen
+    if (refresh) {
+      onDatabaseCleared(); // refresh kutsu App.js:lle
+      onToggleMenu(false);
+    }
   }
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle, esim $isOpen
@@ -197,6 +212,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
           />
         </MenuItemText>
         <MenuItem onClick={() => handleOpenColorManagement()}>Värien määrittely<ChevronIcon /></MenuItem>
+        <MenuItem onClick={() => handleOpenSettingsManagement()}>Yleiset määrittelyt<ChevronIcon /></MenuItem>
         <MenuHeader>Tietoja</MenuHeader>
         <MenuItemText>Sovellus: Ostokset</MenuItemText>
         <MenuItemText>Versio: {programVersion}</MenuItemText>
@@ -221,6 +237,11 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
       <ColorManagement
         isOpen={showColorManagement}
         onClose={handleCloseColorManagement}
+      />
+
+      <SettingsManagement
+        isOpen={showSettingsManagement}
+        onClose={handleCloseSettingsManagement}
       />
 
     </>
