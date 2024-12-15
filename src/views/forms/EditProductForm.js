@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import EditForm from './EditForm';
-import { InputName, Select, InputQuantity, InputUnit } from '../../components/Input';
+import { InputName, Select, InputQuantity, InputUnit, InputTextArea } from '../../components/Input';
 import Toast from '../../components/Toast';
 import { getCategories } from '../../controller';
 import { InputWrapper } from '../../components/Container';
@@ -14,6 +14,7 @@ const StyledDiv = styled.div`
 `;
 const Separator = styled.div`
   margin-top: 15px;
+  margin-bottom: 15px;
   background-color: lightgrey;
   height: 2px;
 `;
@@ -23,6 +24,8 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
   const [categoryId, setCategoryId] = useState(product.categoryId || '');
   const [quantity, setQuantity] = useState(product.quantity);
   const [unit, setUnit] = useState(product.unit);
+  const [dose, setDose] = useState(product.dose);
+  const [prodinfo, setProdinfo] = useState(product.info);
 
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
@@ -73,6 +76,8 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
     if (!editAmount) {
       product.name = name;
       product.categoryId = parseInt(categoryId, 10);
+      product.dose = dose;
+      product.info = prodinfo;
       Object.keys(colors).forEach(colorKey => {
         product[colorKey] = productSelectedColors.includes(colorKey);
       });
@@ -118,16 +123,16 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                   <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
               </Select>
-              
             </StyledDiv>
+
             {colorCodingEnabled && (
               <StyledDiv>
-                <Separator className='Separator'/>
+                <Separator className='Separator' />
                 <ColorItemsWrapper className='ColorItemsWrapper'>
                   <label>Tuotteen värikoodit: </label>
                   {Object.keys(colors).map(colorKey => (
                     <ColorItemContainerLabel key={colorKey} >
-                      <ColorItem color={productSelectedColors.includes(colorKey) ? colors[colorKey] : noColor}/>                      
+                      <ColorItem color={productSelectedColors.includes(colorKey) ? colors[colorKey] : noColor} />
                     </ColorItemContainerLabel>
                   ))}
                 </ColorItemsWrapper>
@@ -147,7 +152,26 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                   ))}
                 </ColorItemsWrapper>
 
-                <Separator className='Separator'/>
+                <Separator className='Separator' />
+
+                <StyledDiv>
+                  <label>Annos: </label>
+                  <InputName
+                    type="text"
+                    value={dose}
+                    onChange={(e) => setDose(e.target.value)}
+                    placeholder="Annos"
+                  />
+                </StyledDiv>
+
+                <StyledDiv>
+                  <label>Muistiinpanot: </label>
+                  <InputTextArea
+                    value={prodinfo}
+                    onChange={(e) => setProdinfo(e.target.value)} // Muutostilan päivitys
+                    placeholder="Muistiinpanot"
+                  />
+                </StyledDiv>
 
               </StyledDiv>)
             }

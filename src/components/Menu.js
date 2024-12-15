@@ -13,7 +13,7 @@ import SwitchButtonComponent from './SwitchButtonCompnent';
 import ColorManagement from '../ColorManagement';
 import SettingsManagement from '../SettingsManagement';
 
-const programVersion = '2024-12-09: 1.223';
+const programVersion = '2024-12-15: 1.224';
 
 const MenuContainer = styled.div`
   position: fixed;

@@ -11,7 +11,7 @@ const Info = ({ isOpen, onCancel, children }) => {
       document.body.style.overflow = 'auto'; //sivun taustarullaus normaaliksi
     }
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = 'auto'; //vierityksen esto poistuu aina, kun komponentti unmountataan (eli poistetaan DOM:sta)
     };
   }, [isOpen]);
   
