@@ -70,7 +70,7 @@ export const ColorProvider = ({ children }) => {
             console.error('Virhe värimäärittelyjen latauksessa:', error);
         }
         //};
-    }, [colors]); // Riippuvuus: colors-objekti
+    }, []); // EI lisätä colors-riippuvuutta, koska colors ei muutu, se on vakio. Tyhjä taulukko kuitenkin lisätty
 
     // Funktio haetaan värin lisämääre, jos sellainen on tallennettu
     const loadColorDefinition = async (colorId) => {
@@ -96,7 +96,7 @@ export const ColorProvider = ({ children }) => {
     /*
     useEffect-hookin riippuvuustaulukossa pitäisi olla kaikki hookin sisällä käytettävät muuttujat ja funktiot, jotka ovat komponentin ulkopuolella tai uudelleenluotavia. Tässä tapauksessa loadColorDefinitions on määritelty komponentin sisällä.
     loadColorDefinitions-funktio luodaan joka kerta, kun komponentti renderöidään. useEffect ei tiedä, onko funktio muuttunut, jos sitä ei ole lisätty riippuvuustaulukkoon.
-    Huom! käytettävä useCallback loadColorDefinitions:ssa ja sinne lisätty colors-riippuvuus
+    Huom! käytettävä useCallback loadColorDefinitions:ssa.  Sinne EI lisätä colors-riippuvuutta, koska colors ei muutu, se on vakio
     */
 
     useEffect(() => {
