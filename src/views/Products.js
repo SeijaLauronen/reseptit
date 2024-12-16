@@ -34,7 +34,6 @@ const Products = ({ refresh = false, categoryId }) => {
   const [filter, setFilter] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(categoryId); //Lisäsin tämän
   const [selectedCategoryName, setSelectedCategoryName] = useState(''); //tämä lisätty
-  const [showByCategory, setShowByCategory] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [error, setError] = useState('');
   const [handledProductId, setHandledProductId] = useState(null); // ID of the newly added or edited product
@@ -45,6 +44,21 @@ const Products = ({ refresh = false, categoryId }) => {
   const noColor = { code: '#e1f5eb', name: 'NoColor' }; // Taustan värinen
 
   const productRefs = useRef({}); // Ref object to hold references to product items
+
+
+
+  // Tila alustetaan localStoragesta, jossa etsitään 'productView' arvoa
+  const [showByCategory, setShowByCategory] = useState(() => {
+    const saved = localStorage.getItem('productView');
+    // Tarkistetaan, sisältääkö saved-arvo 'showByCategory'
+    return saved === 'showByCategory' ? true : false;
+  });
+
+  // Tallennetaan localStorageen aina, kun tila muuttuu
+  useEffect(() => {
+    localStorage.setItem('productView', showByCategory ? 'showByCategory' : '');
+  }, [showByCategory]);
+
 
   /* Koska fetchAndSetProductsAndCategories-funktiota käytetään useissa paikoissa, funktion määrittely 
   on hyvä olla useEffect-hookin ulkopuolelle. Varmistetaan kuitenkin, että se ei muutu jokaisella renderöinnillä. 
@@ -61,14 +75,12 @@ const Products = ({ refresh = false, categoryId }) => {
 
       // Expand only the selected category
       if (categoryId) {
-        setExpandedCategories(new Set([parseInt(categoryId, 10)]));
-        setShowByCategory(true); // Set showByCategory to true if a category is selected
+        setExpandedCategories(new Set([parseInt(categoryId, 10)]));        
         // Find and set the selected category name
         const selectedCategory = allCategories.find(category => category.id === parseInt(categoryId, 10));
         setSelectedCategoryName(selectedCategory ? selectedCategory.name : '');
       } else {
-        setExpandedCategories(new Set(allCategories.map(category => category.id).concat('uncategorized')));
-        setShowByCategory(false); // Reset showByCategory to false if no category is selected
+        setExpandedCategories(new Set(allCategories.map(category => category.id).concat('uncategorized')));        
         setSelectedCategoryId(null); // Reset selectedCategoryId to null if no category is selected
         setSelectedCategoryName(''); // Reset the selected category name
       }
@@ -432,7 +444,7 @@ const Products = ({ refresh = false, categoryId }) => {
 
         </ProductStickyTop>
 
-        {showByCategory ? (
+        {(showByCategory || selectedCategoryId !== null) ? (
           groupedProducts
             .filter(category => selectedCategoryId === null || category.id === selectedCategoryId)
             .map(category => (

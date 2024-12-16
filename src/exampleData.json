@@ -161,5 +161,27 @@
       "c3": true,
       "black": false
     }
+  ],
+  "colordefinitions": [
+    {
+      "colorId": "black",
+      "shortname": "Vältä",
+      "colorinfo": ""
+    },
+    {
+      "colorId": "c1",
+      "shortname": "MaTi",
+      "colorinfo": "Hiilareita, proteiinia, kasviksia\nAerobista liikuntaa."
+    },
+    {
+      "colorId": "c2",
+      "shortname": "KeTo",
+      "colorinfo": "Proteiinia, kasviksia.\nLihaskuntoharjoituksia."
+    },
+    {
+      "colorId": "c3",
+      "shortname": "Pe-Su",
+      "colorinfo": "Hyviä rasvoja, hiilareita vain vähän.\nRentoutumista."
+    }
   ]
 }

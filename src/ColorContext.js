@@ -23,6 +23,12 @@ export const ColorProvider = ({ children }) => {
     const [colorDefinitions, setColorDefinitions] = useState({});
     const [errorState, setErrorState] = useState(null);
 
+    // Funktio kaikkien värien tilan resetointiin
+    const resetColors = () => {
+        setSelectedColors([]); // Tyhjennä valitut värit
+        setColorDefinitions({}); // Tyhjennä värimäärittelyt        
+    };
+
     const toggleColor = (color) => {
         setSelectedColors(prevColors =>
             prevColors.includes(color)
@@ -50,6 +56,20 @@ export const ColorProvider = ({ children }) => {
         }
     };
 
+
+    // Funktio kaikkien värimäärittelyjen lataamiseen
+    const loadColorDefinitions = async () => {
+        try {
+            console.log('Ladataan värimäärittelyt...');
+            for (const colorId of Object.keys(colors)) {
+                await loadColorDefinition(colorId); // Lataa värin määrittely
+            }
+            console.log('Värimäärittelyt ladattu.');
+        } catch (error) {
+            console.error('Virhe värimäärittelyjen latauksessa:', error);
+        }
+    };
+
     // Funktio haetaan värin lisämääre, jos sellainen on tallennettu
     const loadColorDefinition = async (colorId) => {
         try {
@@ -74,10 +94,12 @@ export const ColorProvider = ({ children }) => {
     
     useEffect(() => {
         // Esimerkki siitä, miten voi ladata värin lisämääreitä, kun komponentti ladataan
+        /*
         Object.keys(colors).forEach(colorId => {
             loadColorDefinition(colorId);
         });
-        
+        */
+        loadColorDefinitions();        
     }, []);
     
 
@@ -89,6 +111,8 @@ export const ColorProvider = ({ children }) => {
             setSelectedColors,
             setColorDefinition,
             colorDefinitions,
+            resetColors,
+            loadColorDefinitions,
             errorState
         }}>
             {children}

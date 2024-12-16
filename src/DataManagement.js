@@ -10,6 +10,7 @@ import ConfirmDialog from './components/ConfirmDialog';
 import Toast from './components/Toast';
 import MyErrorBoundary from './components/ErrorBoundary';
 import { useSettings } from './SettingsContext';
+import { useColors } from './ColorContext';
 
 //TODO BoldedParagraph teksteineen komponentiksi
 
@@ -140,6 +141,8 @@ const DataManagement = ({ isOpen, action, onClose }) => {
   };
 
   const { setColorCodingEnabled } = useSettings();
+  const { resetColors, loadColorDefinitions } = useColors(); //Hook
+
   const handleLoadExample = async () => {
 
     setConfirmDialog({
@@ -149,6 +152,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
         setLoading(true);
         await handleImportData(exampleData);
         setColorCodingEnabled(true); // Ota värikoodit käyttöön latauksen jälkeen
+        loadColorDefinitions(); //ladataan värimäärittelyt kontekstiin
         setLoading(false);
         setSuccess(true);
         setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
@@ -163,6 +167,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
       onConfirm: async () => {
         setLoading(true);
         await deleteAllData();
+        resetColors(); //Värimäärittelyt tyhjennetään kontekstista
         setLoading(false);
         setSuccess(true);
         setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
@@ -200,6 +205,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
           try {
             setLoading(true);
             await handleImportData(content);
+            loadColorDefinitions(); //ladataan värimäärittelyt kontekstiin
             setLoading(false);
             setSuccess(true);
             setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
