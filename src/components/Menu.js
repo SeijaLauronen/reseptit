@@ -13,7 +13,7 @@ import SwitchButtonComponent from './SwitchButtonCompnent';
 import ColorManagement from '../ColorManagement';
 import SettingsManagement from '../SettingsManagement';
 
-const programVersion = '2024-12-16: 1.242';
+const programVersion = '2024-12-16: 1.243';
 //päivitä versiohistoria myös tänne, huom, vain ostokseni-sovelluksen!:
 //https://github.com/SeijaLauronen/SeijaLauronen.github.io/blob/main/ostokseniversio.html
 //https://seijalauronen.github.io/ostokseniversio.html
@@ -224,7 +224,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
               <div>Täältä näet viimeisimmän version sovelluksesta ja versiohistorian. Tähän tarvitset nettiyhteyden.</div>
               <div>https://seijalauronen.github.io/ostokseniversio.html</div>
               <br/>
-              <a href="https://seijalauronen.github.io/ostokseniversio.html" target='_blank'>Näytä versiohistoria</a>
+              <a href="https://seijalauronen.github.io/ostokseniversio.html" target="_blank" rel="noopener noreferrer">Näytä versiohistoria</a>
             </>
           )}
         >Versio: {programVersion}  <ChevronIcon /></MenuItem>

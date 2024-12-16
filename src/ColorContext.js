@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { useCallback, createContext, useState, useContext, useEffect } from 'react';
 import { upsertColorDefinition as controllerUpsertColorDefinition, getColorDefinition as controllerGetColorDefinition } from './controller';
 
 // Väriobjekti, jossa värit määritellään vaiheilla
@@ -58,7 +58,8 @@ export const ColorProvider = ({ children }) => {
 
 
     // Funktio kaikkien värimäärittelyjen lataamiseen
-    const loadColorDefinitions = async () => {
+    //const loadColorDefinitions = async () => {
+    const loadColorDefinitions = useCallback(async () => {
         try {
             console.log('Ladataan värimäärittelyt...');
             for (const colorId of Object.keys(colors)) {
@@ -68,7 +69,8 @@ export const ColorProvider = ({ children }) => {
         } catch (error) {
             console.error('Virhe värimäärittelyjen latauksessa:', error);
         }
-    };
+        //};
+    }, [colors]); // Riippuvuus: colors-objekti
 
     // Funktio haetaan värin lisämääre, jos sellainen on tallennettu
     const loadColorDefinition = async (colorId) => {
@@ -84,24 +86,23 @@ export const ColorProvider = ({ children }) => {
             console.error('Virhe haettaessa värin määrittelyä:', error);
             setErrorState(`Virhe haettaessa värin määrittelyä ${colorId}: ${error.message}`);
             //throw new Error('Virhe haettaessa värin määrittelyä: ' + error);
-            
+
         }
 
     };
 
 
     //TODO, ei ladata tässä
-    
+    /*
+    useEffect-hookin riippuvuustaulukossa pitäisi olla kaikki hookin sisällä käytettävät muuttujat ja funktiot, jotka ovat komponentin ulkopuolella tai uudelleenluotavia. Tässä tapauksessa loadColorDefinitions on määritelty komponentin sisällä.
+    loadColorDefinitions-funktio luodaan joka kerta, kun komponentti renderöidään. useEffect ei tiedä, onko funktio muuttunut, jos sitä ei ole lisätty riippuvuustaulukkoon.
+    Huom! käytettävä useCallback loadColorDefinitions:ssa ja sinne lisätty colors-riippuvuus
+    */
+
     useEffect(() => {
-        // Esimerkki siitä, miten voi ladata värin lisämääreitä, kun komponentti ladataan
-        /*
-        Object.keys(colors).forEach(colorId => {
-            loadColorDefinition(colorId);
-        });
-        */
-        loadColorDefinitions();        
-    }, []);
-    
+        loadColorDefinitions();
+    }, [loadColorDefinitions]);
+
 
     return (
         <ColorContext.Provider value={{
