@@ -15,7 +15,7 @@ const SettingRow = styled.div`
 `
 
 const SettingsManagement = ({ isOpen, onClose }) => {
-    const { keepQuantityEnabled, toggleKeepQuantity } = useSettings();
+    const { keepQuantityEnabled, toggleKeepQuantity, openQuantityByLongPress, toggleOpenQuantityByLongPress } = useSettings();    
 
     useEffect(() => {
         if (isOpen) {
@@ -40,8 +40,7 @@ const SettingsManagement = ({ isOpen, onClose }) => {
 
             <h4>Ostoskorin oletusmäärä:</h4>
             <SettingRow>
-                <label>Älä nollaa tuotteen määrää ostoskorissa, kun ostos poistetaan listalta, vaan
-                       säilytä viimeksi käytetty määrä.
+                <label>Säilytä viimeksi käytetty määrä ostoskorissa, kun ostos poistetaan listalta.
                 </label>
 
                 <SwitchButtonComponent
@@ -55,6 +54,24 @@ const SettingsManagement = ({ isOpen, onClose }) => {
                 */
                 />
             </SettingRow>
+
+            <h4>Tuotenäkymässä määrän antaminen ostoskoriin</h4>
+            <SettingRow>
+                <label>Avaa vasta pitkällä painalluksella.
+                </label>
+
+                <SwitchButtonComponent
+                    checked={openQuantityByLongPress}
+                    onChange={toggleOpenQuantityByLongPress}
+                /*
+                onColor="#00ff00"
+                offColor="#ff0000"
+                onHandleColor="#0000ff"
+                offHandleColor="#ffffff"
+                */
+                />
+            </SettingRow>
+
             <ButtonGroup>
                 <GroupLeft />
                 <GroupRight>

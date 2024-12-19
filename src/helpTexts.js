@@ -43,7 +43,8 @@ const helpTexts = {
         Voit asettaa tuotteita <b>suosikeiksi</b> ja yläpalkin tähdestä suodattaa näkyviin vain suosikit.
       </p>
       <p>
-        Klikkaamalla <b>ostoskorin</b> kuvaa voit asettaa tuotteen ostoslistalle tai pois sieltä. <b>Pitkä painallus</b> avaa lomakkeen, jolla voit antaa määrän.
+        Klikkaamalla <b>ostoskorin</b> kuvaa voit asettaa tuotteen ostoslistalle tai pois sieltä. 
+        Asetuksista voi määritellä, haluatko avata määrädialogin automaattisesti vai vasta pitkällä klikkauksella.
       </p>
       <p>
         Voit suodattaa tuotteita <b>väreittäin</b>. Menun asetuksista voi säätää, käytetäänkö tuotteilla värikoodeja. 

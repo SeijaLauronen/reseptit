@@ -13,7 +13,7 @@ import SwitchButtonComponent from './SwitchButtonCompnent';
 import ColorManagement from '../ColorManagement';
 import SettingsManagement from '../SettingsManagement';
 
-const programVersion = '2024-12-16: 1.244';
+const programVersion = '2024-12-19: 1.245';
 //päivitä versiohistoria myös tänne, huom, vain ostokseni-sovelluksen!:
 //https://github.com/SeijaLauronen/SeijaLauronen.github.io/blob/main/ostokseniversio.html
 //https://seijalauronen.github.io/ostokseniversio.html

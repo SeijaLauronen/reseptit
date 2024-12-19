@@ -32,10 +32,24 @@ export const SettingsProvider = ({ children }) => {
     setKeepQuantityEnabled(prevState => !prevState);
   }
 
+  const [openQuantityByLongPress, setOpenQuantityByLongPress] = useState(() => {
+    const saved = localStorage.getItem('openQuantityByLongPress');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('openQuantityByLongPress', JSON.stringify(openQuantityByLongPress));
+  }, [openQuantityByLongPress]);
+
+  const toggleOpenQuantityByLongPress = () => {
+    setOpenQuantityByLongPress(prevState => !prevState);
+  }
+
   return (
     <SettingsContext.Provider value={{
       colorCodingEnabled, toggleColorCoding, setColorCodingEnabled,
-      keepQuantityEnabled, toggleKeepQuantity, setKeepQuantityEnabled
+      keepQuantityEnabled, toggleKeepQuantity, setKeepQuantityEnabled,
+      openQuantityByLongPress, toggleOpenQuantityByLongPress, setOpenQuantityByLongPress
     }}>
       {children}
     </SettingsContext.Provider>
