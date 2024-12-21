@@ -210,8 +210,8 @@ const Products = ({ refresh = false, categoryId }) => {
     e.stopPropagation(); // Estetään tapahtuman leviäminen muihin elementteihin. 
 
     //openQuantityByLongPress -asetuksen ja klikkauksen pituuden mukaan joko avataan määrädialogi tai lisätään tuote suoraan ostoslistalle
-    const shouldOpenQuantityDialog = openQuantityByLongPress 
-      ? isShopLongPressRef.current 
+    const shouldOpenQuantityDialog = openQuantityByLongPress
+      ? isShopLongPressRef.current
       : !isShopLongPressRef.current && !product.onShoppingList;
 
     if (shouldOpenQuantityDialog) {
@@ -489,7 +489,22 @@ const Products = ({ refresh = false, categoryId }) => {
                 <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>
                   <div>
                     {displayedProducts(category).map((product, index) => (
-                      renderProductItemComponent(product, index)
+                      //renderProductItemComponent(product, index)
+                      <ProductItemComponent
+                        key={product.id}
+                        product={product}
+                        ref={(el) => (productRefs.current[product.id] = el)}
+                        highlightText={highlightText}
+                        filter={filter}
+                        handleEditProduct={handleEditProduct}
+                        handleToggleFavorite={handleToggleFavorite}
+                        handleShoppingListPress={handleShoppingListPress}
+                        handleShoppingListRelease={handleShoppingListRelease}
+                        handleTouchMove={handleTouchMove}
+                        handleContextMenu={handleContextMenu}
+                        colors={colors}
+                        selectedColors={selectedColors}
+                      />
                     ))}
 
                   </div>
@@ -500,7 +515,22 @@ const Products = ({ refresh = false, categoryId }) => {
         ) : (
           <div>
             {colorFilteredProducts(sortedProducts()).map((product, index) => (
-              renderProductItemComponent(product, index)
+              //renderProductItemComponent(product, index)
+              <ProductItemComponent
+                key={product.id}
+                product={product}
+                ref={(el) => (productRefs.current[product.id] = el)}
+                highlightText={highlightText}
+                filter={filter}
+                handleEditProduct={handleEditProduct}
+                handleToggleFavorite={handleToggleFavorite}
+                handleShoppingListPress={handleShoppingListPress}
+                handleShoppingListRelease={handleShoppingListRelease}
+                handleTouchMove={handleTouchMove}
+                handleContextMenu={handleContextMenu}
+                colors={colors}
+                selectedColors={selectedColors}
+              />
             ))}
 
           </div>
