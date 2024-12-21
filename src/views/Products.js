@@ -37,8 +37,8 @@ const Products = ({ refresh = false, categoryId }) => {
   const [showFavorites, setShowFavorites] = useState(false);
   const [error, setError] = useState('');
   const [handledProductId, setHandledProductId] = useState(null); // ID of the newly added or edited product
-  const isShopLongPressRef = useRef(false); //useRef  -hook: onko käyttäjä tehnyt pitkän painalluksen. useRef -arvo ei muutu uudelleenrenderöintien välillä, joten se säilyttää tilansa koko komponentin elinkaaren ajan.
-  const { colorCodingEnabled, openQuantityByLongPress } = useSettings();
+  const [isShopLongPress, setIsShopLongPress] = useState(false);
+  const { colorCodingEnabled } = useSettings();
 
   const { colors, selectedColors, toggleColor, setSelectedColors, colorDefinitions } = useColors(); //Hook For filtering in Products
   const noColor = { code: '#e1f5eb', name: 'NoColor' }; // Taustan värinen
@@ -195,11 +195,11 @@ const Products = ({ refresh = false, categoryId }) => {
 
   const timerRef = useRef(null);
   const handleShoppingListPress = (e, product) => {
-    //e.preventDefault(); //Tästä tuli virhe, koska tämä on passiivinen...
+    e.preventDefault();
     //Mobiililaitteella seuraavan rivin teksti maalautui
     e.stopPropagation(); // Estetään tapahtuman leviäminen muihin elementteihin. 
     timerRef.current = setTimeout(() => {
-      isShopLongPressRef.current = true;
+      setIsShopLongPress(true);
     }, 500); // 500ms on aika, jota pidetään "pitkänä painalluksena"    
   }
 
@@ -208,32 +208,17 @@ const Products = ({ refresh = false, categoryId }) => {
     e.preventDefault();
     //Mobiililaitteella seuraavan rivin teksti maalautui
     e.stopPropagation(); // Estetään tapahtuman leviäminen muihin elementteihin. 
-
-    //openQuantityByLongPress -asetuksen ja klikkauksen pituuden mukaan joko avataan määrädialogi tai lisätään tuote suoraan ostoslistalle
-    const shouldOpenQuantityDialog = openQuantityByLongPress
-      ? isShopLongPressRef.current
-      : !isShopLongPressRef.current && !product.onShoppingList;
-
-    if (shouldOpenQuantityDialog) {
+    if (!isShopLongPress) {
+      handleToggleShoppingList(product.id); // Yhden klikkauksen tai napautuksen toiminta
+    } else {
       product.onShoppingList = true;
       setEditingProduct(product);
       setEditingProductAmount(true);
-    } else {
-      handleToggleShoppingList(product.id);
     }
-
     // Tyhjennä pitkän painalluksen ajastin ja tilat
     clearTimeout(timerRef.current);
-    isShopLongPressRef.current = false;
+    setIsShopLongPress(false);
   }
-
-  // Lisätään tapahtumankuuntelija passiiviseksi
-  useEffect(() => {
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    return () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
 
   // Estä oletustoiminta touchmove- ja contextmenu-tapahtumissa
   const handleTouchMove = (event) => {
@@ -377,32 +362,10 @@ const Products = ({ refresh = false, categoryId }) => {
       <Container {...props} />;
   };
 
-  // 
-  const renderProductItemComponent = (product, index) => {
-    return (
-      <ProductItemComponent
-        key={product.id}
-        product={product}
-        ref={(el) => (productRefs.current[product.id] = el)}
-        highlightText={highlightText}
-        filter={filter}
-        handleEditProduct={handleEditProduct}
-        handleToggleFavorite={handleToggleFavorite}
-        handleShoppingListPress={handleShoppingListPress}
-        handleShoppingListRelease={handleShoppingListRelease}
-        handleTouchMove={handleTouchMove}
-        handleContextMenu={handleContextMenu}
-        colors={colors}
-        selectedColors={selectedColors}
-      />
-    );
-  }
-
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   // EditProductForm ei ole styled komponentti, ei käytetä transienttia propsia
-  // onContextMenu on lisätty, jotta voidaan estää oletustoiminta hiiren oikealla painikkeella
   return (
-    <div onContextMenu={handleContextMenu}>
+    <>
       {error && (
         <Toast message={error} onClose={() => setError('')} />
       )}
@@ -489,7 +452,6 @@ const Products = ({ refresh = false, categoryId }) => {
                 <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>
                   <div>
                     {displayedProducts(category).map((product, index) => (
-                      //renderProductItemComponent(product, index)
                       <ProductItemComponent
                         key={product.id}
                         product={product}
@@ -515,7 +477,6 @@ const Products = ({ refresh = false, categoryId }) => {
         ) : (
           <div>
             {colorFilteredProducts(sortedProducts()).map((product, index) => (
-              //renderProductItemComponent(product, index)
               <ProductItemComponent
                 key={product.id}
                 product={product}
@@ -559,7 +520,7 @@ const Products = ({ refresh = false, categoryId }) => {
         />
         <AddButton onClick={handleAddProduct} />
       </StickyBottom>
-    </div>
+    </>
   );
 };
 
