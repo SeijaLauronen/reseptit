@@ -1,8 +1,8 @@
 import { openDB } from 'idb';
 
 const DB_NAME = 'ReseptitDB';
-const DB_VERSION = 2;
-const STORE_NAMES = ['categories', 'products', 'colordefinitions']; // Määritä taulujen nimet
+const DB_VERSION = 3;
+const STORE_NAMES = ['categories', 'products', 'colordefinitions', 'productclasses']; // Määritä taulujen nimet, recipes ja days ei vielä käytössä
 
 const initDB = async () => {
   try {
@@ -23,6 +23,10 @@ const initDB = async () => {
         // versio 2:
         if (!db.objectStoreNames.contains('colordefinitions')) {
           db.createObjectStore('colordefinitions', { keyPath: 'colorId' }); //käytetään id:nä c1,c2, black jne
+        }
+        // versio 3:
+        if (!db.objectStoreNames.contains('productclasses')) {
+          db.createObjectStore('productclasses', { keyPath: 'id', autoIncrement: true });
         }
       },
     });

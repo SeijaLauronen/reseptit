@@ -19,7 +19,7 @@ export const GrabbableItem = styled(Item)`
 
   cursor: grab; /* "Grab" kursori */
   &:active {
-    cursor: grabbing; /* "Grabbing" kursori, kun itemiä vedetään */
+    cursor: grabbing; /* "Grabbing" kursori, kun itemiä vedetään */    
   }
   
   box-shadow: 
@@ -36,6 +36,12 @@ export const ProductListItem = styled(Item)`
 `;
 
 export const CategoryItem = styled(GrabbableItem)`
+`;
+
+export const ProductClassItemGrabbable = styled(GrabbableItem)`
+  //transform: translateX(0) !important;
+  //position: absolute;
+  
 `;
 
 export const ShoppingListItem = styled(Item)`

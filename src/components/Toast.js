@@ -10,7 +10,7 @@ const ToastWrapper = styled.div`
   padding: 15px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
+  z-index: 1005;
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -3,6 +3,7 @@ import { fetchProducts, getProductById as dbGetProductById, addProduct as dbAddP
 import { clearDatabase } from './dbUtils'; //TODO tarvitaankohan
 import { importDataToDatabase, exportDataFromDatabase, loadExampleDataToDatabase } from './dbUtils';
 import { upsertColorDefinition as dbUpsertColorDefinition, getColorDefinition as dbGetColorDefinition}  from './dbUtils';
+import { fetchProductclasses, addProductclass as dbAddProductclass, getProductclassById as dbGetProductclassById, updateProductclass as dbUpdateProductclass, deleteProductclass as dbDeleteProductclass } from './dbUtils';
 
 export const handleImportData = async (data) => {
   try {
@@ -171,6 +172,44 @@ export const getColorDefinition = async (colorId) => {
   const colorDefinition = await dbGetColorDefinition(colorId);
   return colorDefinition;
 };
+
+// Productclass
+const validateProductclass = (productclass) => {
+  if (!productclass.name || productclass.name.trim() === '') {
+    return 'Nimi on pakollinen tieto';
+  }
+  return null;
+};
+
+export const getProductclasses = async (sortByOrder = true) => {
+  const productclasses = await fetchProductclasses();
+  if (sortByOrder) {
+    return productclasses.sort((a, b) => a.order - b.order);
+  }
+  return productclasses.sort((a, b) => a.name.localeCompare(b.name));
+};
+
+export const addProductclass = async (productclass) => {
+  const error = validateCategory(productclass);
+  if (error) {
+    throw new Error(error);
+  }
+  const addedId = await dbAddProductclass(productclass);
+  return addedId;
+};
+
+export const updateProductclass = async (id, updatedProductclass) => {
+  const error = validateProductclass(updatedProductclass);
+  if (error) {
+    throw new Error(error);
+  }
+  await dbUpdateProductclass(id, updatedProductclass);
+};
+
+export const deleteProductclass = async (id) => {
+  await dbDeleteProductclass(id);
+};
+
 
 
 

@@ -48,6 +48,24 @@ export const SlideInContainerRight = styled.div`
   transition: transform 0.3s ease-in-out;
   z-index: 1001;
   overflow-y: auto;  
+  //transform-style: preserve-3d; /* Estää koordinaattijärjestelmän hajoamisen. Ei vaikuta ProducClass ikkunaan toivotusti */
+`;
+
+export const TopContainer = styled.div`
+  position: fixed;
+  top: 100px;
+  right: 0;
+  width: 90%;
+  max-width: 400px;
+  max-height: calc(100vh - 130px); /* Näytön korkeus miinus top - alareuna */
+  height: auto;
+  padding: 10px; 
+  background-color: #fff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  //transform: translateX(${props => (props.$isOpen ? '0' : '100%')});  
+  //transition: transform 0.3s ease-in-out;
+  z-index: 1001;
+  overflow-y: auto;  
 `;
 
 export const IconContainer = styled.span`

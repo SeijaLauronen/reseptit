@@ -210,6 +210,74 @@ export const fetchColorDefinitions = async () => {
 };
 
 
+// Productclass DB operations
+export const fetchProductclasses = async () => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('productclasses', 'readonly');
+    const store = tx.objectStore('productclasses');
+    return await store.getAll();
+  } catch (err) {
+    console.error('Error fetching productclasses:', err);
+    throw new Error('Virhe haettaessa tuoteluokkia: ' + err);
+  }
+};
+
+export const addProductclass = async (productclass) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('productclasses', 'readwrite');
+    const store = tx.objectStore('productclasses');
+    const addedId = await store.add(productclass);
+    return addedId;
+  } catch (err) {
+    console.error('Error adding productclass:', err);
+    throw new Error('Virhe lisättäessä tuoteluokkaa: ' + err);
+  }
+};
+
+export const getProductclassById = async (id) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('productclasses', 'readonly');
+    const store = tx.objectStore('productclasses');
+    return await store.get(id);
+  } catch (err) {
+    console.error('Error fetching productclasses by ID:', err);
+    throw new Error('Virhe haettaessa tuoteluokkaa ID:llä: ' + err);
+  }
+};
+
+export const updateProductclass = async (id, updatedProductclass) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('productclasses', 'readwrite');
+    const store = tx.objectStore('productclasses');
+    const productclass = await store.get(id);
+    productclass.name = updatedProductclass.name;
+    productclass.order = updatedProductclass.order;
+    await store.put(productclass);
+  } catch (err) {
+    console.error('Error updating productclass:', err);
+    throw new Error('Virhe päivitettäessä tuoteluokkaa: ' + err);
+  }
+};
+
+// TODO tuotteilta pois viittaukset deletoitavaan...
+export const deleteProductclass = async (id) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('productclasses', 'readwrite');
+    const store = tx.objectStore('productclasses');
+    await store.delete(id);
+  } catch (err) {
+    console.error('Error deleting productclass:', err);
+    throw new Error('Virhe poistettaessa tuoteluokkaa: ' + err);
+  }
+};
+
+
+
 //TODO tämä on myös tuolla database.js:ssä Valitse jompi kumpi
 // TODO käytetään vakioita, luupataan se
 export const clearDatabase = async () => {
@@ -229,6 +297,9 @@ export const clearDatabase = async () => {
     }
     if (db.objectStoreNames.contains('colordefinitions')) {
       await db.clear('colordefinitions');
+    }
+    if (db.objectStoreNames.contains('productclasses')) {
+      await db.clear('productclasses');
     }
   } catch (err) {
     console.error('Error clearing DB:', err);

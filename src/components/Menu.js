@@ -12,6 +12,7 @@ import { useSettings } from '../SettingsContext';
 import SwitchButtonComponent from './SwitchButtonCompnent';
 import ColorManagement from '../ColorManagement';
 import SettingsManagement from '../SettingsManagement';
+import ProductClassManagement from '../ProductClassManagement';
 
 const programVersion = '2024-12-19: 1.245';
 //päivitä versiohistoria myös tänne, huom, vain ostokseni-sovelluksen!:
@@ -121,6 +122,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
   const [showDataManagement, setShowDataManagement] = useState(false);
   const [dataManagementAction, setDataManagementAction] = useState('');
   const [showColorManagement, setShowColorManagement] = useState(false);
+  const [showProductClassManagement, setShowProductClassManagement] = useState(false);
   const [showSettingsManagement, setShowSettingsManagement] = useState(false);
 
   const handleOpenInfo = (message) => {
@@ -180,6 +182,20 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
     }
   }
 
+  const handleOpenProductClassManagement = () => {
+    setShowProductClassManagement(true);
+  }
+
+  const handleCloseProductClassManagement = (refresh) => {
+    setShowProductClassManagement(false);
+    //Todo onkohan refresh tarpeen
+    if (refresh) {
+      onDatabaseCleared(); // refresh kutsu App.js:lle
+      onToggleMenu(false);
+    }
+  }
+
+
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle, esim $isOpen
   // tai käytetään pieniä kirjaimia kuten fillspace eikä fillSpace
   return (
@@ -215,6 +231,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
           />
         </MenuItemText>
         <MenuItem onClick={() => handleOpenColorManagement()}>Värien määrittely<ChevronIcon /></MenuItem>
+        <MenuItem onClick={() => handleOpenProductClassManagement()}>Tuoteluokkien määrittely<ChevronIcon /></MenuItem>
         <MenuItem onClick={() => handleOpenSettingsManagement()}>Yleiset määrittelyt<ChevronIcon /></MenuItem>
         <MenuHeader>Tietoja</MenuHeader>
         <MenuItemText>Sovellus: Ostokset</MenuItemText>
@@ -223,7 +240,7 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
             <>
               <div>Täältä näet viimeisimmän version sovelluksesta ja versiohistorian. Tähän tarvitset nettiyhteyden.</div>
               <div>https://seijalauronen.github.io/ostokseniversio.html</div>
-              <br/>
+              <br />
               <a href="https://seijalauronen.github.io/ostokseniversio.html" target="_blank" rel="noopener noreferrer">Näytä versiohistoria</a>
             </>
           )}
@@ -251,6 +268,14 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
         isOpen={showColorManagement}
         onClose={handleCloseColorManagement}
       />
+
+      {/* Drag ja Drop ei onnistunut SlideIn Containerin kanssa, koska siinä on transform, siksi tehdään tämä eri lailla */}
+      {showProductClassManagement && (
+        <ProductClassManagement
+          isOpen={showProductClassManagement}
+          onClose={handleCloseProductClassManagement}
+        />
+      )}
 
       <SettingsManagement
         isOpen={showSettingsManagement}
