@@ -190,15 +190,15 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
 
 
                 <h4>Tuoteluokkien määrittely</h4>
-                <Accordion  title={"Näytä / sulje ohje..."} defaultExpanded={false} accordionmini={true}>
+                <Accordion title={"Näytä / sulje ohje..."} defaultExpanded={false} accordionmini={true}>
 
-                Voit määritellä tuoteluokkia, esimerkiksi proteiinit, kasvikset, rasvat jne.
+                    Voit määritellä tuoteluokkia, esimerkiksi proteiinit, kasvikset, rasvat jne.
                     Tiedot tallentuvat välittömästi ilman erillistä tallentamista.
                     Nimeä voit muokata suoraan tekstikentässä.
-                
+
                 </Accordion>
 
-                <ScrollableFormContainer style={{ padding: '2px 20px'  }}>
+                <ScrollableFormContainer style={{ padding: '2px 20px', maxHeight: '40vh' }}>
 
                     <DragDropContext onDragEnd={handleDragEnd}>
                         <Droppable droppableId="droppable-productClasses">
@@ -227,21 +227,20 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
 
                 </ScrollableFormContainer>
 
-
+                <ButtonGroup>
+                    <InputAdd
+                        type="text"
+                        value={newProductClass}
+                        onChange={(e) => setNewProductClass(e.target.value)}
+                        placeholder="Uusi tuoteluokka"
+                    />
+                    <AddButton onClick={handleAddProductClass} />
+                </ButtonGroup>
                 <ButtonGroup>
                     <GroupLeft>
-                        <InputAdd
-                            type="text"
-                            value={newProductClass}
-                            onChange={(e) => setNewProductClass(e.target.value)}
-                            placeholder="Uusi tuoteluokka"
-                        />
-                        <AddButton onClick={handleAddProductClass} />
                     </GroupLeft>
                     <GroupRight>
-                        <GroupRight>
-                            <CancelButton onClick={handleClose}>Sulje</CancelButton>
-                        </GroupRight>
+                        <CancelButton onClick={handleClose}>Sulje</CancelButton>
                     </GroupRight>
                 </ButtonGroup>
 

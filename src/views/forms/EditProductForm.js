@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import EditForm from './EditForm';
 import { InputName, Select, InputQuantity, InputUnit, InputTextArea } from '../../components/Input';
 import Toast from '../../components/Toast';
-import { getCategories } from '../../controller';
+import { getCategories, getProductclasses } from '../../controller';
 import { InputWrapper } from '../../components/Container';
 import { useSettings } from '../../SettingsContext';
 import { useColors } from '../../ColorContext';
@@ -22,12 +22,14 @@ const Separator = styled.div`
 const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmount = false }) => {
   const [name, setName] = useState(product.name);
   const [categoryId, setCategoryId] = useState(product.categoryId || '');
+  const [productClassId, setProductClassId] = useState(product.classId || '');
   const [quantity, setQuantity] = useState(product.quantity);
   const [unit, setUnit] = useState(product.unit);
   const [dose, setDose] = useState(product.dose);
   const [prodinfo, setProdinfo] = useState(product.info);
 
   const [categories, setCategories] = useState([]);
+  const [productClasses, setProductClasses] = useState([]);
   const [error, setError] = useState('');
 
   const { colorCodingEnabled } = useSettings();
@@ -46,8 +48,18 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
     }
   };
 
+  const fetchAndSetProductClasses = async () => {
+    try {
+      const allProductClasses = await getProductclasses(false); // oredrnro järjestyksessä TODO 22.12.
+      setProductClasses(allProductClasses);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   useEffect(() => {
     fetchAndSetCategories();
+    fetchAndSetProductClasses();
   }, []);
 
   // Alustetaan valitut värit tuotteelle tallennettujen tietojen perusteella
@@ -77,6 +89,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
       product.name = name;
       product.categoryId = parseInt(categoryId, 10);
       product.dose = dose;
+      product.classId = parseInt(productClassId, 10);
       product.info = prodinfo;
       Object.keys(colors).forEach(colorKey => {
         product[colorKey] = productSelectedColors.includes(colorKey);
@@ -121,6 +134,19 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                 <option value=''>Ei kategoriaa</option>
                 {categories.map(category => (
                   <option key={category.id} value={category.id}>{category.name}</option>
+                ))}
+              </Select>
+            </StyledDiv>
+
+            <StyledDiv>
+              <label>Luokka: </label>
+              <Select
+                value={productClassId}
+                onChange={(e) => setProductClassId(parseInt(e.target.value, 10))}
+              >
+                <option value=''>Ei luokkaa</option>
+                {productClasses.map(productClass => (
+                  <option key={productClass.id} value={productClass.id}>{productClass.name}</option>
                 ))}
               </Select>
             </StyledDiv>
