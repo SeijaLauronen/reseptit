@@ -225,13 +225,15 @@ const Products = ({ refresh = false, categoryId }) => {
   }
 
   // 22.12.2024 Lisätään tapahtumankuuntelija passiiviseksi, koska tuli virhe: Unable to preventDefault inside passive event listener invocation.
+  // Jätän tämn tähän muistutukseksi, rttä tämä esti koko näytön vierittämisen. Tekoäly tätä ehdotti jonkin virheen krjaamiseen, eipä ollut järkevä
+  /*
   useEffect(() => {
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
     return () => {
       document.removeEventListener('touchmove', handleTouchMove);
     };
   }, []);
-  
+  */
 
   // Estä oletustoiminta touchmove- ja contextmenu-tapahtumissa
   const handleTouchMove = (event) => {
