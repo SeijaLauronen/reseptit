@@ -362,6 +362,26 @@ const Products = ({ refresh = false, categoryId }) => {
       <Container {...props} />;
   };
 
+  const renderProductItemComponent = (product, index) => {
+    return (
+      <ProductItemComponent
+        key={product.id}
+        product={product}
+        ref={(el) => (productRefs.current[product.id] = el)}
+        highlightText={highlightText}
+        filter={filter}
+        handleEditProduct={handleEditProduct}
+        handleToggleFavorite={handleToggleFavorite}
+        handleShoppingListPress={handleShoppingListPress}
+        handleShoppingListRelease={handleShoppingListRelease}
+        handleTouchMove={handleTouchMove}
+        handleContextMenu={handleContextMenu}
+        colors={colors}
+        selectedColors={selectedColors}
+      />
+    );
+  }
+
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   // EditProductForm ei ole styled komponentti, ei käytetä transienttia propsia
   return (
@@ -452,21 +472,7 @@ const Products = ({ refresh = false, categoryId }) => {
                 <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>
                   <div>
                     {displayedProducts(category).map((product, index) => (
-                      <ProductItemComponent
-                        key={product.id}
-                        product={product}
-                        ref={(el) => (productRefs.current[product.id] = el)}
-                        highlightText={highlightText}
-                        filter={filter}
-                        handleEditProduct={handleEditProduct}
-                        handleToggleFavorite={handleToggleFavorite}
-                        handleShoppingListPress={handleShoppingListPress}
-                        handleShoppingListRelease={handleShoppingListRelease}
-                        handleTouchMove={handleTouchMove}
-                        handleContextMenu={handleContextMenu}
-                        colors={colors}
-                        selectedColors={selectedColors}
-                      />
+                      renderProductItemComponent(product, index)
                     ))}
 
                   </div>
@@ -477,21 +483,7 @@ const Products = ({ refresh = false, categoryId }) => {
         ) : (
           <div>
             {colorFilteredProducts(sortedProducts()).map((product, index) => (
-              <ProductItemComponent
-                key={product.id}
-                product={product}
-                ref={(el) => (productRefs.current[product.id] = el)}
-                highlightText={highlightText}
-                filter={filter}
-                handleEditProduct={handleEditProduct}
-                handleToggleFavorite={handleToggleFavorite}
-                handleShoppingListPress={handleShoppingListPress}
-                handleShoppingListRelease={handleShoppingListRelease}
-                handleTouchMove={handleTouchMove}
-                handleContextMenu={handleContextMenu}
-                colors={colors}
-                selectedColors={selectedColors}
-              />
+              renderProductItemComponent(product, index)
             ))}
 
           </div>
