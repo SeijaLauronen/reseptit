@@ -39,14 +39,10 @@ const Products = ({ refresh = false, categoryId }) => {
   const [handledProductId, setHandledProductId] = useState(null); // ID of the newly added or edited product
   const isShopLongPressRef = useRef(false); //useRef  -hook: onko käyttäjä tehnyt pitkän painalluksen. useRef -arvo ei muutu uudelleenrenderöintien välillä, joten se säilyttää tilansa koko komponentin elinkaaren ajan.
   const { colorCodingEnabled, openQuantityByLongPress } = useSettings();
-
-
   const { colors, selectedColors, toggleColor, setSelectedColors, colorDefinitions } = useColors(); //Hook For filtering in Products
   const noColor = { code: '#e1f5eb', name: 'NoColor' }; // Taustan värinen
 
   const productRefs = useRef({}); // Ref object to hold references to product items
-
-
 
   // Tila alustetaan localStoragesta, jossa etsitään 'productView' arvoa
   const [showByCategory, setShowByCategory] = useState(() => {
@@ -196,7 +192,7 @@ const Products = ({ refresh = false, categoryId }) => {
 
   const timerRef = useRef(null);
   const handleShoppingListPress = (e, product) => {
-    e.preventDefault();
+    //e.preventDefault(); // 22.12.2024 kommentteihin, koska tuli virhe: Unable to preventDefault inside passive event listener invocation.
     //Mobiililaitteella seuraavan rivin teksti maalautui
     e.stopPropagation(); // Estetään tapahtuman leviäminen muihin elementteihin. 
     timerRef.current = setTimeout(() => {
@@ -227,6 +223,15 @@ const Products = ({ refresh = false, categoryId }) => {
     clearTimeout(timerRef.current);
     isShopLongPressRef.current = false;
   }
+
+  // 22.12.2024 Lisätään tapahtumankuuntelija passiiviseksi, koska tuli virhe: Unable to preventDefault inside passive event listener invocation.
+  useEffect(() => {
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, []);
+  
 
   // Estä oletustoiminta touchmove- ja contextmenu-tapahtumissa
   const handleTouchMove = (event) => {
