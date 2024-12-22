@@ -1,19 +1,20 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import MyErrorBoundary from './components/ErrorBoundary';
-import { TopContainer} from './components/Container';
-import { AddButton, CloseButtonComponent } from './components/Button';
+import { TopContainer } from './components/Container';
+import { AddButton, CloseButtonComponent, CancelButton } from './components/Button';
 import InputAdd from './components/Input';
 import Toast from './components/Toast';
 import { getProductclasses, addProductclass, deleteProductclass, updateProductclass } from './controller';
-import { ButtonGroup, GroupRight, GroupLeft } from './components/Container';
+import { ButtonGroup, GroupRight, GroupLeft, ScrollableFormContainer } from './components/Container';
 import { FaTrash } from 'react-icons/fa';
 import { ProductClassItemGrabbable } from './components/Item';
 import { IconContainer, IconWrapper } from './components/Container';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import Accordion from './components/Accordion';
 
 
 const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
-    
+
 
     const [error, setError] = useState(''); // Paikallinen virhetila 
     const [newProductClass, setNewProductClass] = useState('');
@@ -84,7 +85,7 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
             <ProductClassItemGrabbable className='ProductClassItemGrabbable'
                 ref={ref}
                 {...props}
-                
+
             >
 
                 <input
@@ -176,9 +177,9 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
 
 
     return (
-        
+
         <MyErrorBoundary>
-            
+
             {error && (
                 <Toast message={error} onClose={() => setError('')} />
             )}
@@ -188,48 +189,60 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
                 <CloseButtonComponent onClick={handleClose} />
 
 
-                <b>Tuoteluokkien määrittely</b>
+                <h4>Tuoteluokkien määrittely</h4>
+                <Accordion  title={"Näytä / sulje ohje..."} defaultExpanded={false} accordionmini={true}>
 
-                <p>Voit määritellä tuoteluokkia, esimerkiksi proteiinit, kasvikset, rasvat jne.
+                Voit määritellä tuoteluokkia, esimerkiksi proteiinit, kasvikset, rasvat jne.
                     Tiedot tallentuvat välittömästi ilman erillistä tallentamista.
                     Nimeä voit muokata suoraan tekstikentässä.
-                </p>
+                
+                </Accordion>
 
+                <ScrollableFormContainer style={{ padding: '2px 20px'  }}>
 
-                <DragDropContext onDragEnd={handleDragEnd}>
-                    <Droppable droppableId="droppable-productClasses">
-                        {(provided) => (
-                            <div {...provided.droppableProps} ref={provided.innerRef}>
-                                {productClasses.map((productClass, index) => (
-                                    <Draggable key={productClass.id.toString()} draggableId={productClass.id.toString()} index={index}>
-                                        {(provided) => (
-                                            <ProductClassItem
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}                                        
-                                                key={productClass.id}
-                                                productClass={productClass}
-                                                onDelete={handleDeleteProductClass}
-                                            >
-                                            </ProductClassItem>
-                                        )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                        <Droppable droppableId="droppable-productClasses">
+                            {(provided) => (
+                                <div {...provided.droppableProps} ref={provided.innerRef}>
+                                    {productClasses.map((productClass, index) => (
+                                        <Draggable key={productClass.id.toString()} draggableId={productClass.id.toString()} index={index}>
+                                            {(provided) => (
+                                                <ProductClassItem
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    key={productClass.id}
+                                                    productClass={productClass}
+                                                    onDelete={handleDeleteProductClass}
+                                                >
+                                                </ProductClassItem>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+
+                </ScrollableFormContainer>
 
 
                 <ButtonGroup>
-                    <InputAdd
-                        type="text"
-                        value={newProductClass}
-                        onChange={(e) => setNewProductClass(e.target.value)}
-                        placeholder="Uusi tuoteluokka"
-                    />
-                    <AddButton onClick={handleAddProductClass} />
+                    <GroupLeft>
+                        <InputAdd
+                            type="text"
+                            value={newProductClass}
+                            onChange={(e) => setNewProductClass(e.target.value)}
+                            placeholder="Uusi tuoteluokka"
+                        />
+                        <AddButton onClick={handleAddProductClass} />
+                    </GroupLeft>
+                    <GroupRight>
+                        <GroupRight>
+                            <CancelButton onClick={handleClose}>Sulje</CancelButton>
+                        </GroupRight>
+                    </GroupRight>
                 </ButtonGroup>
 
 

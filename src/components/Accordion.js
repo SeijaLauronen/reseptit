@@ -10,7 +10,8 @@ const AccordionWrapper = styled.div`
 `;
 
 const AccordionTitle = styled.div`
-  padding: 10px;
+  padding: ${({ $accordionmini }) => '3px' || '10px'}; /* Oletusarvo 10px */ 
+  //padding: 10px;
   cursor: pointer;
   background-color: #f7f7f7;
   border-bottom: 1px solid #ccc;
@@ -23,13 +24,14 @@ const AccordionTitle = styled.div`
 
 // transientti props $isOpen, koska styled komponentti ja isJotain
 const AccordionContent = styled.div`
-  padding: 10px;
+  padding: ${({ $accordionmini }) => '3px' || '10px'}; /* Oletusarvo 10px */ 
+  //padding: 10px;
   background-color: #fff;
   display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
 `;
 
 //Huom! ei tarvitse antaa kaikkia propseja!! Erilainen kuin funktio. Esim colorItem voi puuttua
-const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false, isOpenExternally = null }) => {
+const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false, accordionmini, isOpenExternally = null }) => {
   const [isOpen, setIsOpen] = useState(defaultExpanded);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false,
 
 
   const toggleAccordion = () => {
-    // Jos accordion avattiin ulkoisesti, annetaan käyttäjän hallita
+    // Jos accordion avattiin ulkoisesti, annetaan käyttäjän hallita TODO...
     //if (isOpenExternally === null) {
       setIsOpen(!isOpen); // Toggle manuaalisesti käyttäjän toimesta
     //}
@@ -49,7 +51,9 @@ const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false,
 
   return (
     <AccordionWrapper>
-      <AccordionTitle onClick={toggleAccordion}>
+      <AccordionTitle onClick={toggleAccordion} $accordionmini={accordionmini}>
+        {/* $padding={titlepadding} on transientti props, joka menee styled componentille */}
+        {/* Huom! titlepadding on props, joka tulee komponentille */}
         <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}> {/* Vie lopun käytettävissä olevan tilan, jolloin muut pysyy oikeassa laidassa*/}
           {colorItem}
           <span style={{ marginLeft: '10px' }}>{title}</span>
@@ -61,7 +65,7 @@ const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false,
           <FontAwesomeIcon style={{ marginLeft: '10px' }} icon={isOpen ? faChevronUp : faChevronDown} />
         </span>
       </AccordionTitle>
-      <AccordionContent $isOpen={isOpen}>{children}</AccordionContent>
+      <AccordionContent $isOpen={isOpen} $accordionmini={accordionmini}>{children}</AccordionContent>
     </AccordionWrapper>
   );
 };
