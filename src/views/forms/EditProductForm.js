@@ -16,7 +16,7 @@ const StyledDiv = styled.div`
 
 const StyledInputGroup = styled.div`
   display: grid;
-  grid-template-columns: 80px 1fr; /* Ensimmäinen sarake on 80px leveä, toinen vie loput tilasta */
+  grid-template-columns: 25% 65%; /* Ensimmäinen sarake on 80px leveä, toinen vie loput tilasta */
   /*gap: 10px  15px; /* Rivit ja sarakkeet */
   margin-bottom: 15px;
   align-items: center; /* Keskittää sisällön pystysuunnassa */

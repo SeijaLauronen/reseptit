@@ -35,6 +35,7 @@ export const InputName = styled(Input)`
 
 export const InputCommon = styled(Input)`
    margin-left: 10px;      
+   width: 180px; 
 `;
 
 export const InputColorShortName = styled(Input).attrs({
@@ -49,7 +50,7 @@ export const Select = styled.select`
   padding-bottom: 5px;
   margin-left: 10px;
   margin-right: 2px;
-  /* width: 180px; */
+  width: 196px; 
 `;
 
 export const InputTextArea = styled.textarea`
