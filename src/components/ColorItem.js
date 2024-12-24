@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const ColorItemsWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
+  align-items: center; 
 `;
 
 export const ColorItemContainer = styled.div`

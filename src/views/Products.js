@@ -9,7 +9,7 @@ import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
 import Container, { ProductContainer, IconWrapper } from '../components/Container';
-import { getCategories, getProducts, getProductById, addProduct, updateProduct, deleteProduct } from '../controller';
+import { getCategories, getProducts, getProductById, addProduct, updateProduct, deleteProduct, getProductclasses } from '../controller';
 import Toast from '../components/Toast';
 import ProductItemComponent from '../components/ProductItemComponent';
 import { useColors } from '../ColorContext';
@@ -43,6 +43,27 @@ const Products = ({ refresh = false, categoryId }) => {
   const noColor = { code: '#e1f5eb', name: 'NoColor' }; // Taustan värinen
 
   const productRefs = useRef({}); // Ref object to hold references to product items
+
+
+  const [productClasses, setProductClasses] = useState([]);
+
+  // Funktio tuoteluokkien hakemiseen
+  const fetchAndSetProductClasses = useCallback(async () => {
+    try {
+      const allProductClasses = await getProductclasses(); // Hakee tuoteluokat
+      setProductClasses(allProductClasses);
+    } catch (err) {
+      console.error("Error fetching product classes:", err);
+      setError(err.message);
+    }
+  }, []); // Tyhjät riippuvuudet, koska funktio ei käytä ulkopuolisia muuttujia
+
+
+  // Käytetään useEffectia tuomaan tuoteluokat komponentin alustuksessa
+  useEffect(() => {
+    fetchAndSetProductClasses();
+  }, [fetchAndSetProductClasses]); // Lisätään riippuvuus funktiolle, lisätäänkö refresh?
+
 
   // Tila alustetaan localStoragesta, jossa etsitään 'productView' arvoa
   const [showByCategory, setShowByCategory] = useState(() => {
@@ -393,6 +414,7 @@ const Products = ({ refresh = false, categoryId }) => {
         handleContextMenu={handleContextMenu}
         colors={colors}
         selectedColors={selectedColors}
+        productClasses={productClasses}
       />
     );
   }

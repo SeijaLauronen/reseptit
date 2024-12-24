@@ -12,10 +12,16 @@ import { IconContainer, IconWrapper } from '../components/Container';
 import { ProductListItem } from './Item';
 import { ColorItemsWrapper, ColorItemContainer, ColorItem } from '../components/ColorItem';
 import { useSettings } from '../SettingsContext';
+import styled from 'styled-components';
+
+const StyledInfo = styled.div`
+ font-size: 0.8em;
+ margin-left: 2px;
+`;
 
 const ProductItemComponent = forwardRef(
   /* Huom, kun lisätään loogista koodia ja return, pitää olla seuraavan rivin lopussa aaltosulut. Kaarisulku, jos ei returnia : */
-  ({ product, highlightText, filter, handleEditProduct, handleToggleFavorite, handleShoppingListPress, handleShoppingListRelease, handleTouchMove, handleContextMenu, colors, selectedColors }, ref) => {
+  ({ product, highlightText, filter, handleEditProduct, handleToggleFavorite, handleShoppingListPress, handleShoppingListRelease, handleTouchMove, handleContextMenu, colors, selectedColors, productClasses }, ref) => {
 
     const noColor = { code: '#FFF', name: 'White' }; // Tämä voisi olla myös tuolla ylemäpänä
     const { colorCodingEnabled } = useSettings();  // Tämä laitetaan funktiokehykseen, on loogista koodia
@@ -26,8 +32,7 @@ const ProductItemComponent = forwardRef(
 
           {/* Ensimmäinen sarake: nimi ja värikoodit */}
           <div style={{ display: 'flex', flexDirection: 'column', gridColumn: '1' }}>
-            <span>{highlightText(product.name, filter)}</span>
-
+            <span>{highlightText(product.name, filter)} </span>
             {/* Näytetään värit vain jos tuotteelle on annettu jokin värikoodi */}
             {colorCodingEnabled && Object.keys(colors).some(colorKey => product[colorKey]) && (
               <ColorItemsWrapper>
@@ -39,7 +44,14 @@ const ProductItemComponent = forwardRef(
                       </ColorItem>
                     </ColorItemContainer>
                   ))
+
                 }
+                <StyledInfo>
+                  {product.classId && productClasses[product.classId]?.name
+                    ? `${productClasses[product.classId].name} `
+                    : ''}
+                </StyledInfo>
+                <StyledInfo>{product.dose ? `(${product.dose})` : ''}</StyledInfo>
               </ColorItemsWrapper>
             )}
 
@@ -68,8 +80,8 @@ const ProductItemComponent = forwardRef(
                 <FontAwesomeIcon
                   icon={faShoppingCart}
                   style={{ color: product.onShoppingList ? 'green' : 'lightgrey' }}
-                />                  
-                
+                />
+
               </IconWrapper>
             </IconContainer>
           </div>
