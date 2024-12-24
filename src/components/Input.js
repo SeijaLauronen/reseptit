@@ -33,6 +33,10 @@ export const InputName = styled(Input)`
    width: 200px;   
 `;
 
+export const InputCommon = styled(Input)`
+   margin-left: 10px;      
+`;
+
 export const InputColorShortName = styled(Input).attrs({
     maxLength: 6 // maksimimerkkimäärä
 })`
@@ -44,7 +48,8 @@ export const Select = styled.select`
   padding-top: 5px;
   padding-bottom: 5px;
   margin-left: 10px;
-  width: 180px;
+  margin-right: 2px;
+  /* width: 180px; */
 `;
 
 export const InputTextArea = styled.textarea`

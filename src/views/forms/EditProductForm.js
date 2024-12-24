@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import EditForm from './EditForm';
-import { InputName, Select, InputQuantity, InputUnit, InputTextArea } from '../../components/Input';
+import { InputCommon, Select, InputQuantity, InputUnit, InputTextArea } from '../../components/Input';
 import Toast from '../../components/Toast';
 import { getCategories, getProductclasses } from '../../controller';
-import { InputWrapper } from '../../components/Container';
+import { InputWrapper, ScrollableFormContainer } from '../../components/Container';
 import { useSettings } from '../../SettingsContext';
 import { useColors } from '../../ColorContext';
 import { ColorItemsWrapper, ColorItemContainer, ColorItemContainerLabel, ColorItemSelection, ColorCheckbox, ColorItem } from '../../components/ColorItem';
@@ -12,6 +12,16 @@ import styled from 'styled-components';
 const StyledDiv = styled.div`
   margin-bottom: 15px;
 `;
+
+
+const StyledInputGroup = styled.div`
+  display: grid;
+  grid-template-columns: 80px 1fr; /* Ensimmäinen sarake on 80px leveä, toinen vie loput tilasta */
+  /*gap: 10px  15px; /* Rivit ja sarakkeet */
+  margin-bottom: 15px;
+  align-items: center; /* Keskittää sisällön pystysuunnassa */
+`;
+
 const Separator = styled.div`
   margin-top: 15px;
   margin-bottom: 15px;
@@ -115,17 +125,17 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
       <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(product.id)} deleteEnabled={!editAmount} >
         {!editAmount && (
-          <>
-            <StyledDiv>
+          <ScrollableFormContainer>
+            <StyledInputGroup className='StyledInputGroup'>
               <label>Nimi: </label>
-              <InputName
+              <InputCommon
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Nimi"
               />
-            </StyledDiv>
-            <StyledDiv>
+            </StyledInputGroup>
+            <StyledInputGroup className='StyledInputGroup'>
               <label>Kategoria: </label>
               <Select
                 value={categoryId}
@@ -136,9 +146,9 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                   <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
               </Select>
-            </StyledDiv>
+            </StyledInputGroup>
 
-            <StyledDiv>
+            <StyledInputGroup className='StyledInputGroup'>
               <label>Luokka: </label>
               <Select
                 value={productClassId}
@@ -149,7 +159,8 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                   <option key={productClass.id} value={productClass.id}>{productClass.name}</option>
                 ))}
               </Select>
-            </StyledDiv>
+
+            </StyledInputGroup>
 
             {colorCodingEnabled && (
               <StyledDiv>
@@ -182,7 +193,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
                 <StyledDiv>
                   <label>Annos: </label>
-                  <InputName
+                  <InputCommon
                     type="text"
                     value={dose}
                     onChange={(e) => setDose(e.target.value)}
@@ -201,7 +212,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
               </StyledDiv>)
             }
-          </>
+          </ScrollableFormContainer>
         )}
         {editAmount && (
           <>
