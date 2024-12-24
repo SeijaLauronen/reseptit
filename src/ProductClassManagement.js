@@ -10,11 +10,9 @@ import { FaTrash } from 'react-icons/fa';
 import { ProductClassItemGrabbable } from './components/Item';
 import { IconContainer, IconWrapper } from './components/Container';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import Accordion from './components/Accordion';
-
+import Accordion from './components/Accordion'
 
 const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
-
 
     const [error, setError] = useState(''); // Paikallinen virhetila 
     const [newProductClass, setNewProductClass] = useState('');
@@ -81,26 +79,49 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
                 handleUpdateProductClass(productClass, localName);
             }
         };
+
+        const containerStyle = {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+        };
+    
+        const inputStyle = {
+            maxWidth: '50%',
+            flexGrow: 1
+        };
+    
+        const iconContainerStyle = {
+            marginRight: '8px', // Lisää tilaa input-kentän ja roskakorin väliin
+            padding: '6px 2px 6px 2px'
+        };
+        
+        const emptySpaceStyle = {
+            flexGrow: 1 // Tämä täyttää jäljellä olevan tilan
+        };
+    
         return (
-            <ProductClassItemGrabbable className='ProductClassItemGrabbable'
+            <ProductClassItemGrabbable 
+                className='ProductClassItemGrabbable'
                 ref={ref}
+                style={containerStyle}
                 {...props}
-
             >
-
-                <input
-                    type="text"
-                    value={localName}
-                    onChange={(e) => setLocalName(e.target.value)}
-                    onBlur={handleBlur}
-                />
-                <div>
-                    <IconContainer>
+                 <div>
+                    <IconContainer style={iconContainerStyle}>
                         <IconWrapper onClick={() => onDelete(productClass.id)}>
                             <FaTrash color="red" />
                         </IconWrapper>
                     </IconContainer>
                 </div>
+                <input
+                    type="text"
+                    value={localName}
+                    onChange={(e) => setLocalName(e.target.value)}
+                    onBlur={handleBlur}
+                    style={inputStyle}
+                />
+               <div style={emptySpaceStyle}></div> {/* Tämä täyttää jäljellä olevan tilan */}
 
             </ProductClassItemGrabbable>
         );
@@ -127,7 +148,6 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
     const handleClose = () => {
         onClose(false); // TODO
     }
-
 
     const handleDeleteProductClass = async (id) => {
         // setProductClasses((prev) => prev.filter((pc) => pc.id !== id)); // Tämä poistaisi näytöltä
@@ -175,6 +195,12 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
         }
     };
 
+    const scrollableStyle = {       
+        padding: '6px 10px 6px 2px',          
+        margin: '3px 30px 2px 2px',      
+        maxHeight: '36vh',
+        backgroundColor: 'lightyellow'
+    };
 
     return (
 
@@ -197,8 +223,8 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
                     Nimeä voit muokata suoraan tekstikentässä.
 
                 </Accordion>
-
-                <ScrollableFormContainer style={{ padding: '2px 20px', maxHeight: '40vh' }}>
+                
+                <ScrollableFormContainer style={scrollableStyle}>
 
                     <DragDropContext onDragEnd={handleDragEnd}>
                         <Droppable droppableId="droppable-productClasses">
