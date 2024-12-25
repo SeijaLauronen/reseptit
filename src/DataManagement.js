@@ -11,6 +11,8 @@ import Toast from './components/Toast';
 import MyErrorBoundary from './components/ErrorBoundary';
 import { useSettings } from './SettingsContext';
 import { useColors } from './ColorContext';
+import { useProductClass } from './ProductClassContext';
+
 
 //TODO BoldedParagraph teksteineen komponentiksi
 
@@ -60,6 +62,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
   const [showJsonTextArea, setShowJsonTextArea] = useState(false);
   const [savedFilename, setSavedFilename] = useState('');
   const [error, setError] = useState('');
+  const { fetchAndSetProductClasses, resetProductClasses } = useProductClass();
 
   useEffect(() => {
 
@@ -152,8 +155,13 @@ const DataManagement = ({ isOpen, action, onClose }) => {
         setLoading(true);
         await handleImportData(exampleData);
         //setColorCodingEnabled(true); // Ota värikoodit käyttöön latauksen jälkeen
-        loadColorDefinitions(); //ladataan värimäärittelyt kontekstiin
+        
         setLocalStorageDefaults(); // Asetetaan localStore-määrittelyt, mm värikoodit käyttöön
+        setTimeout(() => {
+          loadColorDefinitions(); // Ladataan värimäärittelyt kontekstiin
+        }, 0); // Odotetaan, että localStorage päivittyy. Tkeeköhän tämä oikeasti mitään....
+        
+        fetchAndSetProductClasses();  //Ladataan tuoteryhmät kontekstiin
         setLoading(false);
         setSuccess(true);
         setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
@@ -169,7 +177,8 @@ const DataManagement = ({ isOpen, action, onClose }) => {
         setLoading(true);
         await deleteAllData();
         resetColors(); //Värimäärittelyt tyhjennetään kontekstista
-        deleteLocalStorage();// TODO poistetaan kaikki localStore-määrittelyt
+        resetProductClasses();  //Tyhjennetään tuoteluokittelukonteksti
+        deleteLocalStorage();// Poistetaan kaikki localStore-määrittelyt
         setLoading(false);
         setSuccess(true);
         setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
@@ -208,6 +217,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
             setLoading(true);
             await handleImportData(content);
             loadColorDefinitions(); //ladataan värimäärittelyt kontekstiin
+            fetchAndSetProductClasses();  //Ladataan tuoteryhmät kontekstiin TODO tämä ei päivity editproductformille heti!!
             setLoading(false);
             setSuccess(true);
             setConfirmDialog({ isOpen: false, message: '', onConfirm: null });

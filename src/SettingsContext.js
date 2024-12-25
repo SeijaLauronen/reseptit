@@ -72,6 +72,15 @@ export const SettingsProvider = ({ children }) => {
   }
 
   const deleteLocalStorage = () => {
+
+    /* Aseteaan ensin arvot, että kontekstit ja tilat päivittyy */
+    setShowProductClass(false);
+    setColorCodingEnabled(false);
+    setKeepQuantityEnabled(false);
+    setOpenQuantityByLongPress(false);
+    setShowDose(false);    
+    localStorage.setItem('productView', JSON.stringify(''));    // Tämä asetetaan Tuote-näkymässä, toisin kuin muut 
+    /* Poistetaan sitten localStoresta*/
     localStorage.removeItem('colorCodingEnabled');
     localStorage.removeItem('keepQuantityEnabled');
     localStorage.removeItem('openQuantityByLongPress');

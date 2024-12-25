@@ -17,12 +17,17 @@ export const ProductClassProvider = ({ children }) => {
             setErrorState(`Virhe haettaessa tuoteluokituksia  ${error.message}`);
         }
     };
+
+    const resetProductClasses = () => {        
+        setProductClasses([]); // Tyhjennä luokkamäärittelyt        
+    };
     
     return (
         <ProductClassContext.Provider value={{ 
             productClasses, 
             setProductClasses, 
             fetchAndSetProductClasses,
+            resetProductClasses,
             errorState 
             }}>
             {children}
