@@ -6,15 +6,18 @@ import App from './App';
 import MyErrorBoundary from './components/ErrorBoundary';
 import { SettingsProvider } from './SettingsContext';
 import { ColorProvider } from './ColorContext'; //Pitää olla täällä
+import { ProductClassProvider } from './ProductClassContext'; 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <MyErrorBoundary>
-        <ColorProvider>
-            <SettingsProvider>
-                <App />
-            </SettingsProvider>
-        </ColorProvider>
+        <ProductClassProvider>
+            <ColorProvider>
+                <SettingsProvider>
+                    <App />
+                </SettingsProvider>
+            </ColorProvider>
+        </ProductClassProvider>
     </MyErrorBoundary>
 );
 // poistettu <React.StrictMode> App:n ympäriltä, että drag drop toimii myös localhostissa

@@ -17,6 +17,7 @@ import { ColorItemsWrapper, ColorItemContainer, ColorItemSelection } from '../co
 import { useSettings } from '../SettingsContext';
 import FilterWithCrossIcon from '../components/FilterIcon';
 import SwitchButtonComponent from '../components/SwitchButtonCompnent';
+import { useProductClass } from '../ProductClassContext'; // Hook
 
 // TODO kun tekee refresh ja menee tuotesivulle, tulee (filteri-ikonista?):
 // Received `false` for a non-boolean attribute `enabled`.
@@ -45,26 +46,15 @@ const Products = ({ refresh = false, categoryId }) => {
   const productRefs = useRef({}); // Ref object to hold references to product items
 
 
-  const [productClasses, setProductClasses] = useState([]);
-
-  // Funktio tuoteluokkien hakemiseen
-  const fetchAndSetProductClasses = useCallback(async () => {
-    try {
-      const allProductClasses = await getProductclasses(); // Hakee tuoteluokat
-      setProductClasses(allProductClasses);
-    } catch (err) {
-      console.error("Error fetching product classes:", err);
-      setError(err.message);
-    }
-  }, []); // Tyhjät riippuvuudet, koska funktio ei käytä ulkopuolisia muuttujia
+  //const [productClasses, setProductClasses] = useState([]); // Ei näin, että haetaan täällä niitä erikseen
+  const { fetchAndSetProductClasses } = useProductClass();  //Käytetään Hook:ia, että saadaan mahdollisesti päivitetyt tiedot käyttöön heti. itemissä käytetään suoraan productClasses, ei välitetä täältä
+  
+  useEffect(() => { 
+    fetchAndSetProductClasses(); // Haetaan tuoteryhmät kertaalleen, kun tullaan tälle näkymälle. Hookin kautta päivittyvät,, jos niitä on muutettu
+  },[]);
 
 
-  // Käytetään useEffectia tuomaan tuoteluokat komponentin alustuksessa
-  useEffect(() => {
-    fetchAndSetProductClasses();
-  }, [fetchAndSetProductClasses]); // Lisätään riippuvuus funktiolle, lisätäänkö refresh?
-
-
+  // Muut setting:sit ovat tuolla SettinsContextissa, mutta tätä käytetään vain tässä paikallisesti....
   // Tila alustetaan localStoragesta, jossa etsitään 'productView' arvoa
   const [showByCategory, setShowByCategory] = useState(() => {
     const saved = localStorage.getItem('productView');
@@ -413,8 +403,7 @@ const Products = ({ refresh = false, categoryId }) => {
         handleTouchMove={handleTouchMove}
         handleContextMenu={handleContextMenu}
         colors={colors}
-        selectedColors={selectedColors}
-        productClasses={productClasses}
+        selectedColors={selectedColors}        
       />
     );
   }

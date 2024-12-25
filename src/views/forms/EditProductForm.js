@@ -8,16 +8,15 @@ import { useSettings } from '../../SettingsContext';
 import { useColors } from '../../ColorContext';
 import { ColorItemsWrapper, ColorItemContainer, ColorItemContainerLabel, ColorItemSelection, ColorCheckbox, ColorItem } from '../../components/ColorItem';
 import styled from 'styled-components';
+import { useProductClass } from '../../ProductClassContext';
 
 const StyledDiv = styled.div`
   margin-bottom: 15px;
 `;
 
-
 const StyledInputGroup = styled.div`
   display: grid;
   grid-template-columns: 25% 65%; /* Ensimmäinen sarake on 80px leveä, toinen vie loput tilasta */
-  /*gap: 10px  15px; /* Rivit ja sarakkeet */
   margin-bottom: 15px;
   align-items: center; /* Keskittää sisällön pystysuunnassa */
 `;
@@ -38,8 +37,8 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
   const [dose, setDose] = useState(product.dose);
   const [prodinfo, setProdinfo] = useState(product.info);
 
-  const [categories, setCategories] = useState([]);
-  const [productClasses, setProductClasses] = useState([]);
+  const [categories, setCategories] = useState([]);  
+  const { productClasses } = useProductClass(); // Hook:lla, niin pysyy ajantaiset tiedot ilman erillistä hakemista
   const [error, setError] = useState('');
 
   const { colorCodingEnabled } = useSettings();
@@ -58,33 +57,17 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
     }
   };
 
-  const fetchAndSetProductClasses = async () => {
-    try {
-      const allProductClasses = await getProductclasses(false); // oredrnro järjestyksessä TODO 22.12.
-      setProductClasses(allProductClasses);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
 
   useEffect(() => {
     fetchAndSetCategories();
-    fetchAndSetProductClasses();
   }, []);
 
   // Alustetaan valitut värit tuotteelle tallennettujen tietojen perusteella
-  /*
-  useEffect(() => {
-    const initialSelectedColors = Object.keys(colors).filter(colorKey => product[colorKey]);
-    setSelectedColors(initialSelectedColors);
-  }, [product, colors, setSelectedColors]);
-  */
 
   useEffect(() => {
     const initialProductSelectedColors = Object.keys(colors).filter(colorKey => product[colorKey]);
     setProductSelectedColors(initialProductSelectedColors);
   }, [product, colors]);
-
 
   const handleToggleEditColor = (colorKey) => {
     if (productSelectedColors.includes(colorKey)) {

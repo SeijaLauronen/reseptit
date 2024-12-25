@@ -12,12 +12,17 @@ import { IconContainer, IconWrapper } from './components/Container';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import Accordion from './components/Accordion'
 
+import { useProductClass } from './ProductClassContext';
+
+
 const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
 
     const [error, setError] = useState(''); // Paikallinen virhetila 
     const [newProductClass, setNewProductClass] = useState('');
-    const [productClasses, setProductClasses] = useState([]);
+    //const [productClasses, setProductClasses] = useState([]);
+    const { productClasses, setProductClasses, fetchAndSetProductClasses } = useProductClass(); // Käytetään Hook:ia, että saadaan päivitetyt tiedot käyttöön joka paikassa heti
 
+    /*
     const fetchAndSetProductClasses = async () => {
         try {
             const allProductClasses = await getProductclasses();
@@ -26,6 +31,7 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
             setError(err.message);
         }
     };
+    */
 
     //Todo tarkista, ettei nimi ole tyhjä
     const handleUpdateProductClass = async (productClass, name) => {
