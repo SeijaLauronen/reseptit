@@ -140,7 +140,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
     setSavedFilename(filename);
   };
 
-  const { setColorCodingEnabled } = useSettings();
+  const { setColorCodingEnabled, deleteLocalStorage, setLocalStorageDefaults } = useSettings();
   const { resetColors, loadColorDefinitions } = useColors(); //Hook
 
   const handleLoadExample = async () => {
@@ -151,8 +151,9 @@ const DataManagement = ({ isOpen, action, onClose }) => {
       onConfirm: async () => {
         setLoading(true);
         await handleImportData(exampleData);
-        setColorCodingEnabled(true); // Ota värikoodit käyttöön latauksen jälkeen
+        //setColorCodingEnabled(true); // Ota värikoodit käyttöön latauksen jälkeen
         loadColorDefinitions(); //ladataan värimäärittelyt kontekstiin
+        setLocalStorageDefaults(); // Asetetaan localStore-määrittelyt, mm värikoodit käyttöön
         setLoading(false);
         setSuccess(true);
         setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
@@ -168,6 +169,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
         setLoading(true);
         await deleteAllData();
         resetColors(); //Värimäärittelyt tyhjennetään kontekstista
+        deleteLocalStorage();// TODO poistetaan kaikki localStore-määrittelyt
         setLoading(false);
         setSuccess(true);
         setConfirmDialog({ isOpen: false, message: '', onConfirm: null });

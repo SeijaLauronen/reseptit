@@ -10,10 +10,9 @@ import { FaTrash } from 'react-icons/fa';
 import { ProductClassItemGrabbable } from './components/Item';
 import { IconContainer, IconWrapper } from './components/Container';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import Accordion from './components/Accordion'
-
+import Accordion from './components/Accordion';
+import helpTexts from './helpTexts';
 import { useProductClass } from './ProductClassContext';
-
 
 const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
 
@@ -91,29 +90,29 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
             alignItems: 'center',
             justifyContent: 'space-between'
         };
-    
+
         const inputStyle = {
             maxWidth: '50%',
             flexGrow: 1
         };
-    
+
         const iconContainerStyle = {
             marginRight: '8px', // Lisää tilaa input-kentän ja roskakorin väliin
             padding: '6px 2px 6px 2px'
         };
-        
+
         const emptySpaceStyle = {
             flexGrow: 1 // Tämä täyttää jäljellä olevan tilan
         };
-    
+
         return (
-            <ProductClassItemGrabbable 
+            <ProductClassItemGrabbable
                 className='ProductClassItemGrabbable'
                 ref={ref}
                 style={containerStyle}
                 {...props}
             >
-                 <div>
+                <div>
                     <IconContainer style={iconContainerStyle}>
                         <IconWrapper onClick={() => onDelete(productClass.id)}>
                             <FaTrash color="red" />
@@ -127,7 +126,7 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
                     onBlur={handleBlur}
                     style={inputStyle}
                 />
-               <div style={emptySpaceStyle}></div> {/* Tämä täyttää jäljellä olevan tilan */}
+                <div style={emptySpaceStyle}></div> {/* Tämä täyttää jäljellä olevan tilan */}
 
             </ProductClassItemGrabbable>
         );
@@ -201,9 +200,9 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
         }
     };
 
-    const scrollableStyle = {       
-        padding: '6px 10px 6px 2px',          
-        margin: '3px 30px 2px 2px',      
+    const scrollableStyle = {
+        padding: '6px 10px 6px 2px',
+        margin: '3px 30px 2px 2px',
         maxHeight: '36vh',
         backgroundColor: 'lightyellow'
     };
@@ -223,41 +222,38 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
 
                 <h4>Tuoteluokkien määrittely</h4>
                 <Accordion title={"Näytä / sulje ohje..."} defaultExpanded={false} accordionmini={true}>
-
-                    Voit määritellä tuoteluokkia, esimerkiksi proteiinit, kasvikset, rasvat jne.
-                    Tiedot tallentuvat välittömästi ilman erillistä tallentamista.
-                    Nimeä voit muokata suoraan tekstikentässä.
-
+                    {helpTexts['productClasses']}
                 </Accordion>
-                
-                <ScrollableFormContainer style={scrollableStyle}>
+                {productClasses.length > 0 &&
+                    <ScrollableFormContainer style={scrollableStyle}>
 
-                    <DragDropContext onDragEnd={handleDragEnd}>
-                        <Droppable droppableId="droppable-productClasses">
-                            {(provided) => (
-                                <div {...provided.droppableProps} ref={provided.innerRef}>
-                                    {productClasses.map((productClass, index) => (
-                                        <Draggable key={productClass.id.toString()} draggableId={productClass.id.toString()} index={index}>
-                                            {(provided) => (
-                                                <ProductClassItem
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    key={productClass.id}
-                                                    productClass={productClass}
-                                                    onDelete={handleDeleteProductClass}
-                                                >
-                                                </ProductClassItem>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
+                        <DragDropContext onDragEnd={handleDragEnd}>
+                            <Droppable droppableId="droppable-productClasses">
+                                {(provided) => (
+                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                        {productClasses.map((productClass, index) => (
+                                            <Draggable key={productClass.id.toString()} draggableId={productClass.id.toString()} index={index}>
+                                                {(provided) => (
+                                                    <ProductClassItem
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                        key={productClass.id}
+                                                        productClass={productClass}
+                                                        onDelete={handleDeleteProductClass}
+                                                    >
+                                                    </ProductClassItem>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
 
-                </ScrollableFormContainer>
+                    </ScrollableFormContainer>
+                }
 
                 <ButtonGroup>
                     <InputAdd

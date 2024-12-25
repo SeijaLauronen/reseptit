@@ -42,7 +42,9 @@
       "c1": true,
       "c2": false,
       "c3": false,
-      "black": false
+      "black": false,
+      "dose": "1 kpl",
+      "classId": 26
     },
     {
       "name": "Banaani",
@@ -54,7 +56,8 @@
       "c1": false,
       "c2": false,
       "c3": false,
-      "black": true
+      "black": true,
+      "classId": 26
     },
     {
       "name": "Tomaatti",
@@ -66,7 +69,9 @@
       "c1": true,
       "c2": false,
       "c3": true,
-      "black": false
+      "black": false,
+      "dose": "1 kpl",
+      "classId": 25
     },
     {
       "name": "Kurkku",
@@ -78,7 +83,9 @@
       "c1": true,
       "c2": true,
       "c3": true,
-      "black": false
+      "black": false,
+      "dose": "100g",
+      "classId": 25
     },
     {
       "name": "Ruisleipä",
@@ -88,7 +95,10 @@
       "c1": true,
       "c2": false,
       "c3": false,
-      "black": false
+      "black": false,
+      "dose": "1 siivu / 30g",
+      "classId": 24,
+      "info": "Valmiiksi siivutettua"
     },
     {
       "name": "Näkkileipä",
@@ -97,7 +107,9 @@
       "c1": true,
       "c2": false,
       "c3": true,
-      "black": false
+      "black": false,
+      "dose": "1 kpl",
+      "classId": 24
     },
     {
       "name": "Jauheliha",
@@ -106,7 +118,10 @@
       "c1": true,
       "c2": true,
       "c3": true,
-      "black": false
+      "black": false,
+      "dose": "90g",
+      "classId": 23,
+      "info": "Luomua"
     },
     {
       "name": "Jäätelö",
@@ -130,7 +145,9 @@
       "c1": false,
       "c2": false,
       "c3": false,
-      "black": true
+      "black": true,
+      "dose": "lasillinen",
+      "classId": null
     },
     {
       "name": "Kahvi",
@@ -159,7 +176,9 @@
       "c1": false,
       "c2": false,
       "c3": true,
-      "black": false
+      "black": false,
+      "dose": "1 kpl",
+      "classId": 28
     }
   ],
   "colordefinitions": [
@@ -182,6 +201,38 @@
       "colorId": "c3",
       "shortname": "Pe-Su",
       "colorinfo": "Hyviä rasvoja, hiilareita vain vähän.\nRentoutumista."
+    }
+  ],
+  "productclasses": [
+    {
+      "name": "Proteiinit",
+      "order": 1,
+      "id": 23
+    },
+    {
+      "name": "Hiilihydraatit",
+      "order": 2,
+      "id": 24
+    },
+    {
+      "name": "Kasvikset",
+      "order": 3,
+      "id": 25
+    },
+    {
+      "name": "Hedelmät",
+      "order": 4,
+      "id": 26
+    },
+    {
+      "name": "Marjat",
+      "order": 5,
+      "id": 27
+    },
+    {
+      "name": "Rasvat",
+      "order": 6,
+      "id": 28
     }
   ]
 }

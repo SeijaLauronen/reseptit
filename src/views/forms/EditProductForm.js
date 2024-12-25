@@ -37,7 +37,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
   const [dose, setDose] = useState(product.dose);
   const [prodinfo, setProdinfo] = useState(product.info);
 
-  const [categories, setCategories] = useState([]);  
+  const [categories, setCategories] = useState([]);
   const { productClasses } = useProductClass(); // Hook:lla, niin pysyy ajantaiset tiedot ilman erillistä hakemista
   const [error, setError] = useState('');
 
@@ -145,6 +145,17 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
             </StyledInputGroup>
 
+            <StyledInputGroup>
+              <label>Annos: </label>
+              <InputCommon
+                type="text"
+                value={dose}
+                onChange={(e) => setDose(e.target.value)}
+                placeholder="Annos"
+              />
+            </StyledInputGroup>
+
+
             {colorCodingEnabled && (
               <StyledDiv>
                 <Separator className='Separator' />
@@ -171,30 +182,19 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                     </ColorItemContainer>
                   ))}
                 </ColorItemsWrapper>
-
                 <Separator className='Separator' />
-
-                <StyledDiv>
-                  <label>Annos: </label>
-                  <InputCommon
-                    type="text"
-                    value={dose}
-                    onChange={(e) => setDose(e.target.value)}
-                    placeholder="Annos"
-                  />
-                </StyledDiv>
-
-                <StyledDiv>
-                  <label>Muistiinpanot: </label>
-                  <InputTextArea
-                    value={prodinfo}
-                    onChange={(e) => setProdinfo(e.target.value)} // Muutostilan päivitys
-                    placeholder="Muistiinpanot"
-                  />
-                </StyledDiv>
 
               </StyledDiv>)
             }
+            
+            <StyledDiv>
+              <label>Muistiinpanot: </label>
+              <InputTextArea
+                value={prodinfo}
+                onChange={(e) => setProdinfo(e.target.value)} // Muutostilan päivitys
+                placeholder="Muistiinpanot"
+              />
+            </StyledDiv>
           </ScrollableFormContainer>
         )}
         {editAmount && (

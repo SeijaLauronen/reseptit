@@ -26,17 +26,17 @@ const ProductItemComponent = forwardRef(
   ({ product, highlightText, filter, handleEditProduct, handleToggleFavorite, handleShoppingListPress, handleShoppingListRelease, handleTouchMove, handleContextMenu, colors, selectedColors }, ref) => {
 
     const noColor = { code: '#FFF', name: 'White' }; // Tämä voisi olla myös tuolla ylemäpänä
-    const { colorCodingEnabled } = useSettings();  // Tämä laitetaan funktiokehykseen, on loogista koodia
+    const { colorCodingEnabled, showDose, showProductClass } = useSettings();  // Tämä laitetaan funktiokehykseen, on loogista koodia
     const { productClasses } = useProductClass(); // Hook, otetaankin täältä eikä Product.js:n kautta
     
     const renderAdditionalInfoText = () => {
       return (
         <StyledText>
-          {product.classId &&
+          {showProductClass && product.classId &&
             productClasses.find(pc => pc.id === product.classId)?.name
             ? `${productClasses.find(pc => pc.id === product.classId).name}`
             : ''}
-          {product.dose ? `(${product.dose})` : ''}
+          {showDose && product.dose ? ` (${product.dose})` : ''}
         </StyledText>
       )
     }
