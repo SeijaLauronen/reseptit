@@ -52,6 +52,9 @@ const helpTexts = {
         Tuotteelle voit valita värit ja tuotesivun yläpalkin suodattimesta voi valita näkyviin haluamasi värit/värittömät
         ja poistaa valinnat klikkaamalla suodattimen kuvaa.
       </p>
+      <p>
+        Voit antaa tuotteille <b>luokitustietoja</b>, esim proteiinit, hiilihydraatit jne, kun määrittelet luokat ensin asetuksista.
+      </p>
     </>
   ),
   shoppingList: (

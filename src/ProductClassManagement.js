@@ -6,7 +6,9 @@ import InputAdd from './components/Input';
 import Toast from './components/Toast';
 import { getProductclasses, addProductclass, deleteProductclass, updateProductclass } from './controller';
 import { ButtonGroup, GroupRight, GroupLeft, ScrollableFormContainer } from './components/Container';
-import { FaTrash } from 'react-icons/fa';
+//import { FaTrash } from 'react-icons/fa'; // Tämä olikin maksullinen
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ProductClassItemGrabbable } from './components/Item';
 import { IconContainer, IconWrapper } from './components/Container';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -62,7 +64,7 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
                     />
                     <GroupRight>
                         <button onClick={() => onDelete(productClass.id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                            <FaTrash color="red" />
+                            <FontAwesomeIcon icon={faTrash} color="red" />
                         </button>
                     </GroupRight>
 
@@ -115,7 +117,7 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
                 <div>
                     <IconContainer style={iconContainerStyle}>
                         <IconWrapper onClick={() => onDelete(productClass.id)}>
-                            <FaTrash color="red" />
+                            <FontAwesomeIcon icon={faTrash} color="red" />
                         </IconWrapper>
                     </IconContainer>
                 </div>
