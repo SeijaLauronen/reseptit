@@ -34,7 +34,7 @@ export const ColorItem = styled.label`
         return '#000';
     }
   }};
-  padding: 2px; /* Tässä saa pikkuneliöitten kokoa muutettua*/
+  padding: 2.3px; /* Tässä saa pikkuneliöitten kokoa muutettua*/
   width: 1px;
   height : 1px;
   margin-top: 0px;
