@@ -14,6 +14,9 @@ export default Container;
 // Lisää tilaa ylös, koska värifiltteri mahdollinen
 export const ProductContainer = styled(Container)`
   padding-top: 90px;
+  @media (max-width: 350px) {
+    padding-top: 120px; /* Vielä enemmän tilaa erittäin kapeilla näytöillä */
+  }
 `;
 
 export const FormContainer = styled.div`

@@ -34,7 +34,7 @@ export const ColorItem = styled.label`
         return '#000';
     }
   }};
-  padding: 4px;
+  padding: 2px; /* Tässä saa pikkuneliöitten kokoa muutettua*/
   width: 1px;
   height : 1px;
   margin-top: 0px;
@@ -59,8 +59,9 @@ export const ColorItem = styled.label`
   border: solid black 1px;
 `;
 
-//Värifiltteririvin määritykset Tuotesivulla
+//Värifiltteririvin itemitason määritykset Tuotesivulla ja Editissä
 export const ColorItemSelection = styled(ColorItem)`
+  padding: 4px;
   font-size: 13px; /* Tekstin koko */
   width: 38px; /* 26 */
   height : 12px;

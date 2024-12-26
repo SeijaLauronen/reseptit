@@ -457,14 +457,14 @@ const Products = ({ refresh = false, categoryId }) => {
           {colorCodingEnabled && (
             <div className='filter-row'>
 
-              <FilterWithCrossIcon
+              <FilterWithCrossIcon className =  'FilterWithCrossIcon"'
                 $filterEnabled={selectedColors.length > 0}
                 onClick={handleFilterClick}
               />
               <ColorItemsWrapper className='CIWrapper'>
                 {Object.keys(colors).map(colorKey => (
                   <ColorItemContainer key={colorKey} className='CIContainer'>
-                    <ColorItemSelection
+                    <ColorItemSelection 
                       className='CISelection'
                       color={colors[colorKey]}
                       selected={selectedColors.includes(colorKey)}

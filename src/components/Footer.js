@@ -14,7 +14,7 @@ const FooterContainer = styled.div`
   display: flex;
   justify-content: space-around;
   padding: 10px 0px;
-  height: 40px;
+  height: 40px; 
 `;
 
 const FooterItem = styled.div`
@@ -35,6 +35,10 @@ const FooterButton = styled.button`
   &:hover {
     background: #e1f5eb;
     color: #673ab7;
+  }
+
+  @media (max-width: 350px) {
+    padding: 3px 10px;
   }
 `;
 
