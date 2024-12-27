@@ -3,7 +3,7 @@ import { fetchProducts, getProductById as dbGetProductById, addProduct as dbAddP
 import { clearDatabase } from './dbUtils'; //TODO tarvitaankohan
 import { importDataToDatabase, exportDataFromDatabase, loadExampleDataToDatabase } from './dbUtils';
 import { upsertColorDefinition as dbUpsertColorDefinition, getColorDefinition as dbGetColorDefinition}  from './dbUtils';
-import { fetchProductclasses, addProductclass as dbAddProductclass, getProductclassById as dbGetProductclassById, updateProductclass as dbUpdateProductclass, deleteProductclass as dbDeleteProductclass } from './dbUtils';
+import { fetchProductclasses, addProductclass as dbAddProductclass, updateProductclass as dbUpdateProductclass, deleteProductclass as dbDeleteProductclass } from './dbUtils';
 
 export const handleImportData = async (data) => {
   try {

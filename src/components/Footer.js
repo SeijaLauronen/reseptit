@@ -17,10 +17,6 @@ const FooterContainer = styled.div`
   height: 40px; 
 `;
 
-const FooterItem = styled.div`
-  cursor: pointer;
-`;
-
 const FooterButton = styled.button`
   cursor: pointer;
   background: ${({ $isActive }) => ($isActive ? '#e1f5eb' : '#673ab7')}; 

@@ -84,7 +84,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
       const listText = buildShoppingListText();
       setShoppingListText(listText);
     }
-  }, [isPrintOpen, products, selectedProducts]);
+  }, [isPrintOpen, products, selectedProducts]); // TODO lisättävä buildShoppingListText ?
 
   const handleToggleSelect = async (id) => {
     try {
@@ -220,7 +220,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
   const handleImport = async () => {
     try {
-      const { addedCategories, addedProducts, updatedProducts } = await importShoppinglistData(importText, categories, allProducts, noCategoryName);
+      const { addedCategories, addedProducts, updatedProducts } = await importShoppinglistData(importText, categories, allProducts, noCategoryName); // TODO paluuarvoja ei käytetä vielä...
       fetchData();
       setImportText('');
       handleCloseImport();

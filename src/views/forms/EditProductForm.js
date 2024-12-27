@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import EditForm from './EditForm';
 import { InputCommon, Select, InputQuantity, InputUnit, InputTextArea } from '../../components/Input';
 import Toast from '../../components/Toast';
-import { getCategories, getProductclasses } from '../../controller';
+import { getCategories } from '../../controller';
 import { InputWrapper, ScrollableFormContainer } from '../../components/Container';
 import { useSettings } from '../../SettingsContext';
 import { useColors } from '../../ColorContext';
-import { ColorItemsWrapper, ColorItemContainer, ColorItemContainerLabel, ColorItemSelection, ColorCheckbox, ColorItem } from '../../components/ColorItem';
+import { ColorItemsWrapper, ColorItemContainer, ColorItemContainerLabel, ColorItemSelection, ColorItem } from '../../components/ColorItem';
 import styled from 'styled-components';
 import { useProductClass } from '../../ProductClassContext';
 

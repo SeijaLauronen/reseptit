@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { ScrollableFormContainer, SlideInContainerRight, FormContainer } from './components/Container';
+import { ScrollableFormContainer, SlideInContainerRight } from './components/Container';
 import { CloseButtonComponent, CancelButton } from './components/Button';
 import { ButtonGroup, GroupLeft, GroupRight } from './components/Container';
 import SwitchButtonComponent from './components/SwitchButtonCompnent';

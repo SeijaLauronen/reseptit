@@ -143,7 +143,7 @@ const DataManagement = ({ isOpen, action, onClose }) => {
     setSavedFilename(filename);
   };
 
-  const { setColorCodingEnabled, deleteLocalStorage, setLocalStorageDefaults } = useSettings();
+  const { deleteLocalStorage, setLocalStorageDefaults } = useSettings();
   const { resetColors, loadColorDefinitions } = useColors(); //Hook
 
   const handleLoadExample = async () => {

@@ -26,6 +26,10 @@ const Button = styled.button`
     font-size: 14px;
   }
   width: ${props => (props.fullwidth ? '100%' : 'auto')}; 
+
+  @media (max-width: 350px) {
+    padding: 10px 8px;    
+  }
 `;
 
 

@@ -9,7 +9,7 @@ import { InputColorShortName, InputTextArea } from './components/Input';
 import { ScrollableFormContainer, ButtonGroup, GroupLeft, GroupRight, IconContainer, IconWrapper } from './components/Container';
 import { CancelButton } from './components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faSave, faUndo, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Accordion from './components/Accordion';
 import ConfirmDialog from './components/ConfirmDialog';
 

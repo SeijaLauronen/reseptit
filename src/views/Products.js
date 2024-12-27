@@ -51,7 +51,7 @@ const Products = ({ refresh = false, categoryId }) => {
   
   useEffect(() => { 
     fetchAndSetProductClasses(); // Haetaan tuoteryhmät kertaalleen, kun tullaan tälle näkymälle. Hookin kautta päivittyvät,, jos niitä on muutettu
-  },[]);
+  },[]); // TODO pitääkö laittaa fetchAndSetProductClasses
 
 
   // Muut setting:sit ovat tuolla SettinsContextissa, mutta tätä käytetään vain tässä paikallisesti....

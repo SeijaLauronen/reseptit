@@ -4,7 +4,7 @@ import { TopContainer } from './components/Container';
 import { AddButton, CloseButtonComponent, CancelButton } from './components/Button';
 import InputAdd from './components/Input';
 import Toast from './components/Toast';
-import { getProductclasses, addProductclass, deleteProductclass, updateProductclass } from './controller';
+import { addProductclass, deleteProductclass, updateProductclass } from './controller';
 import { ButtonGroup, GroupRight, GroupLeft, ScrollableFormContainer } from './components/Container';
 //import { FaTrash } from 'react-icons/fa'; // Tämä olikin maksullinen
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -51,6 +51,7 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
     input-kentissä fokus karkaa jokaisen näppäinpainalluksen jälkeen, koska onChange-käsittelijä päivittää tilan,
      mikä johtaa komponentin uudelleenrenderöintiin. Tällöin React luo uusia input-elementtejä, jotka eivät säilytä aiempaa fokustaan. 
     */
+   /*
     const ProductClassItemNOK = ({ productClass, onDelete }) => {
         return (
             <ProductClassItemGrabbable>
@@ -72,6 +73,7 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
             </ProductClassItemGrabbable>
         );
     };
+    */
 
     //const ProductClassItem = ({ productClass, onDelete }) => {
     const ProductClassItem = forwardRef(({ productClass, onDelete, ...props }, ref) => {
@@ -137,7 +139,7 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
 
     useEffect(() => {
         fetchAndSetProductClasses();
-    }, [refresh]); //TODO Tuleeko tuo refresh tänne, ja tarvitseeko...
+    }, [refresh]); //TODO Tuleeko tuo refresh tänne, ja tarvitseeko... Pitäisikö laittaa fetchAndSetProductClasses...
 
 
     useEffect(() => {
