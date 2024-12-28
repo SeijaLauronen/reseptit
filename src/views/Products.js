@@ -9,7 +9,7 @@ import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
 import Container, { ProductContainer, IconWrapper } from '../components/Container';
-import { getCategories, getProducts, getProductById, addProduct, updateProduct, deleteProduct, getProductclasses } from '../controller';
+import { getCategories, getProducts, getProductById, addProduct, updateProduct, deleteProduct } from '../controller';
 import Toast from '../components/Toast';
 import ProductItemComponent from '../components/ProductItemComponent';
 import { useColors } from '../ColorContext';
