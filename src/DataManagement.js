@@ -283,7 +283,7 @@ Malli json tekstistä:
         <Toast message={error} onClose={() => setError('')} />
       )}
 
-      <SlideInContainerRight $isOpen={isOpen}>
+      <SlideInContainerRight $isOpen={isOpen} className='SlideInContainerRight'>
         <CloseButtonComponent onClick={() => onClose(success && !loading)}></CloseButtonComponent>
 
         {action === 'import' && (

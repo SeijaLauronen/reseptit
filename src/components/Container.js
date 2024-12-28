@@ -36,14 +36,20 @@ export const ScrollableFormContainer = styled(FormContainer)`
   margin-bottom: 5px;
 `;
 
+/* 
+Mobiililaitteiden selaimet (kuten Firefox) eivät aina käsittele 100vh-arvoa oikein, koska se sisältää osoitepalkin ja mahdollisesti muita selainliittymän osia. Tämä voi johtaa siihen, että elementti ylittää näkymän rajat.
+100% viittaa vanhemman elementin korkeuteen, joka on yleensä laskettu tarkemmin ja ei sisällä osoitepalkkia tai muita selaimen elementtejä.
+vh puolestaan perustuu koko selaimen näkymän korkeuteen, mutta mobiiliselaimet voivat tulkita sen väärin dynaamisessa tilanteessa, esimerkiksi kun osoitepalkki näkyy tai piiloutuu.
+*/
 export const SlideInContainerRight = styled.div`
   position: fixed;
   top: 100px;
   right: 0;
   width: 90%;
   max-width: 400px;
-  max-height: calc(100vh - 130px); /* Näytön korkeus miinus top - alareuna */
-  height: auto;
+  //height: auto; // Onkohan järjestyksellä väliä. edelleen meni alareunasta yli kännykän Firefox selaimessa, kun tämä oli max:n jälkeen
+  //max-height: calc(100vh - 130px); /* Näytön korkeus miinus top - alareuna */  
+  max-height: calc(100% - 130px);
   padding: 10px; 
   background-color: #fff;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
@@ -52,6 +58,7 @@ export const SlideInContainerRight = styled.div`
   z-index: 1001;
   overflow-y: auto;  
   //transform-style: preserve-3d; /* Estää koordinaattijärjestelmän hajoamisen. Ei vaikuta ProducClass ikkunaan toivotusti */
+ 
 `;
 
 export const TopContainer = styled.div`

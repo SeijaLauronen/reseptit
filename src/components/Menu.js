@@ -14,7 +14,7 @@ import ColorManagement from '../ColorManagement';
 import SettingsManagement from '../SettingsManagement';
 import ProductClassManagement from '../ProductClassManagement';
 
-const programVersion = '2024-12-28: 1.268';
+const programVersion = '2024-12-28: 1.269';
 //päivitä versiohistoria myös tänne, huom, vain ostokseni-sovelluksen!:
 //https://github.com/SeijaLauronen/SeijaLauronen.github.io/blob/main/ostokseniversio.html
 //https://seijalauronen.github.io/ostokseniversio.html
@@ -200,14 +200,14 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
   // tai käytetään pieniä kirjaimia kuten fillspace eikä fillSpace
   return (
     <>
-      <MenuContainer>
+      <MenuContainer className='MenuContainer'>
         <MenuIcon onClick={toggleMenu}>
           <FontAwesomeIcon icon={faBars} />
         </MenuIcon>
         <GroupRight><MenuHelpButton onClick={onOpenInfo} /> </GroupRight>
       </MenuContainer>
-      <MenuOverlay $isOpen={isOpen} onClick={toggleMenu} />
-      <MenuList $isOpen={isOpen}>
+      <MenuOverlay $isOpen={isOpen} onClick={toggleMenu} className='MenuOverlay' />
+      <MenuList $isOpen={isOpen} className='MenuList'>
         <CloseButtonComponent onClick={toggleMenu} />
         <MenuHeader>Toiminnot</MenuHeader>
         <MenuItem onClick={() => handleOpenDataManagement('load')}>Lataa esimerkkiaineisto<ChevronIcon /></MenuItem>
