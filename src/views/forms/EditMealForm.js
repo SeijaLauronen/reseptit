@@ -61,11 +61,12 @@ const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
   return (
     <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(day, meal.mealId)}>
       <div>
-        <label>Aterian nimi</label>
+        <label>Aterian nimi:</label>
         <InputName
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder="Aamiainen, lounas,..."
         />
         <div>
           <p>Valitse aterian koostavat luokat joko pakollisena (P) tai valinnaisena (V)</p>
@@ -75,7 +76,7 @@ const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
           <div></div> {/* Tyhjä paikka nimelle */}
           <span>P</span>
           <span>V</span>
-          <div>Annos (muu kuin 1)</div>
+          <div>Lisätieto, esim. annos muu kuin 1</div>
         </ProductClassSelectionHeader>
 
         {productClasses.map((productClass) => (
@@ -105,7 +106,7 @@ const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
             <input
               type="text"
               ref={(el) => (infoRefs.current[productClass.id] = el)} // Tallenna ref
-              placeholder="Annos"
+              placeholder="Lisätieto"
               defaultValue={
                 meal.mealClasses.find((mc) => mc.classId === productClass.id)?.info || ""
               } // Näytä olemassa oleva tieto

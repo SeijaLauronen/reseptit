@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-
-import { getDays, addDay, updateDay, deleteDay } from '../controller';
+import { getDays, addDay, updateDay, deleteDay, getProducts } from '../controller';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import EditDayForm from './forms/EditDayForm';
@@ -15,6 +14,7 @@ import Toast from '../components/Toast';
 import MyErrorBoundary from '../components/ErrorBoundary';
 import Accordion from '../components/Accordion';
 import AccordionDraggable from '../components/AccordionDraggable';
+import ItemToggle, {ItemToggleContainer} from '../components/ItemToggle';
 import { useProductClass } from '../ProductClassContext'; // Hook
 
 
@@ -71,6 +71,22 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
   
     ]);
     */
+
+  const [products, setProducts] = useState([]);
+  const fetchAndSetProducts = async () => {
+    try {
+      const allProducts = await getProducts();
+      setProducts(allProducts);
+
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchAndSetProducts();
+  }, [refresh]); //TODO onkohan tämä ok
+
   const [days, setDays] = useState([]);
 
   const fetchAndSetDays = async () => {
@@ -159,7 +175,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
 
     const newMeal = {
       mealId: newMealId,
-      name: 'Uusi ateria',
+      name: '',
       mealClasses: []
     };
     setIsMealFormOpen(true);
@@ -240,6 +256,23 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
     }
   }, [isDayFormOpen, editingDay]);
 */
+
+  const handleProductSelect = (mealClass, product, isProductSelected) => {
+    const updatedMealClass = { ...mealClass };
+    if (isProductSelected) {
+      updatedMealClass.products = updatedMealClass.products || [];
+      updatedMealClass.products.push(product.id);
+    } else {
+      updatedMealClass.products = updatedMealClass.products?.filter(
+        (id) => id !== product.id
+      );
+    }
+
+    // TODO
+    // Päivitä mealClasses-tiedot tarvittaessa
+    console.log('Updated Meal Class:', updatedMealClass);
+  };
+
 
 
   // Container in styled komponentti, käytetään transientti props $isJotain...
@@ -349,9 +382,20 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                                     title={mealClass.optional ? `(${content})` : content}
                                     defaultExpanded={false}
                                   >
-                                    <div>
-                                      Tulossa: Tähän listataan vielä luokan tuotteet
-                                    </div>
+
+                                    <ItemToggleContainer>
+                                      {products?.map((product) =>
+                                        mealClass.classId === product.classId ? (
+                                          <ItemToggle
+                                            key={product.id}
+                                            product={product}
+                                            onSelect={(product, isProductSelected) =>
+                                              handleProductSelect(mealClass, product, isProductSelected)
+                                            }
+                                          />
+                                        ) : null
+                                      )}
+                                    </ItemToggleContainer>
                                   </Accordion>
                                 );
                               })}
@@ -369,7 +413,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                       <GroupRight>
                         <AddButton onClick={() => handleAddMeal(day)}>Lisää ateria</AddButton>
                       </GroupRight>
-                      
+
                       <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{day.info}</pre>
 
 

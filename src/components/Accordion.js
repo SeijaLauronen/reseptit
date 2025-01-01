@@ -7,6 +7,7 @@ const AccordionWrapper = styled.div`
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  max-width: 100%;  
 `;
 
 const AccordionTitle = styled.div`
@@ -27,7 +28,7 @@ const AccordionContent = styled.div`
   padding: ${({ $accordionmini }) => '3px' || '10px'}; /* Oletusarvo 10px */ 
   //padding: 10px;
   background-color: #fff;
-  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};  
 `;
 
 //Huom! ei tarvitse antaa kaikkia propseja!! Erilainen kuin funktio. Esim colorItem voi puuttua
