@@ -3,6 +3,7 @@ import Menu from './components/Menu';
 import Categories from './views/Categories';
 import Products from './views/Products';
 import ShoppingList from './views/ShoppingList';
+import Days from './views/Days';
 import Footer from './components/Footer'; 
 import Container from './components/Container';
 import Info from './components/Info';
@@ -55,6 +56,8 @@ const App = () => {
         return <Products refresh={refresh} categoryId={selectedCategoryId} />;
       case 'shoppingList':
         return <ShoppingList refresh={refresh} />;
+        case 'days':
+        return <Days refresh={refresh} />;
       default:
         return <Categories refresh={refresh} onCategorySelect={handleCategorySelect} />;
     }

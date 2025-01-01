@@ -1,6 +1,6 @@
 // dbUtils.js
 import { getDB } from './database';
-const STORE_NAMES = ['categories', 'products', 'colordefinitions', 'productclasses']; // Määritä taulujen nimet, TODO kumpaanko näm laitetaan, on myös database.js
+const STORE_NAMES = ['categories', 'products', 'colordefinitions', 'productclasses', 'days']; // Määritä taulujen nimet, TODO kumpaanko näm laitetaan, on myös database.js
 
 //TODO eri taulujen operaatioit voisi yhdistää lähettämällä taulun nimen ja tietueen parametirnä
 
@@ -275,6 +275,77 @@ export const deleteProductclass = async (id) => {
     throw new Error('Virhe poistettaessa tuoteluokkaa: ' + err);
   }
 };
+
+
+/* Days, päiväsuunnitelmat */
+export const fetchDays = async () => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('days', 'readonly');
+    const store = tx.objectStore('days');
+    return await store.getAll();
+  } catch (err) {
+    console.error('Error fetching days:', err);
+    throw new Error('Virhe haettaessa päiväsuunnitelmia: ' + err);
+  }
+};
+
+
+export const addDay = async (day) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('days', 'readwrite');
+    const store = tx.objectStore('days');
+    const addedId = await store.add(day);
+    return addedId;
+  } catch (err) {
+    console.error('Error adding day:', err);
+    throw new Error('Virhe lisättäessä päiväsuunnitelmaa: ' + err);
+  }
+};
+
+export const updateDay = async (id, updatedDay) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('days', 'readwrite');
+    const store = tx.objectStore('days');
+    const day = await store.get(id);
+
+    // Päivitetään kaikki annetut kentät, TODO menisikö put käskyllä kuten alempana product päivityksessä...
+    for (const key in updatedDay) {
+      if (updatedDay.hasOwnProperty(key)) {
+        day[key] = updatedDay[key];
+      }
+    }
+
+    await store.put(day);
+  } catch (err) {
+    console.error('Error updating day:', err);
+    throw new Error('Virhe päivitettäessä päiväsuunnitelmaa: ' + err);
+  }
+};
+
+export const deleteDay = async (id) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('days', 'readwrite');
+    const store = tx.objectStore('days');
+    await store.delete(id);
+  } catch (err) {
+    console.error('Error deleting day:', err);
+    throw new Error('Virhe poistettaessa päiväsuunnitelmaa: ' + err);
+  }
+};
+/* Days end*/
+
+
+
+
+
+
+
+
+
 
 
 

@@ -50,4 +50,3 @@ const SwitchButtonComponent = ({
 };
 
 export default SwitchButtonComponent;
-

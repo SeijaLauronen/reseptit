@@ -23,7 +23,8 @@ const FooterButton = styled.button`
   color: ${({ $isActive }) => ($isActive ? '#000000' : '#fff')};  
   border: solid #fff;
   border-radius: 20px;
-  padding: 3px 25px;
+  //padding: 3px 25px;
+  padding: 3px 15px;
   font-size: 14px;
   transition: background 0.3s, color 0.3s;
   user-select: none;
@@ -58,6 +59,12 @@ const Footer = ({ setView, currentView }) => {
         $isActive={currentView === 'shoppingList'}
       >
         Ostoslista
+      </FooterButton>
+      <FooterButton
+        onClick={() => setView('days')}
+        $isActive={currentView === 'days'}
+      >
+        Päivät
       </FooterButton>
     </FooterContainer>
   );

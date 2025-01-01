@@ -114,6 +114,11 @@ export const InputWrapper = styled.div`
   }
 `;
 
+export const Group = styled.div`
+  display: flex;
+  justify-content: space-between;  
+`;
+
 export const ButtonGroup = styled.div`
   display: flex;
   justify-content: space-between;

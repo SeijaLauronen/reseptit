@@ -4,6 +4,7 @@ import { clearDatabase } from './dbUtils'; //TODO tarvitaankohan
 import { importDataToDatabase, exportDataFromDatabase, loadExampleDataToDatabase } from './dbUtils';
 import { upsertColorDefinition as dbUpsertColorDefinition, getColorDefinition as dbGetColorDefinition}  from './dbUtils';
 import { fetchProductclasses, addProductclass as dbAddProductclass, updateProductclass as dbUpdateProductclass, deleteProductclass as dbDeleteProductclass } from './dbUtils';
+import { fetchDays, addDay as dbAddDay, updateDay as dbUpdateDay, deleteDay as dbDeleteDay } from './dbUtils';
 
 export const handleImportData = async (data) => {
   try {
@@ -211,8 +212,40 @@ export const deleteProductclass = async (id) => {
 };
 
 
+/* Days */
+const validateDay = (day) => {
+  if (!day.name || day.name.trim() === '') {
+    return 'Nimi on pakollinen tieto';
+  }
+  return null;
+};
 
+export const getDays = async () => {
+  const days = await fetchDays();
+  return days.sort((a, b) => a.order-b.order); //Huom, integereille ei localComparea, vaan näin
+};
 
+export const addDay = async (day) => {
+  const error = validateDay(day);
+  if (error) {
+    throw new Error(error);
+  }
+  const addedId = await dbAddDay(day);
+  return addedId;
+};
+
+export const updateDay = async (id, updatedDay) => {
+  const error = validateDay(updatedDay);
+  if (error) {
+    throw new Error(error);
+  }
+  await dbUpdateDay(id, updatedDay);
+};
+
+export const deleteDay = async (id) => {
+  await dbDeleteDay(id);
+};
+/* Days end */
 
 
 //Tietokannan tyhjennys

@@ -38,6 +38,30 @@ export const ProductListItem = styled(Item)`
 export const CategoryItem = styled(GrabbableItem)`
 `;
 
+export const ProductClassSelectionHeader = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: bold;
+  padding-left: 10px;
+  margin: 10px 0;
+`;
+
+export const ProductClassSelectItem = styled.div`
+padding-left: 10px;
+  margin: 10px 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  word-wrap: break-word;
+  word-break: break-all;
+
+  input[type="text"] {
+    width: 90px; 
+  }
+
+`;
+
 export const ProductClassItemGrabbable = styled(GrabbableItem)`
   // grabbale asemointi ei toiminut sliding-containerilla jossa käytetään translatea. Piti vaihtaa slidin container toisenlaiseen
   // transform: translateX(0) !important;
