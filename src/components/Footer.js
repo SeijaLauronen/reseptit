@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useSettings } from '../SettingsContext';
 
 //#ffffc4 vaalea keltainen
 //#e1f5eb vaalea vihreä
@@ -23,8 +24,9 @@ const FooterButton = styled.button`
   color: ${({ $isActive }) => ($isActive ? '#000000' : '#fff')};  
   border: solid #fff;
   border-radius: 20px;
-  //padding: 3px 25px;
-  padding: 3px 15px;
+  //padding: 3px 25px; // 3 painiketta
+  //padding: 3px 15px; // 4 painiketta
+  padding: ${({ $isDayPlanEnabled }) => ($isDayPlanEnabled ? '3px 15px' : '3px 25px')};  // Päivitetty padding
   font-size: 14px;
   transition: background 0.3s, color 0.3s;
   user-select: none;
@@ -40,32 +42,41 @@ const FooterButton = styled.button`
 `;
 
 const Footer = ({ setView, currentView }) => {
+  const { dayPlanEnabled } = useSettings();  
   return (
     <FooterContainer>
       <FooterButton
         onClick={() => setView('categories')}
         $isActive={currentView === 'categories'}
+        $isDayPlanEnabled={dayPlanEnabled}
       >
         Kategoriat
       </FooterButton>
       <FooterButton
         onClick={() => setView('products')}
         $isActive={currentView === 'products'}
+        $isDayPlanEnabled={dayPlanEnabled}
       >
         Tuotteet
       </FooterButton>
       <FooterButton
         onClick={() => setView('shoppingList')}
         $isActive={currentView === 'shoppingList'}
+        $isDayPlanEnabled={dayPlanEnabled}
       >
         Ostoslista
       </FooterButton>
-      <FooterButton
-        onClick={() => setView('days')}
-        $isActive={currentView === 'days'}
-      >
-        Päivät
-      </FooterButton>
+
+      {dayPlanEnabled &&
+        <FooterButton
+          onClick={() => setView('days')}
+          $isActive={currentView === 'days'}
+          $isDayPlanEnabled={dayPlanEnabled}
+        >
+          Päivät
+        </FooterButton>
+      }
+
     </FooterContainer>
   );
 };

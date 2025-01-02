@@ -4,6 +4,21 @@ const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
 
+  // Asetus: näytetään päiväsuunnitelma näkymä
+  const [dayPlanEnabled, setDayPlanEnabled] = useState(() => {
+    const saved = localStorage.getItem('dayPlanEnabled');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('dayPlanEnabled', JSON.stringify(dayPlanEnabled));
+  }, [dayPlanEnabled]);
+
+  const toggleDayPlanEnabled = () => {
+    setDayPlanEnabled(prevState => !prevState);
+  };
+
+
   // Asetus: colorCodingEnabled
   const [colorCodingEnabled, setColorCodingEnabled] = useState(() => {
     const saved = localStorage.getItem('colorCodingEnabled');
@@ -79,6 +94,7 @@ export const SettingsProvider = ({ children }) => {
     setKeepQuantityEnabled(false);
     setOpenQuantityByLongPress(false);
     setShowDose(false);    
+    setDayPlanEnabled(false);
     localStorage.setItem('productView', JSON.stringify(''));    // Tämä asetetaan Tuote-näkymässä, toisin kuin muut 
     /* Poistetaan sitten localStoresta*/
     localStorage.removeItem('colorCodingEnabled');
@@ -86,6 +102,7 @@ export const SettingsProvider = ({ children }) => {
     localStorage.removeItem('openQuantityByLongPress');
     localStorage.removeItem('showDose');
     localStorage.removeItem('showProductClass');
+    localStorage.removeItem('dayPlanEnabled');
     localStorage.removeItem('productView'); // Tämä asetetaan Tuote-näkymässä, toisin kuin muut
   }
 
@@ -94,7 +111,8 @@ export const SettingsProvider = ({ children }) => {
     setColorCodingEnabled(true);
     setKeepQuantityEnabled(false);
     setOpenQuantityByLongPress(false);
-    setShowDose(true);    
+    setShowDose(true);   
+    setDayPlanEnabled(false); 
     localStorage.setItem('productView', JSON.stringify(''));    // Tämä asetetaan Tuote-näkymässä, toisin kuin muut 
   }
 
@@ -105,6 +123,7 @@ export const SettingsProvider = ({ children }) => {
       openQuantityByLongPress, toggleOpenQuantityByLongPress, setOpenQuantityByLongPress,
       showDose, toggleShowDose, setShowDose,
       showProductClass, toggleShowProductClass, setShowProductClass,
+      dayPlanEnabled, toggleDayPlanEnabled, setDayPlanEnabled,
       deleteLocalStorage, setLocalStorageDefaults
     }}>
       {children}

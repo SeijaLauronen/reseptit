@@ -14,7 +14,7 @@ import ColorManagement from '../ColorManagement';
 import SettingsManagement from '../SettingsManagement';
 import ProductClassManagement from '../ProductClassManagement';
 
-const programVersion = '2025-01-01: 2.301';
+const programVersion = '2025-01-02: 2.302';
 //päivitä versiohistoria myös tänne, huom, vain ostokseni-sovelluksen!:
 //https://github.com/SeijaLauronen/SeijaLauronen.github.io/blob/main/ostokseniversio.html
 //https://seijalauronen.github.io/ostokseniversio.html
@@ -115,6 +115,7 @@ const MenuHeader = styled.h3`
 const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
 
   const { colorCodingEnabled, toggleColorCoding } = useSettings();
+  const { dayPlanEnabled, toggleDayPlanEnabled } = useSettings();
 
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   //const [infoMessage, setInfoMessage] = useState('');
@@ -215,6 +216,15 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
         <MenuItem onClick={() => handleOpenDataManagement('import')}>Palauta / Tuo tiedot<ChevronIcon /></MenuItem>
         <MenuItem onClick={() => handleOpenDataManagement('delete')}>Poista tiedot<ChevronIcon /></MenuItem>
         <MenuHeader>Asetukset</MenuHeader>
+        <MenuItemText>
+          <label>
+            Päiväsuunnitelma käytössä
+          </label>
+          <SwitchButtonComponent
+            checked={dayPlanEnabled}
+            onChange={toggleDayPlanEnabled}
+          />
+        </MenuItemText>
         <MenuItemText>
           <label>
             Värikoodit käytössä

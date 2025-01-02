@@ -14,7 +14,7 @@ import Toast from '../components/Toast';
 import MyErrorBoundary from '../components/ErrorBoundary';
 import Accordion from '../components/Accordion';
 import AccordionDraggable from '../components/AccordionDraggable';
-import ItemToggle, {ItemToggleContainer} from '../components/ItemToggle';
+import ItemToggle, { ItemToggleContainer } from '../components/ItemToggle';
 import { useProductClass } from '../ProductClassContext'; // Hook
 
 
@@ -32,8 +32,8 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
           {
             mealId: 1, name: 'Aamupala', color: 'c1',
             mealClasses:
-              [{ classId: 1, obligator: true, info: "1/2 annosta" },
-              { classId: 4, obligator: false, info: "" },
+              [{ classId: 1, obligator: true, info: "1/2 annosta", products:{3,5,6}  },
+              { classId: 4, obligator: false, info: "", products:{1,9}  },
               { classId: 5, obligator: false, info: "" }],
           },
           {
@@ -257,7 +257,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
   }, [isDayFormOpen, editingDay]);
 */
 
-  const handleProductSelect = (mealClass, product, isProductSelected) => {
+  const handleProductSelect = (day, meal, mealClass, product, isProductSelected) => {
     const updatedMealClass = { ...mealClass };
     if (isProductSelected) {
       updatedMealClass.products = updatedMealClass.products || [];
@@ -270,6 +270,24 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
 
     // TODO
     // Päivitä mealClasses-tiedot tarvittaessa
+
+    //handleSaveMeal
+    const updatedMeal = {
+      ...meal,
+      mealClasses: meal.mealClasses.map((cls) =>
+        cls.classId === updatedMealClass.classId ? updatedMealClass : cls
+      ),
+    };
+
+    const updatedDay = {
+      ...day,
+      meals: day.meals.map((m) =>
+        m.mealId === updatedMeal.mealId ? updatedMeal : m
+      ),
+    };
+
+    handleSaveDay(updatedDay.id, updatedDay);
+
     console.log('Updated Meal Class:', updatedMealClass);
   };
 
@@ -373,29 +391,73 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                               {meal.mealClasses?.map((mealClass) => {
                                 const productClass = productClasses.find((p) => p.id === mealClass.classId);
                                 const name = productClass?.name || "Nimetön luokka";
-                                const info = mealClass.info || "";
-                                const content = `${name} ${info}`;
+                                const info = mealClass.info ? ` ${mealClass.info}` : ""; // Lisätään väli vain, jos info on olemassa
+                                const classTitle = mealClass.optional ? `(${name}${info})` : `${name}${info}`;
+
+                                // Muunnetaan mealClass.products lista-arvoksi, ettei löydäm 3:sta, jos listalla on esim. 2,34,64 jne
+                                const productIds = mealClass.products
+                                  ? String(mealClass.products).replace(/[{}]/g, '').split(',').map(Number)
+                                  : [];
+
+                                // Suodatetaan tuotteet, jotka kuuluvat tähän mealClass-luokkaan
+                                const selectedProducts = products?.filter(
+                                  (product) => mealClass.classId === product.classId && productIds.includes(product.id)
+                                );
+
+                                // Luodaan tuotteista nimet ja annokset sisältävä merkkijono
+                                const selectedProductDetailsXXX = selectedProducts
+                                  ?.map((product) => `${product.name} ${product.dose || ''}`) // Lisää annos, jos sellainen on
+                                  .join(', '); // Yhdistetään pilkulla erotetuksi merkkijonoksi
+
+                                const selectedProductDetails = selectedProducts
+                                  ?.map((product) => {
+                                    const details = [product.name, product.dose].filter(Boolean).join(" ");
+                                    return details;
+                                  })
+                                  .join(", "); // Yhdistetään pilkulla erotetuksi merkkijonoksi
+
+
+                                //const content = `${name} ${info} ${selectedProductDetails || ''}`;
+
+                                // Rakennetaan otsikon sisältö
+                                const titleContent = (
+                                  <span>
+                                    <strong>{classTitle}</strong>
+                                    {selectedProductDetails ? `: ${selectedProductDetails}` : ""}
+                                  </span>
+                                );
+
 
                                 return (
                                   <Accordion
                                     key={mealClass.classId}
-                                    title={mealClass.optional ? `(${content})` : content}
+                                    //title={mealClass.optional ? `(${titleContent})` : titleContent}
+                                    //title={name}
+                                    title={titleContent}
                                     defaultExpanded={false}
                                   >
 
                                     <ItemToggleContainer>
-                                      {products?.map((product) =>
-                                        mealClass.classId === product.classId ? (
+                                      {products?.map((product) => {
+                                        // Muunnetaan mealClass.products lista-arvoksi, ettei löydäm 3:sta, jos listalla on esim. 2,34,64 jne
+
+                                        return mealClass.classId === product.classId ? (
                                           <ItemToggle
                                             key={product.id}
-                                            product={product}
+                                            item={product}
+                                            print={`${product.name} ${product.dose || ''}`}
+                                            isItemSelected={productIds.includes(product.id)}
                                             onSelect={(product, isProductSelected) =>
-                                              handleProductSelect(mealClass, product, isProductSelected)
+                                              handleProductSelect(day, meal, mealClass, product, isProductSelected)
                                             }
                                           />
-                                        ) : null
-                                      )}
+                                        ) : null;
+                                      })}
                                     </ItemToggleContainer>
+
+
+
+
                                   </Accordion>
                                 );
                               })}
