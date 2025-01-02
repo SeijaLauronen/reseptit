@@ -13,6 +13,8 @@ const colors = {
     black: { code: '#000', name: 'Black' },
 };
 
+const noColor = { code: '#e1f5eb', name: 'NoColor' }; // Taustan värinen
+
 // Väri konteksti
 const ColorContext = createContext();
 
@@ -82,6 +84,7 @@ export const ColorProvider = ({ children }) => {
                     [colorId]: definition
                 }));
             }
+            
         } catch (error) {
             console.error('Virhe haettaessa värin määrittelyä:', error);
             setErrorState(`Virhe haettaessa värin määrittelyä ${colorId}: ${error.message}`);
@@ -114,6 +117,7 @@ export const ColorProvider = ({ children }) => {
             colorDefinitions,
             resetColors,
             loadColorDefinitions,
+            noColor,
             errorState
         }}>
             {children}

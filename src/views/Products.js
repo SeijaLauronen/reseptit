@@ -40,8 +40,7 @@ const Products = ({ refresh = false, categoryId }) => {
   const [handledProductId, setHandledProductId] = useState(null); // ID of the newly added or edited product
   const isShopLongPressRef = useRef(false); //useRef  -hook: onko käyttäjä tehnyt pitkän painalluksen. useRef -arvo ei muutu uudelleenrenderöintien välillä, joten se säilyttää tilansa koko komponentin elinkaaren ajan.
   const { colorCodingEnabled, openQuantityByLongPress } = useSettings();
-  const { colors, selectedColors, toggleColor, setSelectedColors, colorDefinitions } = useColors(); //Hook For filtering in Products
-  const noColor = { code: '#e1f5eb', name: 'NoColor' }; // Taustan värinen
+  const { colors, selectedColors, toggleColor, setSelectedColors, colorDefinitions, noColor } = useColors(); //Hook For filtering in Products
 
   const productRefs = useRef({}); // Ref object to hold references to product items
 

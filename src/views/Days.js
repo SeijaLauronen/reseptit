@@ -15,7 +15,9 @@ import MyErrorBoundary from '../components/ErrorBoundary';
 import Accordion from '../components/Accordion';
 import AccordionDraggable from '../components/AccordionDraggable';
 import ItemToggle, { ItemToggleContainer } from '../components/ItemToggle';
+import { ColorItemSelection } from '../components/ColorItem';
 import { useProductClass } from '../ProductClassContext'; // Hook
+import { useColors } from '../ColorContext'; // Hook
 
 
 // TODO onDaySelect...
@@ -72,6 +74,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
     ]);
     */
 
+  const { colors, colorDefinitions } = useColors();
   const [products, setProducts] = useState([]);
   const fetchAndSetProducts = async () => {
     try {
@@ -359,7 +362,20 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                       key={day.id.toString()}
                       draggableId={'day-' + day.id.toString()}
                       index={index}
-                      title={day.name}
+                      title={
+                        <>                        
+                        {day.color && day.color !== '' && (
+                          <ColorItemSelection
+                            color={colors[day.color]}
+                            selected={true}
+                            style={{ marginRight: '8px', paddingBottom: '12px', paddingLeft: '15px', paddingRight: '15px', display: 'inline-block' }}
+                          >
+                            {colorDefinitions[day.color]?.shortname || ''}
+                          </ColorItemSelection>
+                        )}
+                        {day.name}
+                        </>
+                      }
                       icons={
                         <IconContainer>
                           <IconWrapper onClick={() => handleEditDay(day)}>

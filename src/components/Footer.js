@@ -26,7 +26,7 @@ const FooterButton = styled.button`
   border-radius: 20px;
   //padding: 3px 25px; // 3 painiketta
   //padding: 3px 15px; // 4 painiketta
-  padding: ${({ $isDayPlanEnabled }) => ($isDayPlanEnabled ? '3px 15px' : '3px 25px')};  // Päivitetty padding
+  padding: ${({ $isDayPlanEnabled }) => ($isDayPlanEnabled ? '3px 15px' : '3px 25px')}; 
   font-size: 14px;
   transition: background 0.3s, color 0.3s;
   user-select: none;

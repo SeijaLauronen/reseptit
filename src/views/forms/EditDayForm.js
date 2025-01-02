@@ -1,29 +1,109 @@
 import React, { useState } from 'react';
 import EditForm from './EditForm';
 import { InputName, InputTextArea } from '../../components/Input';
+import { useColors } from '../../ColorContext';
+import { ColorItemContainer, ColorItemSelection } from '../../components/ColorItem';
+import { DropdownButton, DropdownMenu, DropdownWrapper, SelectedItem } from '../../components/DropDown';
 
 const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
   const [name, setName] = useState(day.name);
   const [info, setInfo] = useState(day.info);
+  const { colors, colorDefinitions } = useColors();
+  const [selectedColor, setSelectedColor] = useState(day.color || null);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const handleSave = () => {
     day.name = name;
     day.info = info;
+    day.color = selectedColor;
     onSave(day.id, day);
   };
+
+
+  const handleColorSelect = (colorKey) => {
+    setSelectedColor(colorKey);
+    setDropdownOpen(false);
+  };
+
 
   // Ei transientti props $isOpen, koska EditForm ei ole styled komponentti
   return (
     <EditForm isOpen={isOpen} onSave={handleSave} onCancel={onCancel} onDelete={() => onDelete(day.id)}>
       <h4>Päivän tiedot</h4>
       <div>
-        <label>Nimi</label>
+        <label>Nimi:</label>
         <InputName
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </div>
+
+      <div>
+        <label>Valitse päivälle väri:</label>
+        <DropdownWrapper>
+          <DropdownButton onClick={() => setDropdownOpen(!isDropdownOpen)}>
+            {selectedColor ? (
+              <SelectedItem>
+                <ColorItemSelection
+                  color={colors[selectedColor]}                  
+                  style={{ pointerEvents: 'none' }} // Estää valitun värin klikkauksen
+                  selected={true}
+                >
+                  {colorDefinitions[selectedColor]?.shortname || 'Väritön'}
+                </ColorItemSelection>
+              </SelectedItem>
+            ) : (
+              <span>Ei valintaa</span>
+            )}
+          </DropdownButton>
+          {isDropdownOpen && (
+            <DropdownMenu>
+              <span onClick={() => handleColorSelect('')}>Ei valintaa</span>
+              {Object.keys(colors).map((colorKey) => (
+                <ColorItemContainer key={colorKey} onClick={() => handleColorSelect(colorKey)}>
+                  <ColorItemSelection
+                    color={colors[colorKey]}                    
+                    selected={true}
+                  >
+                    {colorDefinitions[colorKey]?.shortname || ''}
+                  </ColorItemSelection>
+                </ColorItemContainer>
+              ))}
+              
+              
+            </DropdownMenu>
+          )}
+        </DropdownWrapper>
+      </div>
+
+
+{/*}
+      <div>
+        <ColorItemsWrapper>
+          {Object.keys(colors).map(colorKey => (
+            <ColorItemContainer key={colorKey} className='CIContainer'>
+              <ColorItemSelection
+                className='CISelection'
+                color={colors[colorKey]}
+                selected={day.color === colorKey}
+                //onClick={() => handleToggleDayColor(colorKey)}
+              > {colorDefinitions[colorKey]?.shortname || ''}
+              </ColorItemSelection>
+            </ColorItemContainer>
+          ))}
+          <ColorItemContainer className='CIContainer'>
+            <ColorItemSelection
+              className='CISelection'
+              color={noColor}
+              selected={ !!day.color  || day.color === ''}
+              //onClick={() => handleToggleDayColor('noColor')}
+            >Väritön
+            </ColorItemSelection>
+          </ColorItemContainer>
+        </ColorItemsWrapper>
+      </div>
+*/}
 
       <div>
         <label>Muistiinpanot: </label>
