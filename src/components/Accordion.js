@@ -4,14 +4,18 @@ import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const AccordionWrapper = styled.div`
-  margin-bottom: 10px;
+
+  //margin-bottom: 10px;
+  //margin-bottom: ${({ $accordionmini }) => '1px' || '10px'}; /* Oletusarvo 10px */ 
+  margin-bottom: ${({ $accordionmini }) => ($accordionmini ? '1px' : '10px')}; /* Oletusarvo 10px */
   border: 1px solid #ccc;
   border-radius: 4px;
   max-width: 100%;  
 `;
 
 const AccordionTitle = styled.div`
-  padding: ${({ $accordionmini }) => '3px' || '10px'}; /* Oletusarvo 10px */ 
+  //padding: ${({ $accordionmini }) => '3px' || '10px'}; /* Oletusarvo 10px */ 
+  padding: ${({ $accordionmini }) => ($accordionmini ? '3px' : '10px')}; /* Oletusarvo 10px */
   //padding: 10px;
   cursor: pointer;
   background-color: #f7f7f7;
@@ -24,8 +28,8 @@ const AccordionTitle = styled.div`
 `;
 
 // transientti props $isOpen, koska styled komponentti ja isJotain
-const AccordionContent = styled.div`
-  padding: ${({ $accordionmini }) => '3px' || '10px'}; /* Oletusarvo 10px */ 
+const AccordionContent = styled.div`  
+  padding: ${({ $accordionmini }) => ($accordionmini ? '3px' : '10px')}; /* Oletusarvo 10px */
   //padding: 10px;
   background-color: #fff;
   display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};  

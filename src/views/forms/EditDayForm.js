@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import EditForm from './EditForm';
 import { InputName, InputTextArea } from '../../components/Input';
 import { useColors } from '../../ColorContext';
-import { ColorItemContainer, ColorItemSelection } from '../../components/ColorItem';
+import { ColorItemContainer, ColorItemSelection, ColorItemDroppable } from '../../components/ColorItem';
 import { DropdownButton, DropdownMenu, DropdownWrapper, SelectedItem } from '../../components/DropDown';
 
 const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
@@ -45,40 +45,49 @@ const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
           <DropdownButton onClick={() => setDropdownOpen(!isDropdownOpen)}>
             {selectedColor ? (
               <SelectedItem>
-                <ColorItemSelection
-                  color={colors[selectedColor]}                  
+                <ColorItemDroppable
+                  color={colors[selectedColor]}
                   style={{ pointerEvents: 'none' }} // Estää valitun värin klikkauksen
                   selected={true}
                 >
                   {colorDefinitions[selectedColor]?.shortname || 'Väritön'}
-                </ColorItemSelection>
+                </ColorItemDroppable>
               </SelectedItem>
             ) : (
-              <span>Ei valintaa</span>
+              <ColorItemContainer>
+                <ColorItemDroppable selected={true}>-</ColorItemDroppable>
+              </ColorItemContainer>
             )}
           </DropdownButton>
           {isDropdownOpen && (
             <DropdownMenu>
-              <span onClick={() => handleColorSelect('')}>Ei valintaa</span>
+              <ColorItemContainer>
+                <ColorItemDroppable
+                  onClick={() => handleColorSelect('')}
+                  selected={true}
+                >-
+                </ColorItemDroppable>
+              </ColorItemContainer>
+
               {Object.keys(colors).map((colorKey) => (
                 <ColorItemContainer key={colorKey} onClick={() => handleColorSelect(colorKey)}>
-                  <ColorItemSelection
-                    color={colors[colorKey]}                    
+                  <ColorItemDroppable
+                    color={colors[colorKey]}
                     selected={true}
                   >
                     {colorDefinitions[colorKey]?.shortname || ''}
-                  </ColorItemSelection>
+                  </ColorItemDroppable>
                 </ColorItemContainer>
               ))}
-              
-              
+
+
             </DropdownMenu>
           )}
         </DropdownWrapper>
       </div>
 
 
-{/*}
+      {/*}
       <div>
         <ColorItemsWrapper>
           {Object.keys(colors).map(colorKey => (

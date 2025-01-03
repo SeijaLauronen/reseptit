@@ -21,10 +21,12 @@ export const ColorItemContainerLabel = styled.div`
   padding: 6px 0px 2px 2px;
 `;
 
+  /* background-color: ${({ color }) => color.code || '#000'}; */  
+  /* color: ${({ color }) => color.name === 'Black' ? '#FFF' : '#000'};*/ // Tämä oli jo kommentoituna, tuo ylempi oli voimassa
 export const ColorItem = styled.label`
-  background-color: ${({ color }) => color.code || '#000'};
-  //color: ${({ color }) => color.name === 'Black' ? '#FFF' : '#000'};
+  background-color: ${({ color }) => (color?.code ? color.code : 'transparent')};
   color: ${({ color }) => {
+    if (!color) return '#000'; /* Musta teksti oletuksena, jos ei välitetty color-tietoa ollenkaan */
     switch (color.name) {
       case 'Black':
       case 'Red':
@@ -45,6 +47,7 @@ export const ColorItem = styled.label`
   text-align: center;
   font-size: 12px; /* Tekstin koko, kts myös ColorItemSelection! */  
   font-weight: ${({ color }) => {
+    if (!color) return 'normal'; /* Normaali fontti oletuksena, jos ei välitetty color-tietoa ollenkaan */
     switch (color.name) {
       case 'Black':
       case 'Red':
@@ -52,7 +55,7 @@ export const ColorItem = styled.label`
       case 'Yellow':
         return 'bold';
       default:
-        return '';
+        return 'normal';
     }
   }};
 
@@ -60,6 +63,7 @@ export const ColorItem = styled.label`
 `;
 
 //Värifiltteririvin itemitason määritykset Tuotesivulla ja Editissä
+// border: ${({ color }) => color.code || '#000'};
 export const ColorItemSelection = styled(ColorItem)`
   padding: 4px;
   font-size: 13px; /* Tekstin koko */
@@ -69,9 +73,10 @@ export const ColorItemSelection = styled(ColorItem)`
   margin-left: 1px; /* 4 */
   margin-top: 4px;
   //border: solid grey 1px;  
-  border: ${({ color }) => color.code || '#000'};
+
+  border: ${({ color }) => (color?.code ? color.code : '#000')}; 
   filter: ${({ color, selected }) =>
-    color.name === 'NoColor'
+    color?.name === 'NoColor'
       ? undefined
       : selected
         ? 'brightness(1.1)'
@@ -83,6 +88,22 @@ export const ColorItemSelection = styled(ColorItem)`
     inset 0px -1px 4px 2px rgba(0, 0, 0, 0.2); // Sisäinen varjo: Vaaka-siirtymä, Pysty-siirtymä, Sumennus-säde, Leviämis-säde
 `;
 
+
+export const ColorItemInTitle = styled(ColorItemSelection)`
+  margin-right: 8px;
+  padding-bottom: 12px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: inline-block;
+`;
+
+export const ColorItemDroppable = styled(ColorItemSelection)`
+  margin-right: 8px;
+  padding-bottom: 8px;
+  padding-left: 25px;
+  padding-right: 25px;
+  //display: inline-block;
+`;
 
 export const ColorCheckbox = styled.input.attrs({ type: 'checkbox' })`
   margin-top: 0px;

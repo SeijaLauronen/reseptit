@@ -15,10 +15,29 @@ import MyErrorBoundary from '../components/ErrorBoundary';
 import Accordion from '../components/Accordion';
 import AccordionDraggable from '../components/AccordionDraggable';
 import ItemToggle, { ItemToggleContainer } from '../components/ItemToggle';
-import { ColorItemSelection } from '../components/ColorItem';
+import { ColorItemSelection, ColorItemInTitle } from '../components/ColorItem';
 import { useProductClass } from '../ProductClassContext'; // Hook
 import { useColors } from '../ColorContext'; // Hook
+import { useSettings } from '../SettingsContext';
+import styled from 'styled-components';
 
+
+const ClassTitleStyled = styled.span`
+  font-weight: bold;
+  font-size: medium;
+  //color: #1f227a;
+  color: #3d43e3;
+`;
+
+const MealTitleStyled = styled.span`
+  font-weight: bold;
+  font-size: large;
+`;
+
+const DayTitleStyled = styled.span`
+  font-weight: bold;
+  font-size: larger;
+`;
 
 // TODO onDaySelect...
 const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
@@ -73,9 +92,10 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
   
     ]);
     */
-
+  const { colorCodingEnabled } = useSettings();
   const { colors, colorDefinitions } = useColors();
   const [products, setProducts] = useState([]);
+
   const fetchAndSetProducts = async () => {
     try {
       const allProducts = await getProducts();
@@ -243,7 +263,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
       // Päivitetään järjestys tietokantaan
       for (let i = 0; i < reorderedDays.length; i++) {
         reorderedDays[i].order = i + 1; // Päivitetään order kenttä
-        //await updateDay(reorderedDays[i].id, reorderedDays[i]);
+        await updateDay(reorderedDays[i].id, reorderedDays[i]);
       }
     } catch (err) {
       setError(err.message);
@@ -363,17 +383,16 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                       draggableId={'day-' + day.id.toString()}
                       index={index}
                       title={
-                        <>                        
-                        {day.color && day.color !== '' && (
-                          <ColorItemSelection
-                            color={colors[day.color]}
-                            selected={true}
-                            style={{ marginRight: '8px', paddingBottom: '12px', paddingLeft: '15px', paddingRight: '15px', display: 'inline-block' }}
-                          >
-                            {colorDefinitions[day.color]?.shortname || ''}
-                          </ColorItemSelection>
-                        )}
-                        {day.name}
+                        <>                          
+                            { colorCodingEnabled && (
+                            <ColorItemInTitle
+                              color={colors[day.color]}
+                              selected={true}                              
+                            >
+                              {colorDefinitions[day.color]?.shortname || '-'}
+                            </ColorItemInTitle>
+                          )}
+                          <DayTitleStyled>{day.name}</DayTitleStyled>
                         </>
                       }
                       icons={
@@ -387,14 +406,14 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                       defaultExpanded={true}
                       isDroppable={false}
                     >
-
+                      <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{day.info}</pre>
                       {day.meals && day.meals.length > 0 ? (
                         day.meals.map((meal, mealIndex) => (
                           meal ? (
                             <Accordion
                               item={meal}
                               key={meal.mealId.toString()}
-                              title={<b>{meal.name}</b>}
+                              title={<MealTitleStyled>{meal.name}</MealTitleStyled>}
                               defaultExpanded={true}
                               icons={
                                 <IconContainer>
@@ -416,15 +435,19 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                                   : [];
 
                                 // Suodatetaan tuotteet, jotka kuuluvat tähän mealClass-luokkaan
-                                const selectedProducts = products?.filter(
+                                let selectedProducts = products?.filter(
                                   (product) => mealClass.classId === product.classId && productIds.includes(product.id)
                                 );
 
-                                // Luodaan tuotteista nimet ja annokset sisältävä merkkijono
-                                const selectedProductDetailsXXX = selectedProducts
-                                  ?.map((product) => `${product.name} ${product.dose || ''}`) // Lisää annos, jos sellainen on
-                                  .join(', '); // Yhdistetään pilkulla erotetuksi merkkijonoksi
+                                // TODO värikoodilla suodatus myös valittuihin tuotteisiin, eivät siis näy, vaikka olisi valittu                                
+                                if (colorCodingEnabled && day.color && day.color !== '') {
+                                  selectedProducts = selectedProducts?.filter(
+                                    (product) => product[day.color] === true
+                                  );
+                                };
 
+
+                                // Luodaan tuotteista nimet ja annokset sisältävä merkkijono                                
                                 const selectedProductDetails = selectedProducts
                                   ?.map((product) => {
                                     const details = [product.name, product.dose].filter(Boolean).join(" ");
@@ -438,17 +461,18 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                                 // Rakennetaan otsikon sisältö
                                 const titleContent = (
                                   <span>
-                                    <strong>{classTitle}</strong>
+                                    <ClassTitleStyled>{classTitle}</ClassTitleStyled>
                                     {selectedProductDetails ? `: ${selectedProductDetails}` : ""}
                                   </span>
                                 );
 
 
                                 return (
-                                  <Accordion
+                                  <Accordion classnames="mealClassAccordion"
                                     key={mealClass.classId}
                                     //title={mealClass.optional ? `(${titleContent})` : titleContent}
                                     //title={name}
+                                    accordionmini={true}
                                     title={titleContent}
                                     defaultExpanded={false}
                                   >
@@ -457,7 +481,13 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                                       {products?.map((product) => {
                                         // Muunnetaan mealClass.products lista-arvoksi, ettei löydäm 3:sta, jos listalla on esim. 2,34,64 jne
 
-                                        return mealClass.classId === product.classId ? (
+
+                                        let show = true;
+                                        if (colorCodingEnabled && day.color && day.color !== '' && product[day.color] !== true) {
+                                          show = false;
+                                        }
+
+                                        return show && mealClass.classId === product.classId ? (
                                           <ItemToggle
                                             key={product.id}
                                             item={product}
@@ -492,7 +522,6 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                         <AddButton onClick={() => handleAddMeal(day)}>Lisää ateria</AddButton>
                       </GroupRight>
 
-                      <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{day.info}</pre>
 
 
                     </AccordionDraggable>
