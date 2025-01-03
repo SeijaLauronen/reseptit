@@ -329,6 +329,18 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
   };
 
 
+  const getSortedMealClasses = (mealClasses, productClasses) => {
+    if (!mealClasses || !productClasses) return mealClasses; // Jos dataa puuttuu, palautetaan alkuperäinen lista.
+
+    return [...mealClasses].sort((a, b) => {
+      // Etsitään productClasses-taulukosta vastaavat productClassit
+      const orderA = productClasses.find((pc) => pc.id === a.classId)?.order ?? Infinity;
+      const orderB = productClasses.find((pc) => pc.id === b.classId)?.order ?? Infinity;
+      // Käytetään numeerista vertailua order-arvoille
+      return orderA - orderB;
+    });
+  };
+
 
   // Container in styled komponentti, käytetään transientti props $isJotain...
   // transientti props $isOpen ei käytetä, koska EditCategoryForm ei ole styled komponentti
@@ -369,7 +381,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
         )}
 
         <Container $isMenuOpen={isMenuOpen} $isDayFormOpen={isDayFormOpen}>
-        { /* console.log("expandedStates", expandedStates) */}
+          { /* console.log("expandedStates", expandedStates) */}
           <StickyTop>
             <b>Päiväsuunnitelma</b>
           </StickyTop>
@@ -440,9 +452,11 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                                 </IconContainer>
                               }
                             >
-                              {meal.mealClasses?.map((mealClass) => {
+                              <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{meal.info}</pre>
+                              {getSortedMealClasses(meal.mealClasses, productClasses)?.map((mealClass) => {
+                                //{meal.mealClasses?.map((mealClass) => {
                                 const productClass = productClasses.find((p) => p.id === mealClass.classId);
-                                const name = productClass?.name || "Nimetön luokka";
+                                const name = productClass?.name || "Vapaa valinta";
                                 const info = mealClass.info ? ` ${mealClass.info}` : ""; // Lisätään väli vain, jos info on olemassa
                                 const classTitle = mealClass.optional ? `(${name}${info})` : `${name}${info}`;
 
@@ -451,9 +465,9 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                                   ? String(mealClass.products).replace(/[{}]/g, '').split(',').map(Number)
                                   : [];
 
-                                // Suodatetaan tuotteet, jotka kuuluvat tähän mealClass-luokkaan
+                                // Suodatetaan tuotteet, jotka kuuluvat tähän mealClass-luokkaan tai luokkana on vapaa valinta: -1
                                 let selectedProducts = products?.filter(
-                                  (product) => mealClass.classId === product.classId && productIds.includes(product.id)
+                                  (product) =>  productIds.includes(product.id) && (mealClass.classId === product.classId || mealClass.classId === -1)
                                 );
 
                                 // TODO värikoodilla suodatus myös valittuihin tuotteisiin, eivät siis näy, vaikka olisi valittu                                
@@ -496,30 +510,27 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
 
                                     <ItemToggleContainer>
                                       {products?.map((product) => {
-                                        // Muunnetaan mealClass.products lista-arvoksi, ettei löydäm 3:sta, jos listalla on esim. 2,34,64 jne
-
+                                        // Muunnetaan mealClass.products lista-arvoksi, ettei löydä esim 3:sta, jos listalla on esim. 2,34,64 jne
 
                                         let show = true;
                                         if (colorCodingEnabled && day.color && day.color !== '' && product[day.color] !== true) {
                                           show = false;
                                         }
-
-                                        return show && mealClass.classId === product.classId ? (
-                                          <ItemToggle
-                                            key={product.id}
-                                            item={product}
-                                            print={`${product.name} ${product.dose || ''}`}
-                                            isItemSelected={productIds.includes(product.id)}
-                                            onSelect={(product, isProductSelected) =>
-                                              handleProductSelect(day, meal, mealClass, product, isProductSelected)
-                                            }
-                                          />
-                                        ) : null;
+                                                                          
+                                        return show &&
+                                          (mealClass.classId === product.classId || mealClass.classId === -1) && (
+                                            <ItemToggle
+                                              key={product.id}
+                                              item={product}
+                                              print={`${product.name} ${product.dose || ''}`}
+                                              isItemSelected={productIds.includes(product.id)}
+                                              onSelect={(product, isProductSelected) =>
+                                                handleProductSelect(day, meal, mealClass, product, isProductSelected)
+                                              }
+                                            />
+                                          );
                                       })}
                                     </ItemToggleContainer>
-
-
-
 
                                   </Accordion>
                                 );

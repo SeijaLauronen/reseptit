@@ -86,34 +86,6 @@ const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
         </DropdownWrapper>
       </div>
 
-
-      {/*}
-      <div>
-        <ColorItemsWrapper>
-          {Object.keys(colors).map(colorKey => (
-            <ColorItemContainer key={colorKey} className='CIContainer'>
-              <ColorItemSelection
-                className='CISelection'
-                color={colors[colorKey]}
-                selected={day.color === colorKey}
-                //onClick={() => handleToggleDayColor(colorKey)}
-              > {colorDefinitions[colorKey]?.shortname || ''}
-              </ColorItemSelection>
-            </ColorItemContainer>
-          ))}
-          <ColorItemContainer className='CIContainer'>
-            <ColorItemSelection
-              className='CISelection'
-              color={noColor}
-              selected={ !!day.color  || day.color === ''}
-              //onClick={() => handleToggleDayColor('noColor')}
-            >Väritön
-            </ColorItemSelection>
-          </ColorItemContainer>
-        </ColorItemsWrapper>
-      </div>
-*/}
-
       <div>
         <label>Muistiinpanot: </label>
         <InputTextArea

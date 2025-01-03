@@ -1,17 +1,33 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import EditForm from './EditForm';
-import { InputName } from '../../components/Input';
+import { InputName, InputTextArea } from '../../components/Input';
 import { ProductClassSelectItem, ProductClassSelectionHeader } from '../../components/Item';
 import { useProductClass } from '../../ProductClassContext';
 
 const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
   const [name, setName] = useState(meal.name);
+  const [mealInfo, setMealInfo] = useState(meal.info);
   const { productClasses } = useProductClass();
+
+  // Luodaan extendedProductClasses, joka sisältää alkuperäiset productClasses ja uuden luokan "Ei luokkaa"
+  const [extendedProductClasses, setExtendedProductClasses] = useState(() => [
+    ...(productClasses || []),
+    { id: -1, name: "Vapaa valinta" },
+  ]);
+
+  useEffect(() => {
+    // Päivitetään extendedProductClasses aina, kun productClasses muuttuu
+    setExtendedProductClasses([
+      ...productClasses,
+      { id: -1, name: "Vapaa valinta" }
+    ]);
+  }, [productClasses]); // Vain silloin, kun productClasses muuttuu
+
 
   // Alustetaan valinnat: katsotaan, mitkä luokat on tallennettu mealClasses:ssa
   const [selectedOptions, setSelectedOptions] = useState(() => {
     const initialState = {};
-    productClasses.forEach((productClass) => {
+    extendedProductClasses.forEach((productClass) => {
       const existingClass = meal.mealClasses.find((mc) => mc.classId === productClass.id) || {};
       initialState[productClass.id] = {
         selected: !!existingClass.classId, // On valittu, jos classId löytyy mealClasses:sta
@@ -22,7 +38,7 @@ const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
   });
 
   const infoRefs = useRef({});
- 
+
   const handleSave = () => {
     const updatedMealClasses = Object.keys(selectedOptions)
       .filter((classId) => selectedOptions[classId].selected) // Vain valitut luokat
@@ -42,6 +58,7 @@ const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
     const updatedMeal = {
       ...meal,
       name,
+      info:mealInfo,
       mealClasses: updatedMealClasses,
     };
 
@@ -87,7 +104,7 @@ const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
           <div>Lisätieto, esim. annos muu kuin 1</div>
         </ProductClassSelectionHeader>
 
-        {productClasses.map((productClass) => (
+        {extendedProductClasses.map((productClass) => (
           <ProductClassSelectItem key={productClass.id}>
             <input
               type="checkbox"
@@ -122,6 +139,17 @@ const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
             <div>{productClass.name}</div>
           </ProductClassSelectItem>
         ))}
+      </div>
+      <div>
+        <label>Muistiinpanot: </label>
+        <InputTextArea
+          value={mealInfo}
+          onChange={(e) => setMealInfo(e.target.value)} // Muutostilan päivitys
+          placeholder="Muistiinpanot"
+          style={{
+            maxHeight: "60px", // Maksimikorkeus            
+          }}
+        />
       </div>
     </EditForm>
   );
