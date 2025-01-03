@@ -22,15 +22,22 @@ const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
   });
 
   const infoRefs = useRef({});
-
+ 
   const handleSave = () => {
     const updatedMealClasses = Object.keys(selectedOptions)
       .filter((classId) => selectedOptions[classId].selected) // Vain valitut luokat
-      .map((classId) => ({
-        classId: parseInt(classId, 10),
-        optional: selectedOptions[classId].optional,
-        info: infoRefs.current[classId]?.value || "",
-      }));
+      .map((classId) => {
+        // Etsi olemassa oleva mealClass, jos se on olemassa
+        const existingClass = meal.mealClasses.find((mc) => mc.classId === parseInt(classId, 10)) || {};
+
+        // Palauta yhdistetty objekti, jossa uudet arvot korvaavat vain tarvittavat kentät!
+        return {
+          ...existingClass, // Olemassa olevat tiedot
+          classId: parseInt(classId, 10), // Päivitä aina classId
+          optional: selectedOptions[classId].optional, // Korvaa tai lisää "optional"
+          info: infoRefs.current[classId]?.value || "", // Korvaa tai lisää "info"
+        };
+      });
 
     const updatedMeal = {
       ...meal,
@@ -40,6 +47,7 @@ const EditMealForm = ({ day, meal, onSave, onCancel, onDelete, isOpen }) => {
 
     onSave(day, updatedMeal);
   };
+
 
   const handleCheckboxChange = (classId, type) => {
     setSelectedOptions((prev) => ({

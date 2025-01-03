@@ -56,7 +56,7 @@ const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false,
 
   return (
     <AccordionWrapper>
-      <AccordionTitle onClick={toggleAccordion} $accordionmini={accordionmini}>
+      <AccordionTitle $accordionmini={accordionmini}>
         {/* $padding={titlepadding} on transientti props, joka menee styled componentille */}
         {/* Huom! titlepadding on props, joka tulee komponentille */}
         <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}> {/* Vie lopun käytettävissä olevan tilan, jolloin muut pysyy oikeassa laidassa*/}
@@ -67,7 +67,7 @@ const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false,
           {icons}
         </div>
         <span>
-          <FontAwesomeIcon style={{ marginLeft: '10px' }} icon={isOpen ? faChevronUp : faChevronDown} />
+          <FontAwesomeIcon onClick={toggleAccordion} style={{ marginLeft: '10px' }} icon={isOpen ? faChevronUp : faChevronDown} />
         </span>
       </AccordionTitle>
       <AccordionContent $isOpen={isOpen} $accordionmini={accordionmini}>{children}</AccordionContent>

@@ -145,6 +145,20 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
   }, []); // TODO pitääkö laittaa fetchAndSetProductClasses
 
 
+  const [expandedStates, setExpandedStates] = useState({}); // TODO ei tällä oikeasti taida olla tällä hetkellä mitään virkaa...
+
+  const handleAccordionToggle = (id, isExpanded) => {
+    setExpandedStates((prev) => ({
+      ...prev,
+      [id]: isExpanded,
+    }));
+  };
+
+  const resetExpandedState = () => {
+    setExpandedStates({});
+  };
+
+
   const handleAddDay = async () => {
     try {
       const newOrder = days.length ? Math.max(...days.map(day => day.order)) + 1 : 1;
@@ -311,7 +325,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
 
     handleSaveDay(updatedDay.id, updatedDay);
 
-    console.log('Updated Meal Class:', updatedMealClass);
+    //console.log('Updated Meal Class:', updatedMealClass);
   };
 
 
@@ -355,6 +369,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
         )}
 
         <Container $isMenuOpen={isMenuOpen} $isDayFormOpen={isDayFormOpen}>
+        { /* console.log("expandedStates", expandedStates) */}
           <StickyTop>
             <b>Päiväsuunnitelma</b>
           </StickyTop>
@@ -383,11 +398,11 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                       draggableId={'day-' + day.id.toString()}
                       index={index}
                       title={
-                        <>                          
-                            { colorCodingEnabled && (
+                        <>
+                          {colorCodingEnabled && (
                             <ColorItemInTitle
                               color={colors[day.color]}
-                              selected={true}                              
+                              selected={true}
                             >
                               {colorDefinitions[day.color]?.shortname || '-'}
                             </ColorItemInTitle>
@@ -404,6 +419,8 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                       }
                       //defaultExpanded={day.order === 1} //ylin päivä oletuksena auki
                       defaultExpanded={true}
+                      isExpanded={expandedStates[day.id] || false} // Jos ei ole tallennettua tilaa, oletuksena kiinni
+                      onToggle={(isExpanded) => handleAccordionToggle(day.id, isExpanded)}
                       isDroppable={false}
                     >
                       <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{day.info}</pre>

@@ -51,11 +51,31 @@ const AccordionDraggable = ({
     onDragEnd,
     title,
     icons,
-    defaultExpanded = false,
+    isExpanded, // Ulkoinen tila
+    defaultExpanded = false, // Alkuperäinen tila, jos isExpandedia ei anneta
+    onToggle, // Lisätty onToggle-proppi
 }) => {
-    const [isOpen, setIsOpen] = useState(defaultExpanded);
+    //const [isOpen, setIsOpen] = useState(defaultExpanded);
+    const [isOpen, setIsOpen] = useState(isExpanded ?? defaultExpanded);
 
-    const toggleAccordion = () => setIsOpen(!isOpen);
+    //const toggleAccordion = () => setIsOpen(!isOpen);
+    const toggleAccordion = () => {
+        const newIsOpen = !isOpen;
+        setIsOpen(newIsOpen);
+
+        // Ilmoita tilan muutoksesta vanhemmalle komponentille
+        if (onToggle) {
+            onToggle(newIsOpen);
+            //console.log('AccordionDraggable: onToggle', newIsOpen);
+        }
+    };
+
+    // Päivitä tila, jos isExpanded muuttuu
+    useEffect(() => {
+        if (isExpanded !== undefined) {
+            setIsOpen(isExpanded);
+        }
+    }, [isExpanded]);
 
     return (
         <Draggable key={item.id.toString()} draggableId={item.id.toString()} index={index}>
