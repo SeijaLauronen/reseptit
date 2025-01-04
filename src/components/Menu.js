@@ -14,7 +14,7 @@ import ColorManagement from '../ColorManagement';
 import SettingsManagement from '../SettingsManagement';
 import ProductClassManagement from '../ProductClassManagement';
 
-const programVersion = '2025-01-04: 2.307';
+const programVersion = '2025-01-04: 2.308';
 //päivitä versiohistoria myös tänne, huom, vain ostokseni-sovelluksen!:
 //https://github.com/SeijaLauronen/SeijaLauronen.github.io/blob/main/ostokseniversio.html
 //https://seijalauronen.github.io/ostokseniversio.html
