@@ -28,7 +28,7 @@ const ProductItemComponent = forwardRef(
     const noColor = { code: '#FFF', name: 'White' }; // Tämä voisi olla myös tuolla ylemäpänä
     const { colorCodingEnabled, showDose, showProductClass } = useSettings();  // Tämä laitetaan funktiokehykseen, on loogista koodia
     const { productClasses } = useProductClass(); // Hook, otetaankin täältä eikä Product.js:n kautta
-    
+
     const renderAdditionalInfoText = () => {
       return (
         <StyledText>
@@ -41,16 +41,19 @@ const ProductItemComponent = forwardRef(
       )
     }
 
+    const productHasColors = Object.keys(colors).some(colorKey => product[colorKey]);
     return (
       <div>
-        <ProductListItem ref={ref}>
+        <ProductListItem ref={ref}>          
 
-          {/* Ensimmäinen sarake: nimi ja värikoodit */}
+          {/* Ensimmäinen sarake: nimi ja värikoodit ja lisätiedot */}
           <div style={{ display: 'flex', flexDirection: 'column', gridColumn: '1' }}>
-            <span>{highlightText(product.name, filter)} {!colorCodingEnabled && renderAdditionalInfoText()} </span>
+            <span>{highlightText(product.name, filter)}
+              {(!colorCodingEnabled || !productHasColors) && renderAdditionalInfoText()}
+            </span>
 
             {/* Näytetään värit vain jos tuotteelle on annettu jokin värikoodi */}
-            {colorCodingEnabled && Object.keys(colors).some(colorKey => product[colorKey]) && (
+            {colorCodingEnabled && productHasColors && (
               <ColorItemsWrapper className='colorItemsWrapper'>
                 {
                   Object.keys(colors).map(colorKey => (
