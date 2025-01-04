@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import EditForm from './EditForm';
 import { InputName, InputTextArea } from '../../components/Input';
 import { useColors } from '../../ColorContext';
 import { ColorItemContainer, ColorItemSelection, ColorItemDroppable } from '../../components/ColorItem';
 import { DropdownButton, DropdownMenu, DropdownWrapper, SelectedItem } from '../../components/DropDown';
+
+
+const ColorSelectWrapper = styled.div`
+  display: flex;
+  align-items: center; /* Keskittää <label> ja dropdown pystysuunnassa */
+  gap: 10px; /* Lisää väliä <label> ja dropdownin väliin */
+`;
+
 
 const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
   const [name, setName] = useState(day.name);
@@ -39,7 +48,8 @@ const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
         />
       </div>
 
-      <div>
+      <ColorSelectWrapper>
+
         <label>Valitse päivälle väri:</label>
         <DropdownWrapper>
           <DropdownButton onClick={() => setDropdownOpen(!isDropdownOpen)}>
@@ -50,12 +60,12 @@ const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
                   style={{ pointerEvents: 'none' }} // Estää valitun värin klikkauksen
                   selected={true}
                 >
-                  {colorDefinitions[selectedColor]?.shortname || 'Väritön'}
+                  {colorDefinitions[selectedColor]?.shortname || ''}
                 </ColorItemDroppable>
               </SelectedItem>
             ) : (
               <ColorItemContainer>
-                <ColorItemDroppable selected={true}>-</ColorItemDroppable>
+                <ColorItemDroppable selected={true}>Ei valintaa</ColorItemDroppable>
               </ColorItemContainer>
             )}
           </DropdownButton>
@@ -65,7 +75,7 @@ const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
                 <ColorItemDroppable
                   onClick={() => handleColorSelect('')}
                   selected={true}
-                >-
+                >Ei valintaa
                 </ColorItemDroppable>
               </ColorItemContainer>
 
@@ -84,7 +94,7 @@ const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
             </DropdownMenu>
           )}
         </DropdownWrapper>
-      </div>
+      </ColorSelectWrapper>
 
       <div>
         <label>Muistiinpanot: </label>

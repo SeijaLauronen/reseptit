@@ -102,7 +102,15 @@ export const ColorItemDroppable = styled(ColorItemSelection)`
   padding-bottom: 8px;
   padding-left: 25px;
   padding-right: 25px;
-  //display: inline-block;
+  display: inline-block; // Elementit rinnakkain
+  white-space: nowrap; // Estää tekstin rivittymisen 
+  overflow: hidden; // estää ylivuodon 
+  //text-overflow: ellipsis; // Näyttää kolme pistettä, jos teksti ei mahdu 
+  justify-content: center; // Vaakasuuntainen keskitys 
+  width: 60px;
+  align-items: center; /* Keskittää sisällön pystysuunnassa */
+  height: 15px; /* Vakio korkeus */
+
 `;
 
 export const ColorCheckbox = styled.input.attrs({ type: 'checkbox' })`

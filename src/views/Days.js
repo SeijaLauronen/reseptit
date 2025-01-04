@@ -39,6 +39,11 @@ const DayTitleStyled = styled.span`
   font-size: larger;
 `;
 
+const DayTitleWrapper = styled.div` 
+  display: flex;  
+  align-items: center;  
+`;
+
 // TODO onDaySelect...
 const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
 
@@ -410,17 +415,17 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                       draggableId={'day-' + day.id.toString()}
                       index={index}
                       title={
-                        <>
-                          {colorCodingEnabled && (
+                        <DayTitleWrapper>
+                          {colorCodingEnabled && (                              
                             <ColorItemInTitle
                               color={colors[day.color]}
                               selected={true}
                             >
-                              {colorDefinitions[day.color]?.shortname || '-'}
+                              {colorDefinitions[day.color]?.shortname || ''}
                             </ColorItemInTitle>
                           )}
                           <DayTitleStyled>{day.name}</DayTitleStyled>
-                        </>
+                        </DayTitleWrapper>
                       }
                       icons={
                         <IconContainer>
@@ -467,7 +472,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
 
                                 // Suodatetaan tuotteet, jotka kuuluvat tähän mealClass-luokkaan tai luokkana on vapaa valinta: -1
                                 let selectedProducts = products?.filter(
-                                  (product) =>  productIds.includes(product.id) && (mealClass.classId === product.classId || mealClass.classId === -1)
+                                  (product) => productIds.includes(product.id) && (mealClass.classId === product.classId || mealClass.classId === -1)
                                 );
 
                                 // TODO värikoodilla suodatus myös valittuihin tuotteisiin, eivät siis näy, vaikka olisi valittu                                
@@ -516,7 +521,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                                         if (colorCodingEnabled && day.color && day.color !== '' && product[day.color] !== true) {
                                           show = false;
                                         }
-                                                                          
+
                                         return show &&
                                           (mealClass.classId === product.classId || mealClass.classId === -1) && (
                                             <ItemToggle
