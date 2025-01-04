@@ -1,6 +1,6 @@
-const programVersion = '2025-01-04: 2.307';
-const staticCacheName = 'recipe-static-2307'; 
-const dynamicCacheName = 'recipe-dynamic-2307'; // Ei välttämätön
+const programVersion = '2025-01-04: 2.308';
+const staticCacheName = 'recipe-static-2308'; 
+const dynamicCacheName = 'recipe-dynamic-2308'; // Ei välttämätön
 
 const assets = [
   '/',
