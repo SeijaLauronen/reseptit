@@ -4,14 +4,13 @@ const helpTexts = {
   categories: (
     <>
 
-      <b>Ostokset</b>
+      <b>Ostokset - sovellus</b>
       <p>
-        3 näkymää: kategoriat, tuotteet ja ostoslista.
+        4 näkymää: kategoriat, tuotteet, ostoslista ja päivät, joista viimeisin asetettavissa näkymään valikon asetuksista.
         Näkymiä vaihdat alalaidan painikkeista. Kullekin näkymälle on oma infotekstinsä.
       </p>
 
-
-      <b>Kategoriat</b>
+      <b>Kategoriat -näkymä</b>
       <p>
         Voit lisätä mieleisiäsi kategorioita, kuten Hedelmät, Vihannekset, Leivät jne.
       </p><p>
@@ -19,6 +18,8 @@ const helpTexts = {
       </p><p>
         Tuotteet -sivulle pääset joko alavalikosta tai kategorian nuolipainikkeesta.
         Jos menet nuolipainikkeesta, Tuote-sivulla näytetään vain sen kategorian tuotteet ja uusi tuote lisätään kyseiseen kategoriaan.
+      </p><p>
+        Ohjelman käytön kannalta kategorioita ei ole pakko määritellä ja käyttää ollenkaan.
       </p>
     </>
   ),
@@ -113,6 +114,41 @@ const helpTexts = {
 
     </>
   ),
+  days: (
+    <>
+
+      <b>Päiväsuunnitelmat</b>
+      <p>
+        Päiväsuunnitelmissa voit lisätä haluamasi määrän päiviä ja voit muuttaa niiden järjestystä raahaamalla.
+        <br />
+        Näkymä on monitasoinen: <br />
+        päivät - ateriat - tuoteluokat - tuotteet.
+      </p><p>
+        Lisäämäsi <b>päivän</b> kohdalla on kaksi painiketta oikeassa laidassa. <i>Kynän</i> kuvasta pääset muokkaamaan päivän nimeä, valitsemaan sille värikoodin, ja lisäämään muistiinpanoja.
+        <br />
+        <i>Nuoli ylös/alas</i> laajentaa tai kutistaa päivän tiedot. Laajennetussa näkymässä pääset lisäämään päivälle aterioita.
+      </p><p>
+        <b>Aterian</b> lisäys painikkeesta ja muokkaus kynän kuvasta avaa ikkunan, jossa näytetään <i> luokat, jotka olet määritellyt erikseen</i> <small>(Asetukset-Tuoteluokkien määrittely)</small>  ja lisäksi luokasta riippumaton "Vapaa valinta".
+      </p><p>
+        Kun olet valinnut ateriaan kuuluvat luokat joko pakolliseksi tai valinnaiseksi, ne näytetään aterialla, kun avaat nuolesta aterian laajennetun näkymän.
+      </p><p>
+        Aterialle valitsemasi <b>luokan</b> kohdalta pääset edelleen oikean reunan nuolipainikkeella avaamaan tuotelistan,
+        jossa näytetään ne tuotteet, jotka voit määrittelyjesi mukaan valita aterialle.
+      </p><p>
+        <b>Tuotelistat aterialle luokittain:</b>
+        <br />  
+        Itse määrittelemillesi <i>luokille</i> tuotelistalla näytetään vain ne tuotteet,
+        jotka olet valinnut kuulumaan tuohon luokkaan Tuote-näkymässä.
+        <br />Jos olet valinnut päivälle <i>värin</i>, tuotelistalla näytetään vain ne tuotteet,
+        joille olet laittanut kyseisen värin Tuote-näkymässä.
+        <br />
+        <i>"Vapaa valinta"</i> suodattaa tuotteita vain värin mukaan, mikäli se on päivälle valittu.
+      </p><p>
+        <b>Tuotteet</b> ovat painikkeina, joita voit valita päälle/pois.
+        Valitut näytetään luokan nimen perässä.
+      </p>
+    </>
+  ),
   deleteDB: (
     <>
       <p>
@@ -165,11 +201,11 @@ const helpTexts = {
   ),
   productClasses: (
     <>
-      
-        Voit määritellä tuoteluokkia, esimerkiksi proteiinit, kasvikset, rasvat jne.
-        Tiedot tallentuvat välittömästi ilman erillistä tallentamista, myös poisto!
-        Nimeä voit muokata suoraan tekstikentässä. Luokkien järjestystä voit muuttaa raahaamalla luokkaa haluttuun paikkaan.
-      
+
+      Voit määritellä tuoteluokkia, esimerkiksi proteiinit, kasvikset, rasvat jne.
+      Tiedot tallentuvat välittömästi ilman erillistä tallentamista, myös poisto!
+      Nimeä voit muokata suoraan tekstikentässä. Luokkien järjestystä voit muuttaa raahaamalla luokkaa haluttuun paikkaan.
+
     </>
   ),
 

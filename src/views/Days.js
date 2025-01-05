@@ -388,7 +388,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
         <Container $isMenuOpen={isMenuOpen} $isDayFormOpen={isDayFormOpen}>
           { /* console.log("expandedStates", expandedStates) */}
           <StickyTop>
-            <b>Päiväsuunnitelma</b>
+            <b>Päiväsuunnitelmat</b>
           </StickyTop>
 
           <DragDropContext

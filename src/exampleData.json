@@ -6,29 +6,34 @@
       "id": 1
     },
     {
-      "name": "Leivät",
+      "name": "Leivät, jauhot, hiutaleet",
       "order": 2,
       "id": 2
     },
     {
-      "name": "Lihat",
+      "name": "Liha, kala, kananmuna",
       "order": 3,
       "id": 3
     },
     {
       "name": "Pakasteet",
-      "order": 4,
+      "order": 5,
       "id": 4
     },
     {
       "name": "Juomat",
-      "order": 5,
+      "order": 6,
       "id": 5
     },
     {
       "name": "Vaatteet",
-      "order": 6,
+      "order": 7,
       "id": 6
+    },
+    {
+      "name": "Levitteet, öljyt",
+      "order": 4,
+      "id": 27
     }
   ],
   "products": [
@@ -94,7 +99,7 @@
       "onShoppingList": true,
       "c1": true,
       "c2": false,
-      "c3": false,
+      "c3": true,
       "black": false,
       "dose": "1 siivu / 30g",
       "classId": 2,
@@ -179,6 +184,92 @@
       "black": false,
       "dose": "1 kpl",
       "classId": 6
+    },
+    {
+      "name": "Kaurahiutale",
+      "categoryId": 2,
+      "id": 317,
+      "dose": "50g",
+      "classId": 2,
+      "c1": true,
+      "c2": false,
+      "c3": true,
+      "black": false
+    },
+    {
+      "name": "Mansikka",
+      "categoryId": 1,
+      "id": 318,
+      "dose": "100g",
+      "classId": 5,
+      "c1": true,
+      "c2": false,
+      "c3": true,
+      "black": false
+    },
+    {
+      "name": "Omena",
+      "categoryId": 1,
+      "id": 319,
+      "classId": 4,
+      "c1": true,
+      "c2": false,
+      "c3": true,
+      "black": false
+    },
+    {
+      "name": "Porkkana",
+      "categoryId": 1,
+      "id": 320,
+      "dose": "50g",
+      "classId": 3,
+      "c1": true,
+      "c2": false,
+      "c3": true,
+      "black": false
+    },
+    {
+      "name": "Voi",
+      "categoryId": 27,
+      "id": 321,
+      "dose": "5g",
+      "classId": 6,
+      "c1": false,
+      "c2": false,
+      "c3": true,
+      "black": false
+    },
+    {
+      "name": "Oliiviöljy",
+      "categoryId": 27,
+      "id": 322,
+      "dose": "1 rkl",
+      "classId": 6,
+      "c1": false,
+      "c2": false,
+      "c3": true,
+      "black": false
+    },
+    {
+      "name": "Salaatti",
+      "categoryId": 1,
+      "id": 323,
+      "classId": 3,
+      "c1": true,
+      "c2": true,
+      "c3": true,
+      "black": false
+    },
+    {
+      "name": "Kananmuna",
+      "categoryId": 3,
+      "id": 324,
+      "dose": "1 kpl",
+      "classId": 1,
+      "c1": true,
+      "c2": false,
+      "c3": true,
+      "black": false
     }
   ],
   "colordefinitions": [
@@ -189,17 +280,17 @@
     },
     {
       "colorId": "c1",
-      "shortname": "MaTi",
+      "shortname": "V1",
       "colorinfo": "Hiilareita, proteiinia, kasviksia\nAerobista liikuntaa."
     },
     {
       "colorId": "c2",
-      "shortname": "KeTo",
+      "shortname": "V2",
       "colorinfo": "Proteiinia, kasviksia.\nLihaskuntoharjoituksia."
     },
     {
       "colorId": "c3",
-      "shortname": "Pe-Su",
+      "shortname": "V3",
       "colorinfo": "Hyviä rasvoja, hiilareita vain vähän.\nRentoutumista."
     }
   ],
@@ -233,6 +324,330 @@
       "name": "Rasvat",
       "order": 6,
       "id": 6
+    }
+  ],
+  "days": [
+    {
+      "name": "Maanantai",
+      "order": 1,
+      "id": 2,
+      "info": "Aerobista liikuntaa",
+      "color": "c1",
+      "meals": [
+        {
+          "mealId": 1,
+          "name": "Aamiainen",
+          "mealClasses": [
+            {
+              "classId": 2,
+              "optional": false,
+              "info": "",
+              "products": [
+                317
+              ]
+            },
+            {
+              "classId": 3,
+              "optional": true,
+              "info": "",
+              "products": [
+                4
+              ]
+            },
+            {
+              "classId": 4,
+              "optional": false,
+              "info": "",
+              "products": [
+                1
+              ]
+            },
+            {
+              "classId": 5,
+              "optional": false,
+              "info": "",
+              "products": [
+                318
+              ]
+            }
+          ],
+          "info": "1/2 tunnin sisällä heräämisestä"
+        },
+        {
+          "mealId": 2,
+          "name": "Lounas",
+          "mealClasses": [
+            {
+              "classId": 1,
+              "optional": false,
+              "info": "",
+              "products": [
+                7
+              ]
+            },
+            {
+              "classId": 2,
+              "optional": true,
+              "info": "",
+              "products": [
+                6
+              ]
+            },
+            {
+              "classId": 3,
+              "optional": false,
+              "info": "puolet lautasesta",
+              "products": [
+                4,
+                320,
+                3,
+                323
+              ]
+            }
+          ],
+          "info": "Syö lounas ajoissa"
+        },
+        {
+          "mealId": 3,
+          "name": "Päivällinen",
+          "mealClasses": [
+            {
+              "classId": 1,
+              "optional": false,
+              "info": "",
+              "products": [
+                7
+              ]
+            },
+            {
+              "classId": 2,
+              "optional": false,
+              "info": "",
+              "products": [
+                5
+              ]
+            },
+            {
+              "classId": 3,
+              "optional": false,
+              "info": "",
+              "products": [
+                4,
+                320,
+                323,
+                3
+              ]
+            },
+            {
+              "classId": -1,
+              "optional": true,
+              "info": "",
+              "products": [
+                319,
+                6,
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "mealId": 4,
+          "name": "Iltapala",
+          "mealClasses": [
+            {
+              "classId": 2,
+              "optional": false,
+              "info": "",
+              "products": [
+                317
+              ]
+            },
+            {
+              "classId": 3,
+              "optional": true,
+              "info": "",
+              "products": []
+            },
+            {
+              "classId": 5,
+              "optional": true,
+              "info": "",
+              "products": [
+                318
+              ]
+            }
+          ],
+          "info": "2t ennen nukkumaan menoa."
+        }
+      ]
+    },
+    {
+      "name": "Tiistai",
+      "order": 2,
+      "id": 3,
+      "info": "Paljon hiilareita, kohtuulliisti proteiinia, paljon kasviksia.\nMuista syödä 2-4 tunnin välein.\nKäy lenkillä.",
+      "color": "c1"
+    },
+    {
+      "name": "To, Pe",
+      "order": 4,
+      "id": 4,
+      "color": "c3",
+      "meals": [
+        {
+          "mealId": 1,
+          "name": "Aamupala 8-9",
+          "mealClasses": [
+            {
+              "classId": 1,
+              "optional": false,
+              "info": "1-3 annosta",
+              "products": [
+                324
+              ]
+            },
+            {
+              "classId": 3,
+              "optional": false,
+              "info": "",
+              "products": [
+                323,
+                3
+              ]
+            },
+            {
+              "classId": 6,
+              "optional": false,
+              "info": "",
+              "products": [
+                322
+              ]
+            }
+          ]
+        },
+        {
+          "mealId": 2,
+          "name": "Lounas 11-12",
+          "mealClasses": [
+            {
+              "classId": 1,
+              "optional": false,
+              "info": "",
+              "products": [
+                7
+              ]
+            },
+            {
+              "classId": 2,
+              "optional": false,
+              "info": "1/2 annosta",
+              "products": [
+                5
+              ]
+            },
+            {
+              "classId": 3,
+              "optional": true,
+              "info": "",
+              "products": [
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "mealId": 3,
+          "name": "Välipala",
+          "mealClasses": []
+        },
+        {
+          "mealId": 4,
+          "name": "Päivällinen",
+          "mealClasses": []
+        }
+      ]
+    },
+    {
+      "name": "Viikonloppu",
+      "order": 6,
+      "id": 5,
+      "meals": [
+        {
+          "mealId": 1,
+          "name": "Kaikki ateriat",
+          "mealClasses": [
+            {
+              "classId": -1,
+              "optional": false,
+              "info": "",
+              "products": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Juhlapäivä",
+      "order": 5,
+      "id": 6,
+      "info": "Muista juoda vettä ja syödä proteiinia",
+      "color": null,
+      "meals": [
+        {
+          "mealId": 1,
+          "name": "Aamupala",
+          "mealClasses": [
+            {
+              "classId": 1,
+              "optional": false,
+              "info": ""
+            },
+            {
+              "classId": 3,
+              "optional": true,
+              "info": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Keskiviikko",
+      "order": 3,
+      "id": 7,
+      "color": "c2",
+      "meals": [
+        {
+          "mealId": 1,
+          "name": "Aamiainen",
+          "mealClasses": [
+            {
+              "classId": 1,
+              "optional": false,
+              "info": "2 annosta",
+              "products": []
+            },
+            {
+              "classId": 3,
+              "optional": false,
+              "info": "Paljon",
+              "products": []
+            }
+          ]
+        },
+        {
+          "mealId": 2,
+          "name": "Lounas",
+          "mealClasses": [],
+          "info": "Paljon proteiinia ja kasviksia"
+        },
+        {
+          "mealId": 3,
+          "name": "Välipala, iltapala",
+          "mealClasses": [],
+          "info": "Paljon proteiinia ja kasviksia"
+        }
+      ]
     }
   ]
 }

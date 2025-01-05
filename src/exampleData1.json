@@ -1,0 +1,238 @@
+{
+  "categories": [
+    {
+      "name": "HeVi",
+      "order": 1,
+      "id": 1
+    },
+    {
+      "name": "Leivät",
+      "order": 2,
+      "id": 2
+    },
+    {
+      "name": "Lihat",
+      "order": 3,
+      "id": 3
+    },
+    {
+      "name": "Pakasteet",
+      "order": 4,
+      "id": 4
+    },
+    {
+      "name": "Juomat",
+      "order": 5,
+      "id": 5
+    },
+    {
+      "name": "Vaatteet",
+      "order": 6,
+      "id": 6
+    }
+  ],
+  "products": [
+    {
+      "name": "Appelsiini",
+      "categoryId": 1,
+      "id": 1,
+      "onShoppingList": true,
+      "quantity": "5",
+      "unit": "kpl",
+      "c1": true,
+      "c2": false,
+      "c3": false,
+      "black": false,
+      "dose": "1 kpl",
+      "classId": 4
+    },
+    {
+      "name": "Banaani",
+      "categoryId": 1,
+      "id": 2,
+      "onShoppingList": true,
+      "quantity": "4",
+      "unit": "kpl",
+      "c1": false,
+      "c2": false,
+      "c3": false,
+      "black": true,
+      "classId": 4
+    },
+    {
+      "name": "Tomaatti",
+      "categoryId": 1,
+      "id": 3,
+      "onShoppingList": true,
+      "quantity": "500",
+      "unit": "g",
+      "c1": true,
+      "c2": false,
+      "c3": true,
+      "black": false,
+      "dose": "1 kpl",
+      "classId": 3
+    },
+    {
+      "name": "Kurkku",
+      "categoryId": 1,
+      "id": 4,
+      "onShoppingList": true,
+      "quantity": "1",
+      "unit": "kpl",
+      "c1": true,
+      "c2": true,
+      "c3": true,
+      "black": false,
+      "dose": "100g",
+      "classId": 3
+    },
+    {
+      "name": "Ruisleipä",
+      "categoryId": 2,
+      "id": 5,
+      "onShoppingList": true,
+      "c1": true,
+      "c2": false,
+      "c3": false,
+      "black": false,
+      "dose": "1 siivu / 30g",
+      "classId": 2,
+      "info": "Valmiiksi siivutettua"
+    },
+    {
+      "name": "Näkkileipä",
+      "categoryId": 2,
+      "id": 6,
+      "c1": true,
+      "c2": false,
+      "c3": true,
+      "black": false,
+      "dose": "1 kpl",
+      "classId": 2
+    },
+    {
+      "name": "Jauheliha",
+      "categoryId": 3,
+      "id": 7,
+      "c1": true,
+      "c2": true,
+      "c3": true,
+      "black": false,
+      "dose": "90g",
+      "classId": 1,
+      "info": "Luomua"
+    },
+    {
+      "name": "Jäätelö",
+      "categoryId": 4,
+      "id": 8,
+      "c1": false,
+      "c2": false,
+      "c3": false,
+      "black": true
+    },
+    {
+      "name": "Sekamehu",
+      "categoryId": 5,
+      "id": 9,
+      "onShoppingList": true
+    },
+    {
+      "name": "Appelsiinimehu",
+      "categoryId": 5,
+      "id": 10,
+      "c1": false,
+      "c2": false,
+      "c3": false,
+      "black": true,
+      "dose": "lasillinen",
+      "classId": null
+    },
+    {
+      "name": "Kahvi",
+      "categoryId": 5,
+      "id": 11,
+      "onShoppingList": true,
+      "c1": false,
+      "c2": false,
+      "c3": false,
+      "black": true
+    },
+    {
+      "name": "Tee",
+      "categoryId": 5,
+      "id": 12
+    },
+    {
+      "name": "Sukat",
+      "categoryId": 6,
+      "id": 13
+    },
+    {
+      "name": "Avokado",
+      "categoryId": 1,
+      "id": 316,
+      "c1": false,
+      "c2": false,
+      "c3": true,
+      "black": false,
+      "dose": "1 kpl",
+      "classId": 6
+    }
+  ],
+  "colordefinitions": [
+    {
+      "colorId": "black",
+      "shortname": "Vältä",
+      "colorinfo": ""
+    },
+    {
+      "colorId": "c1",
+      "shortname": "MaTi",
+      "colorinfo": "Hiilareita, proteiinia, kasviksia\nAerobista liikuntaa."
+    },
+    {
+      "colorId": "c2",
+      "shortname": "KeTo",
+      "colorinfo": "Proteiinia, kasviksia.\nLihaskuntoharjoituksia."
+    },
+    {
+      "colorId": "c3",
+      "shortname": "Pe-Su",
+      "colorinfo": "Hyviä rasvoja, hiilareita vain vähän.\nRentoutumista."
+    }
+  ],
+  "productclasses": [
+    {
+      "name": "Proteiinit",
+      "order": 1,
+      "id": 1
+    },
+    {
+      "name": "Hiilihydraatit",
+      "order": 2,
+      "id": 2
+    },
+    {
+      "name": "Kasvikset",
+      "order": 3,
+      "id": 3
+    },
+    {
+      "name": "Hedelmät",
+      "order": 4,
+      "id": 4
+    },
+    {
+      "name": "Marjat",
+      "order": 5,
+      "id": 5
+    },
+    {
+      "name": "Rasvat",
+      "order": 6,
+      "id": 6
+    }
+  ]
+}
