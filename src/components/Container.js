@@ -8,6 +8,7 @@ const Container = styled.div`
   opacity: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 0.5 : 1)};
   pointer-events: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 'none' : 'auto')};
   transition: opacity 0.3s ease-in-out;
+  padding-right: 20px;
 `;
 export default Container;
 
