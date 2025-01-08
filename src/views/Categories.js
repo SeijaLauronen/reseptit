@@ -10,8 +10,9 @@ import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
 import Container, { IconContainer, IconWrapper } from '../components/Container';
 import { CategoryItem } from '../components/Item';
-import Toast from '../components/Toast'; 
+import Toast from '../components/Toast';
 import MyErrorBoundary from '../components/ErrorBoundary';
+import DraggableArea from '../components/DraggableArea';
 
 const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
   const [categories, setCategories] = useState([]);
@@ -96,71 +97,73 @@ const Categories = ({ refresh = false, isMenuOpen, onCategorySelect }) => {
   // transientti props $isOpen ei käytetä, koska EditCategoryForm ei ole styled komponentti
   return (
     <MyErrorBoundary>
-    <>  
-      { error && (
-        <Toast message={error} onClose={() => setError('')} />
-      )}
+      <>
+        {error && (
+          <Toast message={error} onClose={() => setError('')} />
+        )}
 
-      {isCategoryFormOpen && editingCategory && (
-        <EditCategoryForm
-          category={editingCategory}
-          onSave={handleSaveCategory}
-          onCancel={() => {
-            setEditingCategory(null);
-            setIsCategoryFormOpen(false);
-          }}
-          onDelete={handleDeleteCategory}
-          isOpen={isCategoryFormOpen}
-        />
-      )}
-        
-      <Container $isMenuOpen={isMenuOpen} $isCategoryFormOpen={isCategoryFormOpen}>            
-            <StickyTop> 
-            <b>Kategoriat</b>            
-            </StickyTop>            
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="droppable-categories">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {categories.map((category, index) => (
-                      <Draggable key={category.id.toString()} draggableId={category.id.toString()} index={index}>
-                        {(provided) => (
-                          <CategoryItem
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <span>{category.name}</span>
-                            <div>
-                              <IconContainer>
-                                <IconWrapper onClick={() => handleEditCategory(category)}>
-                                  <FontAwesomeIcon icon={faEdit} />
-                                </IconWrapper>
-                                <IconWrapper onClick={() => onCategorySelect(category.id)}>
-                                  <FontAwesomeIcon icon={faArrowRight} />
-                                </IconWrapper>
-                              </IconContainer>
-                            </div>
-                          </CategoryItem>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-      </Container>
-      <StickyBottom>
-        <InputAdd            
+        {isCategoryFormOpen && editingCategory && (
+          <EditCategoryForm
+            category={editingCategory}
+            onSave={handleSaveCategory}
+            onCancel={() => {
+              setEditingCategory(null);
+              setIsCategoryFormOpen(false);
+            }}
+            onDelete={handleDeleteCategory}
+            isOpen={isCategoryFormOpen}
+          />
+        )}
+
+        <Container $isMenuOpen={isMenuOpen} $isCategoryFormOpen={isCategoryFormOpen}>
+          <StickyTop>
+            <b>Kategoriat</b>
+          </StickyTop>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="droppable-categories">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {categories.map((category, index) => (
+                    <Draggable key={category.id.toString()} draggableId={category.id.toString()} index={index}>
+                      {(provided) => (
+                        <CategoryItem className='CategoryItem'
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+
+                        >                      
+                          <DraggableArea {...provided.dragHandleProps}>
+                            <span>{category.name}</span> {/* Nimi toimii osana raahattavaa aluetta */}
+                          </DraggableArea>
+                          <div>
+                            <IconContainer className='IconContainer'>
+                              <IconWrapper className='IconWrapper' onClick={() => handleEditCategory(category)}>
+                                <FontAwesomeIcon className='FontAwesomeIcon' icon={faEdit} />
+                              </IconWrapper>
+                              <IconWrapper onClick={() => onCategorySelect(category.id)}>
+                                <FontAwesomeIcon icon={faArrowRight} />
+                              </IconWrapper>
+                            </IconContainer>
+                          </div>
+                        </CategoryItem>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </Container>
+        <StickyBottom>
+          <InputAdd
             type="text"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
             placeholder="Uusi kategoria"
-        />        
-        <AddButton onClick={handleAddCategory}/>
-      </StickyBottom>      
-    </>
+          />
+          <AddButton onClick={handleAddCategory} />
+        </StickyBottom>
+      </>
     </MyErrorBoundary>
   );
 };
