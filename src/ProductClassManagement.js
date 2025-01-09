@@ -158,9 +158,7 @@ const ProductClassManagement = ({ refresh = false, isOpen, onClose }) => {
         onClose(false); // TODO
     }
 
-    const handleDeleteProductClass = async (id) => {
-        // setProductClasses((prev) => prev.filter((pc) => pc.id !== id)); // Tämä poistaisi näytöltä
-        // TODO: Lisää palvelinpuolen poistologiikka
+    const handleDeleteProductClass = async (id) => {        
         try {
             await deleteProductclass(id);
             fetchAndSetProductClasses();

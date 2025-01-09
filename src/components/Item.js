@@ -10,8 +10,11 @@ const Item = styled.div`
   justify-content: space-between;
   align-items: center;
   //background-color: green;
-  word-wrap: break-word;
-  word-break: break-all;
+  //word-wrap: break-word;
+  //word-break: break-all;
+  // Tekstin rivittymisen asetukset
+  overflow-wrap: break-word; // Mieluummin katkaisee sanojen välistä
+  word-break: break-word; // Katkaisee sanan keskeltä vain tarvittaessa
 `;
 export default Item;
 
@@ -53,8 +56,9 @@ padding-left: 10px;
   display: flex;
   gap: 10px;
   align-items: center;
-  word-wrap: break-word;
-  word-break: break-all;
+  // Tekstin rivittymisen asetukset
+  overflow-wrap: break-word; // Mieluummin katkaisee sanojen välistä
+  word-break: break-word; // Katkaisee sanan keskeltä vain tarvittaessa
 
   input[type="text"] {
     width: 90px; 
@@ -94,4 +98,10 @@ export const ShoppingListItem = styled(Item)`
     justify-content: space-between;
     align-items: center;
   }
+`;
+
+export const TextItem = styled.span`
+  // Tekstin rivittymisen asetukset
+  overflow-wrap: break-word; // Mieluummin katkaisee sanojen välistä
+  word-break: break-word; // Katkaisee sanan keskeltä vain tarvittaessa
 `;

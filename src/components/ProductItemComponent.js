@@ -14,6 +14,7 @@ import { ColorItemsWrapper, ColorItemContainer, ColorItem } from '../components/
 import { useSettings } from '../SettingsContext';
 import styled from 'styled-components';
 import { useProductClass } from '../ProductClassContext';
+import { TextItem } from './Item';
 
 
 const StyledText = styled.span` 
@@ -48,9 +49,9 @@ const ProductItemComponent = forwardRef(
 
           {/* Ensimmäinen sarake: nimi ja värikoodit ja lisätiedot */}
           <div style={{ display: 'flex', flexDirection: 'column', gridColumn: '1' }}>
-            <span>{highlightText(product.name, filter)}
+            <TextItem>{highlightText(product.name, filter)}
               {(!colorCodingEnabled || !productHasColors) && renderAdditionalInfoText()}
-            </span>
+            </TextItem>
 
             {/* Näytetään värit vain jos tuotteelle on annettu jokin värikoodi */}
             {colorCodingEnabled && productHasColors && (

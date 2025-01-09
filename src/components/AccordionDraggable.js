@@ -25,8 +25,13 @@ const AccordionTitle = styled.div`
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
-  word-wrap: break-word; // että teksti jakaantuu riveille eikä ylitä leveyttä
-  word-break: break-all; // että teksti jakaantuu riveille eikä ylitä leveyttä 
+  // Tämä katkaisee kesken sanan:
+  // word-wrap: break-word; // että teksti jakaantuu riveille eikä ylitä leveyttä
+  //word-break: break-all; // että teksti jakaantuu riveille eikä ylitä leveyttä 
+  // Tekstin rivittymisen asetukset paremmin:
+  overflow-wrap: break-word; // Mieluummin katkaisee sanojen välistä
+  word-break: break-word; // Katkaisee sanan keskeltä vain tarvittaessa
+
 //box-shadow: [x-offset] [y-offset] [blur-radius] [spread-radius] [color] [inset];
   box-shadow: 
     inset 0 4px 6px rgba(0, 0, 0, 0.1),  /* Sisäinen yleinen varjo */
