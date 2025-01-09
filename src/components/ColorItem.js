@@ -95,6 +95,7 @@ export const ColorItemInTitle = styled(ColorItemSelection)`
   padding-left: 15px;
   padding-right: 15px;
   display: inline-block;
+  min-width: 35px; // min-widt toimii paremmin kuin width, ettei kutista!
 `;
 
 export const ColorItemDroppable = styled(ColorItemSelection)`

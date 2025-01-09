@@ -4,6 +4,7 @@ import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DraggableArea from './DraggableArea';
+import { IconContainer, IconWrapper } from './Container';
 
 const AccordionWrapper = styled.div`
   margin-bottom: 20px;
@@ -24,6 +25,8 @@ const AccordionTitle = styled.div`
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
+  word-wrap: break-word; // että teksti jakaantuu riveille eikä ylitä leveyttä
+  word-break: break-all; // että teksti jakaantuu riveille eikä ylitä leveyttä 
 //box-shadow: [x-offset] [y-offset] [blur-radius] [spread-radius] [color] [inset];
   box-shadow: 
     inset 0 4px 6px rgba(0, 0, 0, 0.1),  /* Sisäinen yleinen varjo */
@@ -84,11 +87,15 @@ const AccordionDraggable = ({
                 <div ref={provided.innerRef} {...provided.draggableProps} >
                     <AccordionWrapper>
                         <AccordionTitle>
-                            <DraggableArea {...provided.dragHandleProps}>
+                            <DraggableArea className='DraggableArea' {...provided.dragHandleProps}>
                                 <span>{title || item.name}</span>
                             </DraggableArea>
-                            {icons && <>{icons}</>}
-                            <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} onClick={toggleAccordion} />
+                            <IconContainer className='IconContainer'>
+                                {icons && <>{icons}</>}
+                                <IconWrapper className='IconWrapper'>
+                                    <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} onClick={toggleAccordion} />
+                                </IconWrapper>
+                            </IconContainer>
                         </AccordionTitle>
                         <AccordionContent $isOpen={isOpen}>
                             {isDroppable && droppableId ? (

@@ -417,7 +417,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                       title={
                         <DayTitleWrapper>
                           {colorCodingEnabled && (                              
-                            <ColorItemInTitle
+                            <ColorItemInTitle className='ColorItemInTitle'
                               color={colors[day.color]}
                               selected={true}
                             >
@@ -427,12 +427,10 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                           <DayTitleStyled>{day.name}</DayTitleStyled>
                         </DayTitleWrapper>
                       }
-                      icons={
-                        <IconContainer>
-                          <IconWrapper onClick={() => handleEditDay(day)}>
+                      icons={                        
+                          <IconWrapper className='IconWrapper' onClick={() => handleEditDay(day)}>
                             <FontAwesomeIcon icon={faEdit} />
-                          </IconWrapper>
-                        </IconContainer>
+                          </IconWrapper>                        
                       }
                       //defaultExpanded={day.order === 1} //ylin päivä oletuksena auki
                       defaultExpanded={true}
