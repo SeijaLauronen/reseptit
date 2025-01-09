@@ -13,7 +13,7 @@ const AccordionWrapper = styled.div`
 `;
 
 const AccordionTitle = styled.div`
-  padding: 6px 10px;
+  padding: 6px 0px 6px 6px;
   cursor: pointer;
   //background-color: #f7f7f7;
   //background-color:rgb(243, 243, 217);

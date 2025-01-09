@@ -2,13 +2,13 @@ import styled from 'styled-components';
 
 
 //DOM-elementtiin liittyvä styled-component: Käytetään transientteja propseja, eli $ "isJotain" eteen, jotta ne eivät välity tuntemattomina DOM:lle
-// TODO tarkista poikkeus isPrintOpen
+// TODO tarkista poikkeus isPrintOpen TODO kaikki muutkin päälle aukeavat formit
 const Container = styled.div`
   padding: 55px 5px;
   opacity: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 0.5 : 1)};
   pointer-events: ${({ $isMenuOpen, $isCategoryFormOpen, $isEditFormOpen, isPrintOpen }) => ($isMenuOpen || $isCategoryFormOpen || $isEditFormOpen || isPrintOpen ? 'none' : 'auto')};
   transition: opacity 0.3s ease-in-out;
-  padding-right: 20px;
+  padding-right: 15px;
 `;
 export default Container;
 
