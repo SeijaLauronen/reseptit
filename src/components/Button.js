@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion, faCopy, faPaste, faShare, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion, faCopy, faPaste, faShare, faUndo, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 const Button = styled.button`
   background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#007BFF')};
@@ -135,6 +135,17 @@ export const MenuHelpButton = styled(props => (
   background-color: #007BFF;
   &:hover {
     background-color: #0056b3;
+  }
+  margin-left: auto; 
+  margin-right: 30px;    
+`;
+
+export const MenuWarnigButton = styled(props => (
+  <ButtonComponent icon={faTriangleExclamation} defaultText="" {...props} />
+))`
+  background-color: #f44336;
+  &:hover {
+    background-color: #d32f2f;
   }
   margin-left: auto; 
   margin-right: 30px;    
