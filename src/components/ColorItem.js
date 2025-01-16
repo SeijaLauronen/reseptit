@@ -91,9 +91,7 @@ export const ColorItemSelection = styled(ColorItem)`
 
 export const ColorItemInTitle = styled(ColorItemSelection)`
   margin-right: 8px;
-  padding-bottom: 12px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-bottom: 12px;    
   display: inline-block;
   min-width: 42px; // min-width toimii paremmin kuin width, ettei kutista!
   white-space: nowrap; // Estää tekstinrivittymisen, vaikkei olekaan whitespace tekstissä!
