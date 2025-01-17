@@ -22,12 +22,11 @@ function useStorageEstimate() {
           const isPersistent = await navigator.storage.persisted();
           console.log('Pysyvyys?:', isPersistent);
           // Pyydetään pysyvyys automaattisesti, jos sitä ei ole
-          /*
+          
           if (!isPersistent) {
             const isGranted = await navigator.storage.persist();
             console.log('Pysyvyys pyydetty:', isGranted);
-          } 
-          */         
+          }                    
 
           setStorageInfo({
             usage,
