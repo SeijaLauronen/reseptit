@@ -17,9 +17,9 @@ const Info = ({ isOpen, onCancel, children }) => {
   
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle
   return (    
-    <SlideInContainerRight $isOpen={isOpen}>
-      <CloseButtonComponent onClick={onCancel}></CloseButtonComponent>
-      <ScrollableFormContainer>                 
+    <SlideInContainerRight className='SlideInContainerRight' $isOpen={isOpen}>
+      <CloseButtonComponent className='CloseButtonComponent' onClick={onCancel}></CloseButtonComponent>
+      <ScrollableFormContainer className='ScrollableFormContainer'>                 
         {React.isValidElement(children) ? children : <div>{children}</div>}
       </ScrollableFormContainer>
       <ButtonGroup>

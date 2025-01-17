@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { CloseButtonComponent, MenuHelpButton, MenuWarnigButton } from './Button';
+import { faBars, faChevronRight, faExclamation } from '@fortawesome/free-solid-svg-icons';
+import { CloseButtonComponent, MenuHelpButton, MenuWarningButton } from './Button';
 import Info from './Info';
-import { GroupRight } from './Container';
+import { GroupLeft, GroupRight } from './Container';
 import DataManagement from '../DataManagement';
 import { getBrowserName } from '../utils/browserUtils';
 import DeviceInfo from './DeviceInfo';
@@ -16,7 +16,7 @@ import SettingsManagement from '../SettingsManagement';
 import ProductClassManagement from '../ProductClassManagement';
 import useStorageEstimate from '../hooks/useStorageEstimate';
 
-const programVersion = '2025-01-17: 2.320';
+const programVersion = '2025-01-17: 2.321';
 //päivitä versiohistoria myös tänne, huom, vain ostokseni-sovelluksen!:
 //https://github.com/SeijaLauronen/SeijaLauronen.github.io/blob/main/ostokseniversio.html
 //https://seijalauronen.github.io/ostokseniversio.html
@@ -99,6 +99,7 @@ const MenuIcon = styled.div`
   cursor: pointer;
   color: white;
   font-size: 24px;
+  margin-right: 15px;
 `;
 
 const ChevronIcon = () => {
@@ -116,7 +117,7 @@ const MenuHeader = styled.h3`
 
 //Huom tähän ei transienttia $isOpenia, koska ei ole styled komponentti
 const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
-  const { percentageUsed, supported } = useStorageEstimate();
+  const { percentageUsed, supported, isPersistent } = useStorageEstimate();
 
   const { colorCodingEnabled, toggleColorCoding } = useSettings();
   const { dayPlanEnabled, toggleDayPlanEnabled } = useSettings();
@@ -200,24 +201,47 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
     }
   }
 
-  const StorageWarning = () => {    
+  const StorageWarning = () => {
     console.log('percentageUsed', percentageUsed);
     return supported ? (
-      percentageUsed > 90 ? (
-        <MenuWarnigButton onClick={() => handleOpenInfo(<StorageInfo />)} />
-      ) : null
-    ) : null;
+      <>
+        {percentageUsed > 90 && (
+          <MenuWarningButton onClick={() => handleOpenInfo(<StorageInfo />)} />
+        )}
+        {!isPersistent && (
+          <MenuWarningButton
+            icon={faExclamation}
+            bcolor="#007BFF"
+            hcolor="#0056b3"
+            defaultText=""
+            onClick={() => handleOpenInfo(<StorageInfo />)}
+          />
+        )}
+      </>
+    ) : (
+      <MenuWarningButton
+        icon={faExclamation}
+        bcolor="#007BFF"
+        hcolor="#0056b3"
+        defaultText=""
+        onClick={() => handleOpenInfo(<StorageInfo />)}
+      />
+    );
   };
+
+
 
   // transientti props eli is"Jotain" edessä käytetään $ ettei välity DOM:lle, esim $isOpen
   // tai käytetään pieniä kirjaimia kuten fillspace eikä fillSpace
   return (
     <>
       <MenuContainer className='MenuContainer'>
+
         <MenuIcon onClick={toggleMenu}>
           <FontAwesomeIcon icon={faBars} />
         </MenuIcon>
-        <GroupRight><StorageWarning /><MenuHelpButton onClick={onOpenInfo} /> </GroupRight>
+        <GroupLeft><StorageWarning /></GroupLeft>
+        <GroupRight><MenuHelpButton onClick={onOpenInfo} /> </GroupRight>
       </MenuContainer>
       <MenuOverlay $isOpen={isOpen} onClick={toggleMenu} className='MenuOverlay' />
       <MenuList $isOpen={isOpen} className='MenuList'>

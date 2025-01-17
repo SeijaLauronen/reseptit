@@ -140,16 +140,23 @@ export const MenuHelpButton = styled(props => (
   margin-right: 30px;    
 `;
 
-export const MenuWarnigButton = styled(props => (
-  <ButtonComponent icon={faTriangleExclamation} defaultText="" {...props} />
+export const MenuWarningButton = styled(({ icon, defaultText, ...props }) => (
+  <ButtonComponent
+    icon={icon || faTriangleExclamation} // Käytä ulkopuolelta annettua ikonia tai oletusta
+    defaultText={defaultText || ""} // Oletusteksti
+    {...props}
+  />
 ))`
-  background-color: #f44336;
+  background-color: ${(props) => props.bcolor || "#f44336"}; // Oletusväri
   &:hover {
-    background-color: #d32f2f;
+    background-color: ${(props) => props.hcolor || "#d32f2f"}; // Oletushooverväri
   }
   margin-left: auto; 
   margin-right: 30px;    
 `;
+
+
+
 
 export const PrimaryButton = styled(ButtonComponent)`
   background-color: ${props => (props.disabled ? '#ccc' : '#007BFF')};

@@ -13,26 +13,25 @@ const StorageInfo = () => {
 
     return (
         <div>
-            <h1>Tallennustila</h1>
-            {supported ? (
-                <div>
-                    <p><b>Muista ottaa varmuuskopio, kun olet tallentanut paljon tietoa, joka ei saa hävitä!</b></p>
-                    <p>Tallennustila {isPersistent ? 'on periaatteessa pysyvä.' : 'ei ole pysyvä.'}</p>
-                    <p>Jos poistat selaimen historia- tai selaustietoja, myös tallentamasi tiedot poistetaan.</p>
-                    <p>Selain saattaa myös yllättäin poistaa tietoja muistista tallennustilansa lisäämiseksi,
-                        vaikka alla näkyvä käytössä oleva osuus olisi pienikin. </p>
-                    <p>Käytetty tallennustila: {formatBytes(usage)}<br />
-                    Kiintiö: {formatBytes(quota)}<br/>
-                    Käytössä oleva osuus: {percentageUsed}%<br/>
-                    </p>
-                    {percentageUsed > 90 && (
-                        <p style={{ color: 'red' }}>Varoitus: Tallennustila lähestyy maksimia! Ota varmuuskopio!</p>
-                    )}
-                </div>
-            ) : (
-                <p>Tallennustilan tutkiminen ei ole tuettu tässä selaimessa.</p>
-            )}
+            <h3>Tallennustila</h3>
 
+            <div>
+                <p><b>Muista ottaa varmuuskopio, kun olet tallentanut paljon tietoa, joka ei saa hävitä!</b></p>
+                <p>Tallennustila {isPersistent ? 'on periaatteessa pysyvä.' : 'ei ole pysyvä.'}</p>
+                <p>Tallentamasi tiedot voivat poistua selaimen toiminnoilla. </p>
+                {supported ? (
+                    <span>
+                        <p>Käytetty tallennustila: {formatBytes(usage)} ({percentageUsed}%)<br />
+                           Kiintiö: {formatBytes(quota)}<br />                            
+                        </p>
+                        {percentageUsed > 90 && (
+                            <p style={{ color: 'red' }}>Varoitus: Tallennustila lähestyy maksimia! Ota varmuuskopio!</p>
+                        )}
+                    </span>
+                ) : (
+                    <p>Tallennustilan tutkiminen ei ole tuettu tässä selaimessa.</p>
+                )}
+            </div>
         </div>
     );
 };
