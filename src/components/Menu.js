@@ -211,8 +211,8 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
         {!isPersistent && (
           <MenuWarningButton
             icon={faExclamation}
-            bcolor="#007BFF"
-            hcolor="#0056b3"
+            $bcolor="#007BFF"
+            $hcolor="#0056b3"
             defaultText=""
             onClick={() => handleOpenInfo(<StorageInfo />)}
           />
@@ -221,8 +221,8 @@ const Menu = ({ onDatabaseCleared, isOpen, onToggleMenu, onOpenInfo }) => {
     ) : (
       <MenuWarningButton
         icon={faExclamation}
-        bcolor="#007BFF"
-        hcolor="#0056b3"
+        $bcolor="#007BFF"
+        $hcolor="#0056b3"
         defaultText=""
         onClick={() => handleOpenInfo(<StorageInfo />)}
       />

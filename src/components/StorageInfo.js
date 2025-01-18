@@ -9,25 +9,33 @@ const formatBytes = (bytes) => {
 };
 
 const StorageInfo = () => {
-    const { usage, quota, percentageUsed, supported, isPersistent } = useStorageEstimate();
+    const { usage, quota, percentageUsed, supported, isPersistent, requestPersistence, persistenceError } = useStorageEstimate();
 
     return (
         <div>
             <h3>Tallennustila</h3>
 
             <div>
+                <p>Tiedot tallentuvat laitteellesi, käyttämäsi selaimen muistiin. </p>
                 <p><b>Muista ottaa varmuuskopio, kun olet tallentanut paljon tietoa, joka ei saa hävitä!</b></p>
                 <p>Tallennustila {isPersistent ? 'on periaatteessa pysyvä.' : 'ei ole pysyvä.'}</p>
                 <p>Tallentamasi tiedot voivat poistua selaimen toiminnoilla. </p>
+
                 {supported ? (
-                    <span>
-                        <p>Käytetty tallennustila: {formatBytes(usage)} ({percentageUsed}%)<br />
-                           Kiintiö: {formatBytes(quota)}<br />                            
-                        </p>
-                        {percentageUsed > 90 && (
-                            <p style={{ color: 'red' }}>Varoitus: Tallennustila lähestyy maksimia! Ota varmuuskopio!</p>
+                    <>
+                        {!isPersistent && (
+                            <button onClick={requestPersistence}>Pyydä pysyvää tallennustilaa</button>
                         )}
-                    </span>
+                        {persistenceError && <p style={{ color: 'red' }}>{persistenceError}</p>}
+                        <span>
+                            <p>Käytetty tallennustila: {formatBytes(usage)} ({percentageUsed}%)<br />
+                                Kiintiö: {formatBytes(quota)}<br />
+                            </p>
+                            {percentageUsed > 90 && (
+                                <p style={{ color: 'red' }}>Varoitus: Tallennustila lähestyy maksimia! Ota varmuuskopio!</p>
+                            )}
+                        </span>
+                    </>
                 ) : (
                     <p>Tallennustilan tutkiminen ei ole tuettu tässä selaimessa.</p>
                 )}

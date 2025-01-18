@@ -147,9 +147,9 @@ export const MenuWarningButton = styled(({ icon, defaultText, ...props }) => (
     {...props}
   />
 ))`
-  background-color: ${(props) => props.bcolor || "#f44336"}; // Oletusväri
+  background-color: ${(props) => props.$bcolor || "#f44336"}; // Oletusväri
   &:hover {
-    background-color: ${(props) => props.hcolor || "#d32f2f"}; // Oletushooverväri
+    background-color: ${(props) => props.$hcolor || "#d32f2f"}; // Oletushooverväri
   }
   margin-left: auto; 
   margin-right: 30px;    
