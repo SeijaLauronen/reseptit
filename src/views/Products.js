@@ -17,6 +17,7 @@ import { ColorItemsWrapper, ColorItemContainer, ColorItemSelection } from '../co
 import { useSettings } from '../SettingsContext';
 import FilterWithCrossIcon from '../components/FilterIcon';
 import SwitchButtonComponent from '../components/SwitchButtonCompnent';
+import { CountDisplay } from '../components/CountDisplay';
 import { useProductClass } from '../ProductClassContext'; // Hook
 
 // TODO kun tekee refresh ja menee tuotesivulle, tulee (filteri-ikonista?):
@@ -33,6 +34,7 @@ const Products = ({ refresh = false, categoryId }) => {
   const [editingProductAmount, setEditingProductAmount] = useState(false);;
   const [expandedCategories, setExpandedCategories] = useState(new Set());
   const [filter, setFilter] = useState('');
+  const [countFoundProducts, setCountFoundProducts] = useState(0);
   const [selectedCategoryId, setSelectedCategoryId] = useState(categoryId); //Lisäsin tämän
   const [selectedCategoryName, setSelectedCategoryName] = useState(''); //tämä lisätty
   const [showFavorites, setShowFavorites] = useState(false);
@@ -100,6 +102,45 @@ const Products = ({ refresh = false, categoryId }) => {
   useEffect(() => {
     fetchAndSetProductsAndCategories();
   }, [fetchAndSetProductsAndCategories, refresh]);
+
+
+
+  //TODO... tarkista toimiiko kun värit filtteröity...
+  useEffect(() => {
+    if (filter) {
+      const filteredCount = combinedFilteredProducts.filter(product =>
+        product.name.toLowerCase().includes(filter)
+      ).length;
+      setCountFoundProducts(filteredCount);
+    } else {
+      setCountFoundProducts(0);
+    }
+  }, [filter, products, selectedCategoryId, selectedColors, showFavorites]);
+  //}, [filter, combinedFilteredProducts]); // cannot access combinedFilteredProducts before initialization
+
+
+  // TODO tätä pitäisi käyttää muutenkin renderöinnissä, ei vain tuossa useEffectissä
+  const combinedFilteredProducts = products.filter(product => {
+    // Tarkistetaan kategoriat, jos valinta on tehty
+    const categoryMatch = selectedCategoryId ? product.category === selectedCategoryId : true;
+
+    // Tarkistetaan värit, jos värisuodatus on käytössä, sisältäen "noColor"-valinnan
+    const colorMatch = selectedColors.length > 0
+      ? selectedColors.some(colorKey => {
+        if (colorKey === 'noColor') {
+          return !Object.keys(colors).some(colorKey => product[colorKey]);
+        }
+        return product[colorKey];
+      })
+      : true;
+
+    // Lisää tarvittaessa muita suodatuslogiikoita
+    const starMatch = showFavorites ? product.isFavorite : true;
+
+    // Palautetaan true vain, jos kaikki ehdot täyttyvät
+    return categoryMatch && colorMatch && starMatch;
+  });
+
 
   const handleAddProduct = async () => {
     try {
@@ -235,7 +276,7 @@ const Products = ({ refresh = false, categoryId }) => {
   }
 
   // 22.12.2024 Lisätään tapahtumankuuntelija passiiviseksi, koska tuli virhe: Unable to preventDefault inside passive event listener invocation.
-  // Jätän tämn tähän muistutukseksi, rttä tämä esti koko näytön vierittämisen. Tekoäly tätä ehdotti jonkin virheen krjaamiseen, eipä ollut järkevä
+  // Jätän tämn tähän muistutukseksi, että tämä esti koko näytön vierittämisen. Tekoäly tätä ehdotti jonkin virheen krjaamiseen, eipä ollut järkevä
   /*
   useEffect(() => {
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
@@ -343,6 +384,7 @@ const Products = ({ refresh = false, categoryId }) => {
   const handleClearFilter = () => {
     setFilter('');
     setNewProduct('');
+    setCountFoundProducts(0);
   };
 
   useEffect(() => {
@@ -390,10 +432,11 @@ const Products = ({ refresh = false, categoryId }) => {
   const renderProductItemComponent = (product, index) => {
     // jos filterSearchProducts on päällä, suodatetaan, jos ei ole päällä, näytetään kaikki
     // console.log('renderProductItemComponent', product.name, filter, product.name.toUpperCase().includes(filter.toUpperCase()),  product.name.toUpperCase().search(filter.toUpperCase()));
-    const show = product.name.toUpperCase().includes(filter.toUpperCase()) || ! filterSearchProducts;
-    return (      
+    const show = product.name.toUpperCase().includes(filter.toUpperCase()) || !filterSearchProducts;
+
+    return (
       show && <ProductItemComponent
-      
+
         key={product.id}
         product={product}
         ref={(el) => (productRefs.current[product.id] = el)}
@@ -522,6 +565,8 @@ const Products = ({ refresh = false, categoryId }) => {
 
       <StickyBottom>
 
+
+
         {filterSearchProducts ? (
           <IconWrapper >
             <FilterWithCrossIcon className='FilterWithCrossIcon"'
@@ -542,6 +587,9 @@ const Products = ({ refresh = false, categoryId }) => {
             )}
           </IconWrapper>
         )}
+        <CountDisplay isFiltered={Boolean(filter)}>
+          {filter ? countFoundProducts : ''}
+        </CountDisplay>
 
         <InputAdd
           type="text"
@@ -549,6 +597,7 @@ const Products = ({ refresh = false, categoryId }) => {
           onChange={handleInputChange}
           placeholder="Etsi tai lisää tuote"
         />
+
 
         <AddButton onClick={handleAddProduct} />
 
