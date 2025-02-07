@@ -38,7 +38,7 @@ const FilterWithCrossIcon = ({$filterEnabled, onClick }) => (
   <IconWrapper onClick={onClick} >
     <FilterIcon icon={faFilter} $filterEnabled = {$filterEnabled}/>
     <CrossIcon icon={faTimes} $filterEnabled = {$filterEnabled} />
-    <FilterText $filterEnabled={$filterEnabled}>Valinnat</FilterText>
+    <FilterText $filterEnabled={$filterEnabled}>Suodata</FilterText>
   </IconWrapper>
 );
 

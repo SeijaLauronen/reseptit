@@ -86,6 +86,21 @@ export const SettingsProvider = ({ children }) => {
     setShowProductClass(prevState => !prevState);
   }
 
+  //toggleFilterSearchProducts
+  const [filterSearchProducts, setFilterSearchProducts] = useState(() => {
+    const saved = localStorage.getItem('filterSearchProducts');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('filterSearchProducts', JSON.stringify(filterSearchProducts));
+  }, [filterSearchProducts]);
+
+  const toggleFilterSearchProducts = () => {
+    setFilterSearchProducts(prevState => !prevState);
+  }
+
+
   const deleteLocalStorage = () => {
 
     /* Aseteaan ensin arvot, että kontekstit ja tilat päivittyy */
@@ -93,8 +108,9 @@ export const SettingsProvider = ({ children }) => {
     setColorCodingEnabled(false);
     setKeepQuantityEnabled(false);
     setOpenQuantityByLongPress(false);
-    setShowDose(false);    
+    setShowDose(false);
     setDayPlanEnabled(false);
+    setFilterSearchProducts(false);
     localStorage.setItem('productView', JSON.stringify(''));    // Tämä asetetaan Tuote-näkymässä, toisin kuin muut 
     /* Poistetaan sitten localStoresta*/
     localStorage.removeItem('colorCodingEnabled');
@@ -103,6 +119,7 @@ export const SettingsProvider = ({ children }) => {
     localStorage.removeItem('showDose');
     localStorage.removeItem('showProductClass');
     localStorage.removeItem('dayPlanEnabled');
+    localStorage.removeItem('filterSearchProducts');
     localStorage.removeItem('productView'); // Tämä asetetaan Tuote-näkymässä, toisin kuin muut
   }
 
@@ -111,8 +128,9 @@ export const SettingsProvider = ({ children }) => {
     setColorCodingEnabled(true);
     setKeepQuantityEnabled(false);
     setOpenQuantityByLongPress(false);
-    setShowDose(true);   
-    setDayPlanEnabled(false); 
+    setShowDose(true);
+    setDayPlanEnabled(false);
+    setFilterSearchProducts(false);
     localStorage.setItem('productView', JSON.stringify(''));    // Tämä asetetaan Tuote-näkymässä, toisin kuin muut 
   }
 
@@ -124,6 +142,7 @@ export const SettingsProvider = ({ children }) => {
       showDose, toggleShowDose, setShowDose,
       showProductClass, toggleShowProductClass, setShowProductClass,
       dayPlanEnabled, toggleDayPlanEnabled, setDayPlanEnabled,
+      filterSearchProducts, toggleFilterSearchProducts, setFilterSearchProducts,
       deleteLocalStorage, setLocalStorageDefaults
     }}>
       {children}

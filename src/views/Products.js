@@ -39,7 +39,7 @@ const Products = ({ refresh = false, categoryId }) => {
   const [error, setError] = useState('');
   const [handledProductId, setHandledProductId] = useState(null); // ID of the newly added or edited product
   const isShopLongPressRef = useRef(false); //useRef  -hook: onko käyttäjä tehnyt pitkän painalluksen. useRef -arvo ei muutu uudelleenrenderöintien välillä, joten se säilyttää tilansa koko komponentin elinkaaren ajan.
-  const { colorCodingEnabled, openQuantityByLongPress } = useSettings();
+  const { colorCodingEnabled, openQuantityByLongPress, filterSearchProducts } = useSettings();
   const { colors, selectedColors, toggleColor, setSelectedColors, colorDefinitions, noColor } = useColors(); //Hook For filtering in Products
 
   const productRefs = useRef({}); // Ref object to hold references to product items
@@ -47,10 +47,10 @@ const Products = ({ refresh = false, categoryId }) => {
 
   //const [productClasses, setProductClasses] = useState([]); // Ei näin, että haetaan täällä niitä erikseen
   const { fetchAndSetProductClasses } = useProductClass();  //Käytetään Hook:ia, että saadaan mahdollisesti päivitetyt tiedot käyttöön heti. itemissä käytetään suoraan productClasses, ei välitetä täältä
-  
-  useEffect(() => { 
+
+  useEffect(() => {
     fetchAndSetProductClasses(); // Haetaan tuoteryhmät kertaalleen, kun tullaan tälle näkymälle. Hookin kautta päivittyvät,, jos niitä on muutettu
-  },[]); // TODO pitääkö laittaa fetchAndSetProductClasses
+  }, []); // TODO pitääkö laittaa fetchAndSetProductClasses, siitä kyllä tulee warnig, mutta jos sen laittaa, niin Editboksi ei aina aukea, jääkö pyörimään johonkin silmukkaan....
 
 
   // Muut setting:sit ovat tuolla SettinsContextissa, mutta tätä käytetään vain tässä paikallisesti....
@@ -388,8 +388,12 @@ const Products = ({ refresh = false, categoryId }) => {
   };
 
   const renderProductItemComponent = (product, index) => {
-    return (
-      <ProductItemComponent
+    // jos filterSearchProducts on päällä, suodatetaan, jos ei ole päällä, näytetään kaikki
+    // console.log('renderProductItemComponent', product.name, filter, product.name.toUpperCase().includes(filter.toUpperCase()),  product.name.toUpperCase().search(filter.toUpperCase()));
+    const show = product.name.toUpperCase().includes(filter.toUpperCase()) || ! filterSearchProducts;
+    return (      
+      show && <ProductItemComponent
+      
         key={product.id}
         product={product}
         ref={(el) => (productRefs.current[product.id] = el)}
@@ -402,7 +406,7 @@ const Products = ({ refresh = false, categoryId }) => {
         handleTouchMove={handleTouchMove}
         handleContextMenu={handleContextMenu}
         colors={colors}
-        selectedColors={selectedColors}        
+        selectedColors={selectedColors}
       />
     );
   }
@@ -456,14 +460,14 @@ const Products = ({ refresh = false, categoryId }) => {
           {colorCodingEnabled && (
             <div className='filter-row'>
 
-              <FilterWithCrossIcon className =  'FilterWithCrossIcon"'
+              <FilterWithCrossIcon className='FilterWithCrossIcon"'
                 $filterEnabled={selectedColors.length > 0}
                 onClick={handleFilterClick}
               />
               <ColorItemsWrapper className='CIWrapper'>
                 {Object.keys(colors).map(colorKey => (
                   <ColorItemContainer key={colorKey} className='CIContainer'>
-                    <ColorItemSelection 
+                    <ColorItemSelection
                       className='CISelection'
                       color={colors[colorKey]}
                       selected={selectedColors.includes(colorKey)}
@@ -515,19 +519,29 @@ const Products = ({ refresh = false, categoryId }) => {
 
         )}
       </MyContainer>
+
       <StickyBottom>
 
-        <IconWrapper >
-          {newProduct ? (
-            <FontAwesomeIcon onClick={handleClearFilter}
-              icon={faTimes}
+        {filterSearchProducts ? (
+          <IconWrapper >
+            <FilterWithCrossIcon className='FilterWithCrossIcon"'
+              $filterEnabled={newProduct}
+              onClick={handleClearFilter}
             />
-          ) : (
-            <FontAwesomeIcon
-              icon={faMagnifyingGlass}
-            />
-          )}
-        </IconWrapper>
+          </IconWrapper>
+        ) : (
+          <IconWrapper >
+            {newProduct ? (
+              <FontAwesomeIcon onClick={handleClearFilter}
+                icon={faTimes}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faMagnifyingGlass}
+              />
+            )}
+          </IconWrapper>
+        )}
 
         <InputAdd
           type="text"
@@ -535,7 +549,9 @@ const Products = ({ refresh = false, categoryId }) => {
           onChange={handleInputChange}
           placeholder="Etsi tai lisää tuote"
         />
+
         <AddButton onClick={handleAddProduct} />
+
       </StickyBottom>
     </>
   );

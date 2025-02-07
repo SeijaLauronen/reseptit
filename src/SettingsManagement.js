@@ -34,7 +34,7 @@ const SettingRow = styled.span`
 `
 
 const SettingsManagement = ({ isOpen, onClose }) => {
-    const { keepQuantityEnabled, toggleKeepQuantity, openQuantityByLongPress, toggleOpenQuantityByLongPress, showProductClass, toggleShowProductClass, showDose, toggleShowDose } = useSettings();
+    const { keepQuantityEnabled, toggleKeepQuantity, openQuantityByLongPress, toggleOpenQuantityByLongPress, showProductClass, toggleShowProductClass, showDose, toggleShowDose, filterSearchProducts, toggleFilterSearchProducts } = useSettings();
 
     useEffect(() => {
         if (isOpen) {
@@ -112,6 +112,20 @@ const SettingsManagement = ({ isOpen, onClose }) => {
                         <SwitchButtonComponent
                             checked={showProductClass}
                             onChange={toggleShowProductClass}
+                        /*
+                        onColor="#00ff00"
+                        offColor="#ff0000"
+                        onHandleColor="#0000ff"
+                        offHandleColor="#ffffff"
+                        */
+                        />
+                    </SettingRow>
+                    <SettingRow>
+                        <label><SettingHeader>Suodata</SettingHeader> tuotteet, kun niitä etsitään.</label>
+
+                        <SwitchButtonComponent
+                            checked={filterSearchProducts}
+                            onChange={toggleFilterSearchProducts}
                         /*
                         onColor="#00ff00"
                         offColor="#ff0000"
