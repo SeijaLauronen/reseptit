@@ -31,6 +31,7 @@ export const ProductStickyTop = styled(StickyTop)`
   grid-template-columns: 1fr auto; /* Kaksi saraketta: ensimmäinen sarake nimi+värit, toinen sarake ikonit */
   gap: 10px; /* Sarakkeiden väli */
   align-items: center; /* Kohdista ikonit keskelle pystysuunnassa */
+  padding-left: 10px;
   padding-bottom: 5px;
 
   .topHeader{

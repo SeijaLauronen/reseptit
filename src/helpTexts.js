@@ -28,7 +28,8 @@ const helpTexts = {
       <b>Tuotteet</b>
       <p>
         Kirjoittaessasi <b>alareunan tekstikenttään</b> sivulta etsitään tekstiä vastaavia tuotteita ja ne korostetaan.
-        Voit tyhjentää kentän vasemmalla puolella olevasta ruksista tai lisätä tuotteen + painikkeesta.
+        Yleisistä asetuksista voit määritellä, suodatetaanko näkymään vain löydetyt tuotteet.
+        Voit tyhjentää kentän vasemmalla puolella olevasta ruksipainikkeesta tai lisätä tuotteen + painikkeesta.
       </p>
       <p>
         Jos tulit sivulle <b>kategorian nuolipainikkeesta</b>, sivulla näytetään vain sen kategorian tuotteet

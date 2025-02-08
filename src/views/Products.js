@@ -7,7 +7,7 @@ import Accordion from '../components/Accordion';
 import { ProductStickyTop } from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
-import { AddButton } from '../components/Button';
+import { AddButton, ButtonWithFilterIcon } from '../components/Button';
 import Container, { ProductContainer, IconWrapper } from '../components/Container';
 import { getCategories, getProducts, getProductById, addProduct, updateProduct, deleteProduct } from '../controller';
 import Toast from '../components/Toast';
@@ -15,7 +15,7 @@ import ProductItemComponent from '../components/ProductItemComponent';
 import { useColors } from '../ColorContext';
 import { ColorItemsWrapper, ColorItemContainer, ColorItemSelection } from '../components/ColorItem';
 import { useSettings } from '../SettingsContext';
-import FilterWithCrossIcon from '../components/FilterIcon';
+import FilterWithCrossIcon, { SearchWithCrossIcon }  from '../components/FilterIcon';
 import SwitchButtonComponent from '../components/SwitchButtonCompnent';
 import { CountDisplay } from '../components/CountDisplay';
 import { useProductClass } from '../ProductClassContext'; // Hook
@@ -475,7 +475,7 @@ const Products = ({ refresh = false, categoryId }) => {
       )}
 
       <MyContainer $isEditFormOpen={editingProduct}>
-        <ProductStickyTop $showFilterRow={colorCodingEnabled}>
+        <ProductStickyTop $showFilterRow={colorCodingEnabled} className='ProductStickyTop'>
           <div className='topHeader'>
             <b>{selectedCategoryName && `${selectedCategoryName}:`}Tuotteet</b>
 
@@ -505,6 +505,7 @@ const Products = ({ refresh = false, categoryId }) => {
 
               <FilterWithCrossIcon className='FilterWithCrossIcon"'
                 $filterEnabled={selectedColors.length > 0}
+                filtertext={' '}
                 onClick={handleFilterClick}
               />
               <ColorItemsWrapper className='CIWrapper'>
@@ -565,28 +566,22 @@ const Products = ({ refresh = false, categoryId }) => {
 
       <StickyBottom>
 
-
-
-        {filterSearchProducts ? (
-          <IconWrapper >
+        {filterSearchProducts ? (          
             <FilterWithCrossIcon className='FilterWithCrossIcon"'
               $filterEnabled={newProduct}
               onClick={handleClearFilter}
-            />
-          </IconWrapper>
+              //count={countFoundProducts}
+              //filtertext={newProduct ? `Lkm: ${countFoundProducts}` : ' '}
+              filtertext={' '}
+            />  
         ) : (
-          <IconWrapper >
-            {newProduct ? (
-              <FontAwesomeIcon onClick={handleClearFilter}
-                icon={faTimes}
-              />
-            ) : (
-              <FontAwesomeIcon
-                icon={faMagnifyingGlass}
-              />
-            )}
-          </IconWrapper>
+          <SearchWithCrossIcon className='SearchWithCrossIcon"'
+            $filterEnabled={newProduct}
+            onClick={handleClearFilter}
+            filtertext={' '}
+          />
         )}
+
         <CountDisplay isFiltered={Boolean(filter)}>
           {filter ? countFoundProducts : ''}
         </CountDisplay>
