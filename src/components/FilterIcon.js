@@ -17,7 +17,7 @@ const IconWrapper = styled.div`
   //display: inline-block; 
   display: flex;
   flex-direction: column;
-  width: 36px; /* Kiinteä leveys pitää elementit linjassa */  
+  min-width: 36px; /* Kiinteä leveys pitää elementit linjassa */  
   border-radius: ${props => (props.$filterEnabled ? '4px' : '0')};
   transition: all 0.3s;
 

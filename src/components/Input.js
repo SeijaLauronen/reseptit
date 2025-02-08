@@ -87,7 +87,7 @@ const MicButton = styled.button`
   svg {
     width: 24px;
     height: 24px;
-    color: ${({ isActive }) => (isActive ? "red" : "black")};
+    color: ${({ $isActive }) => ($isActive ? "red" : "black")};
   }
 `;
 
@@ -96,8 +96,6 @@ export const SpeechInput = ({ value, onChange, placeholder }) => {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
 
-  //const supportsSpeech = "webkitSpeechRecognition" in window;
-  //const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const supportsSpeech = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   // Alustetaan puheentunnistus, jos selain tukee
@@ -150,7 +148,7 @@ export const SpeechInput = ({ value, onChange, placeholder }) => {
         onChange={onChange}
         placeholder={placeholder}
       />
-      <MicButton onClick={startListening} isActive={isListening}>
+      <MicButton onClick={startListening} $isActive={isListening}>
         <Mic />
       </MicButton>
     </InputWrapper>

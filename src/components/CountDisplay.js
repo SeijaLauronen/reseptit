@@ -4,7 +4,7 @@ export const CountDisplay = styled.span`
   min-width: 20px;
   text-align: right;
   display: inline-block;
-  color: ${({ isFiltered }) => (isFiltered ? 'black' : 'transparent')};
+  color: ${({ $isFiltered }) => ($isFiltered ? 'black' : 'transparent')};
   font-size: 12px;
   margin-top: 2px;
   margin-left: 4px;

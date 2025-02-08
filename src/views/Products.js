@@ -583,7 +583,7 @@ const Products = ({ refresh = false, categoryId }) => {
           />
         )}
 
-        <CountDisplay isFiltered={Boolean(filter)}>
+        <CountDisplay $isFiltered={Boolean(filter)}>
           {filter ? countFoundProducts : ''}
         </CountDisplay>
 
