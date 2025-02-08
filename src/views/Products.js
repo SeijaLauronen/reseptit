@@ -122,7 +122,7 @@ const Products = ({ refresh = false, categoryId }) => {
   // TODO tätä pitäisi käyttää muutenkin renderöinnissä, ei vain tuossa useEffectissä
   const combinedFilteredProducts = products.filter(product => {
     // Tarkistetaan kategoriat, jos valinta on tehty
-    const categoryMatch = selectedCategoryId ? product.category === selectedCategoryId : true;
+    const categoryMatch = selectedCategoryId ? product.categoryId === selectedCategoryId : true;
 
     // Tarkistetaan värit, jos värisuodatus on käytössä, sisältäen "noColor"-valinnan
     const colorMatch = selectedColors.length > 0
