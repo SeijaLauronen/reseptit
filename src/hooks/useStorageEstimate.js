@@ -12,7 +12,7 @@ function useStorageEstimate() {
 
   useEffect(() => {
     const fetchStorageEstimate = async () => {
-      console.log('fetchStorageEstimate kutsuttu');
+      //console.log('fetchStorageEstimate kutsuttu');
       if ('storage' in navigator && 'estimate' in navigator.storage) {
         try {
           const estimate = await navigator.storage.estimate();
@@ -22,12 +22,12 @@ function useStorageEstimate() {
 
           // Tarkistetaan pysyvyystila
           const isPersistent = await navigator.storage.persisted();
-          console.log('Pysyvyys (ennen pyyntöä):', isPersistent);
+          //console.log('Pysyvyys (ennen pyyntöä):', isPersistent);
 
           // Yritetään pyytää pysyvyyttä, jos sitä ei ole
           if (!isPersistent) {
             const isGranted = await navigator.storage.persist();
-            console.log('Pysyvyys pyydetty, tulos:', isGranted);
+            //console.log('Pysyvyys pyydetty, tulos:', isGranted);
 
             // Päivitetään tila pyynnön tuloksen perusteella
             setStorageInfo({
@@ -90,78 +90,3 @@ function useStorageEstimate() {
 }
 
 export default useStorageEstimate;
-
-
-
-/*
-import { useState, useEffect } from 'react';
-
-
-function useStorageEstimate() {
-  const [storageInfo, setStorageInfo] = useState({
-    usage: 0,
-    quota: 0,
-    percentageUsed: 0,
-    supported: true,
-    isPersistent: false, // Lisätty kenttä pysyvyystarkistukselle
-  });
-
-  useEffect(() => {
-    const fetchStorageEstimate = async () => {
-      console.log('fetchStorageEstimate');
-      if ('storage' in navigator && 'estimate' in navigator.storage) {
-        try {
-          const estimate = await navigator.storage.estimate();
-          const usage = estimate.usage || 0;
-          const quota = estimate.quota || 0;
-          const percentageUsed = quota > 0 ? (usage / quota) * 100 : 0;
-          // Tarkistetaan onko tallennustila pysyvä
-          const isPersistent = await navigator.storage.persisted();
-          console.log('Pysyvyys?:', isPersistent);
-          // Pyydetään pysyvyys automaattisesti, jos sitä ei ole
-          
-          if (!isPersistent) {
-            const isGranted = await navigator.storage.persist();
-            console.log('Pysyvyys pyydetty:', isGranted);
-          }                    
-
-          setStorageInfo({
-            usage,
-            quota,
-            percentageUsed: percentageUsed.toFixed(2),
-            supported: true,
-            isPersistent, // Päivitetään pysyvyyden tila
-          });
-        } catch (error) {
-          console.error("Storage estimate API ei toiminut:", error);
-        }
-      } else {
-        setStorageInfo(prev => ({ ...prev, supported: false }));
-      }
-    };
-
-    fetchStorageEstimate();
-  }, []);
-
-    // Funktio pysyvyyden pyytämiseksi manuaalisesti
-    const requestPersistence = async () => {
-      try {
-        if ('storage' in navigator && 'persist' in navigator.storage) {
-          const isGranted = await navigator.storage.persist();
-          setStorageInfo((prev) => ({ ...prev, isPersistent: isGranted }));
-          return isGranted;
-        }
-        console.error('Tallennustilan pysyvyyden pyyntö ei ole tuettu.');
-        return false;
-      } catch (error) {
-        console.error('Tallennustilan pysyvyyden pyytäminen epäonnistui:', error);
-        return false;
-      }
-    };
-
-  return {...storageInfo, requestPersistence };
-}
-
-export default useStorageEstimate;
-*/
-

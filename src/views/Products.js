@@ -7,6 +7,7 @@ import Accordion from '../components/Accordion';
 import { ProductStickyTop } from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
+import { InputAddProduct, SpeechInput } from '../components/Input';
 import { AddButton, ButtonWithFilterIcon } from '../components/Button';
 import Container, { ProductContainer, IconWrapper } from '../components/Container';
 import { getCategories, getProducts, getProductById, addProduct, updateProduct, deleteProduct } from '../controller';
@@ -586,8 +587,7 @@ const Products = ({ refresh = false, categoryId }) => {
           {filter ? countFoundProducts : ''}
         </CountDisplay>
 
-        <InputAdd
-          type="text"
+        <SpeechInput          
           value={newProduct}
           onChange={handleInputChange}
           placeholder="Etsi tai lisää tuote"
