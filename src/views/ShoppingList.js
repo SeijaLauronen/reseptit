@@ -26,7 +26,8 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [error, setError] = useState('');
   const [shoppingListText, setShoppingListText] = useState('');
   const [importText, setImportText] = useState('');
-  const {keepQuantityEnabled } = useSettings();
+  const { keepQuantityEnabled } = useSettings();
+  const { hideQuantityUnit } = useSettings();
   const noCategoryName = "Ei kategoriaa";
 
   const handleOpenInfo = (message) => {
@@ -120,7 +121,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         ...product,
         onShoppingList: false,
         selected: false,
-        quantity: keepQuantityEnabled? product.quantity : ""
+        quantity: keepQuantityEnabled ? product.quantity : ""
       }));
 
       await updateProducts(updatedProducts);
@@ -243,45 +244,50 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             <b>Ostoslista</b>
           </StickyTop>
           {groupedProducts.map(category => (
-            <Accordion key={category.id} title={category.heading} defaultExpanded={true}>
+            <Accordion key={category.id} title={category.heading} defaultExpanded={true} accordionmini={true} className='Accordion'>
               {category.products.map(product => (
-                <ShoppingListItem key={product.id}>
-                  <input
-                    disabled={isPrintOpen}
-                    type="checkbox"
-                    checked={selectedProducts.has(product.id)}
-                    onChange={() => handleToggleSelect(product.id)}
-                  />
-                  <span>{product.name}</span>
+                <ShoppingListItem key={product.id} className='ShoppingListItem'>
                   <InputWrapper>
-                    <InputQuantity
-                      lang="fi-FI"  //jotta hyväksyy pisteen puhelimen näppikseltä
+                    <input
                       disabled={isPrintOpen}
-                      type="text" //"number" ei hyväksy pistettä, siksi laitetaan text
-                      inputMode="decimal"  // tällä saadaan kuitenkin numeronäppäimistö mobiilissa
-                      step="any" //vaihtoehtoisesti voidaan laittaa tämä, niin hyväksyy desimaalit (?)
-                      min="0"
-                      value={product.quantity || ''}
-                      onChange={(e) => {
-                        let value = e.target.value;
-                        if (/^[0-9]*[.,]?[0-9]*$/.test(value)) {
-                          // ei toimi... 
-                          //const value = e.target.value.replace('.', ','); // Korvaa piste pilkulla
-                          // value = value.replace('.', ','); // tämä, jos target luettiin jo?
-                          handleQuantityChange(product.id, value)                          
-                          //handleQuantityChange(product.id, e.target.value)
-                        }
-                      }}
-                      placeholder="Määrä"
+                      type="checkbox"
+                      checked={selectedProducts.has(product.id)}
+                      onChange={() => handleToggleSelect(product.id)}
                     />
-                    <InputUnit
-                      disabled={isPrintOpen}
-                      type="text"
-                      value={product.unit || ''}
-                      onChange={(e) => handleUnitChange(product.id, e.target.value)}
-                      placeholder="Yksikkö"
-                    />
+                    <span>{product.name}</span>
                   </InputWrapper>
+                  {!hideQuantityUnit ? (
+                    <InputWrapper className='InputWrapperLow' $low={true}>
+                      <InputQuantity
+                        lang="fi-FI"  //jotta hyväksyy pisteen puhelimen näppikseltä
+                        disabled={isPrintOpen}
+                        type="text" //"number" ei hyväksy pistettä, siksi laitetaan text
+                        inputMode="decimal"  // tällä saadaan kuitenkin numeronäppäimistö mobiilissa
+                        step="any" //vaihtoehtoisesti voidaan laittaa tämä, niin hyväksyy desimaalit (?)
+                        min="0"
+                        value={product.quantity || ''}
+                        onChange={(e) => {
+                          let value = e.target.value;
+                          if (/^[0-9]*[.,]?[0-9]*$/.test(value)) {
+                            // ei toimi... 
+                            //const value = e.target.value.replace('.', ','); // Korvaa piste pilkulla
+                            // value = value.replace('.', ','); // tämä, jos target luettiin jo?
+                            handleQuantityChange(product.id, value)
+                            //handleQuantityChange(product.id, e.target.value)
+                          }
+                        }}
+                        placeholder="Määrä"
+                      />
+                      <InputUnit
+                        disabled={isPrintOpen}
+                        type="text"
+                        value={product.unit || ''}
+                        onChange={(e) => handleUnitChange(product.id, e.target.value)}
+                        placeholder="Yksikkö"
+                      />
+                    </InputWrapper>
+                  ) : null}
+
                 </ShoppingListItem>
               ))}
             </Accordion>

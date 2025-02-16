@@ -113,6 +113,8 @@ export const InputWrapper = styled.div`
   @media (min-width: 300px) {
     flex-direction: row;    
   }
+  //low
+  padding: ${({ $low }) => ($low ? '2px' : '5px')}; 
 `;
 
 export const Group = styled.div`

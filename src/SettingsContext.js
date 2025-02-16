@@ -46,7 +46,21 @@ export const SettingsProvider = ({ children }) => {
   const toggleKeepQuantity = () => {
     setKeepQuantityEnabled(prevState => !prevState);
   }
+  // Asetus: hideQuantityUnit
+  const [hideQuantityUnit, setHideQuantityUnit] = useState(() => {
+    const saved = localStorage.getItem('hideQuantityUnit');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
 
+  useEffect(() => {
+    localStorage.setItem('hideQuantityUnit', JSON.stringify(hideQuantityUnit));
+  }, [hideQuantityUnit]);
+
+  const toggleHideQuantityUnit = () => {
+    setHideQuantityUnit(prevState => !prevState);
+  }
+
+  // Asetus: openQuantityByLongPress
   const [openQuantityByLongPress, setOpenQuantityByLongPress] = useState(() => {
     const saved = localStorage.getItem('openQuantityByLongPress');
     return saved !== null ? JSON.parse(saved) : false;
@@ -60,6 +74,7 @@ export const SettingsProvider = ({ children }) => {
     setOpenQuantityByLongPress(prevState => !prevState);
   }
 
+  // Asetus: showDose
   const [showDose, setShowDose] = useState(() => {
     const saved = localStorage.getItem('showDose');
     return saved !== null ? JSON.parse(saved) : true;
@@ -73,6 +88,7 @@ export const SettingsProvider = ({ children }) => {
     setShowDose(prevState => !prevState);
   }
 
+  // Asetus: showProductClass
   const [showProductClass, setShowProductClass] = useState(() => {
     const saved = localStorage.getItem('showProductClass');
     return saved !== null ? JSON.parse(saved) : true;
@@ -111,6 +127,7 @@ export const SettingsProvider = ({ children }) => {
     setShowDose(false);
     setDayPlanEnabled(false);
     setFilterSearchProducts(false);
+    setHideQuantityUnit(false);
     localStorage.setItem('productView', JSON.stringify(''));    // Tämä asetetaan Tuote-näkymässä, toisin kuin muut 
     /* Poistetaan sitten localStoresta*/
     localStorage.removeItem('colorCodingEnabled');
@@ -120,6 +137,7 @@ export const SettingsProvider = ({ children }) => {
     localStorage.removeItem('showProductClass');
     localStorage.removeItem('dayPlanEnabled');
     localStorage.removeItem('filterSearchProducts');
+    localStorage.removeItem('hideQuantityUnit');
     localStorage.removeItem('productView'); // Tämä asetetaan Tuote-näkymässä, toisin kuin muut
   }
 
@@ -131,6 +149,7 @@ export const SettingsProvider = ({ children }) => {
     setShowDose(true);
     setDayPlanEnabled(false);
     setFilterSearchProducts(false);
+    setHideQuantityUnit(false);
     localStorage.setItem('productView', JSON.stringify(''));    // Tämä asetetaan Tuote-näkymässä, toisin kuin muut 
   }
 
@@ -143,6 +162,7 @@ export const SettingsProvider = ({ children }) => {
       showProductClass, toggleShowProductClass, setShowProductClass,
       dayPlanEnabled, toggleDayPlanEnabled, setDayPlanEnabled,
       filterSearchProducts, toggleFilterSearchProducts, setFilterSearchProducts,
+      hideQuantityUnit, toggleHideQuantityUnit, setHideQuantityUnit,
       deleteLocalStorage, setLocalStorageDefaults
     }}>
       {children}

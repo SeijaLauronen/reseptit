@@ -34,7 +34,7 @@ const SettingRow = styled.span`
 `
 
 const SettingsManagement = ({ isOpen, onClose }) => {
-    const { keepQuantityEnabled, toggleKeepQuantity, openQuantityByLongPress, toggleOpenQuantityByLongPress, showProductClass, toggleShowProductClass, showDose, toggleShowDose, filterSearchProducts, toggleFilterSearchProducts } = useSettings();
+    const { keepQuantityEnabled, toggleKeepQuantity, openQuantityByLongPress, toggleOpenQuantityByLongPress, showProductClass, toggleShowProductClass, showDose, toggleShowDose, filterSearchProducts, toggleFilterSearchProducts, hideQuantityUnit, toggleHideQuantityUnit } = useSettings();
 
     useEffect(() => {
         if (isOpen) {
@@ -66,6 +66,21 @@ const SettingsManagement = ({ isOpen, onClose }) => {
                         <SwitchButtonComponent
                             checked={keepQuantityEnabled}
                             onChange={toggleKeepQuantity}
+                        /*
+                        onColor="#00ff00"
+                        offColor="#ff0000"
+                        onHandleColor="#0000ff"
+                        offHandleColor="#ffffff"
+                        */
+                        />
+                    </SettingRow>
+                    <SettingRow>
+                        <label>Piilota määrä <SettingHeader>määrä</SettingHeader> ja <SettingHeader>yksikkö</SettingHeader> ostoslistalta.
+                        </label>
+
+                        <SwitchButtonComponent
+                            checked={hideQuantityUnit}
+                            onChange={toggleHideQuantityUnit}
                         /*
                         onColor="#00ff00"
                         offColor="#ff0000"

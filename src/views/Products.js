@@ -543,7 +543,7 @@ const Products = ({ refresh = false, categoryId }) => {
             .filter(category => selectedCategoryId === null || category.id === selectedCategoryId)
             .map(category => (
               expandedCategories.has(category.id) && (
-                <Accordion key={category.id} title={category.name} defaultExpanded={expandedCategories.has(category.id)}>
+                <Accordion key={category.id} title={category.name} accordionmini={true} defaultExpanded={expandedCategories.has(category.id)}>
                   <div>
                     {displayedProducts(category).map((product, index) => (
                       renderProductItemComponent(product, index)

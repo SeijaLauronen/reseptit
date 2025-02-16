@@ -55,7 +55,7 @@ const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false,
   };
 
   return (
-    <AccordionWrapper>
+    <AccordionWrapper className='AccordionWrapper'>
       <AccordionTitle $accordionmini={accordionmini}>
         {/* $padding={titlepadding} on transientti props, joka menee styled componentille */}
         {/* Huom! titlepadding on props, joka tulee komponentille */}

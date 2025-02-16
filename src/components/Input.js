@@ -16,16 +16,19 @@ const InputAdd = styled(Input)`
 `;
 export default InputAdd;
 
-export const InputQuantity = styled(Input)`
-    width: 40px;   
+export const InputQuantity = styled.input`
+    padding: 2px;
+    margin: 2px;
+    flex:1;     //Ottaa kaiken jäljellä olevan tilan  
+    width: 35px;   
     &::placeholder {
     font-size: 9px; /* Pienennä placeholder-tekstin kokoa */
     /*color: #999;*/ /* Vaihda tarvittaessa placeholderin väri */
   }   
 `;
 
-export const InputUnit = styled(Input)`
-    width: 40px;    
+export const InputUnit = styled(InputQuantity)`
+    width: 30px;    
     &::placeholder {
     font-size: 9px; /* Pienennä placeholder-tekstin kokoa */    
   }    

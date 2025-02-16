@@ -36,6 +36,7 @@ export const ProductListItem = styled(Item)`
   gap: 10px; /* Sarakkeiden väli */
   align-items: center; /* Kohdista ikonit keskelle pystysuunnassa */
   padding-bottom: 5px;
+  margin: 2px 0;
 `;
 
 export const CategoryItem = styled(GrabbableItem)`
@@ -83,8 +84,8 @@ export const ProductClassItemGrabbable = styled(GrabbableItem)`
 `;
 
 export const ShoppingListItem = styled(Item)`
-  padding-left: 10px;
-  margin: 10px 0;
+  padding-left: 10px;  
+  margin: 2px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
@@ -96,6 +97,7 @@ export const ShoppingListItem = styled(Item)`
   @media (min-width: 300px) {
     flex-direction: row;
     justify-content: space-between;
+    align-items: flex-start;
     align-items: center;
   }
 `;

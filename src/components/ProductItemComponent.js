@@ -48,7 +48,7 @@ const ProductItemComponent = forwardRef(
         <ProductListItem ref={ref}>          
 
           {/* Ensimmäinen sarake: nimi ja värikoodit ja lisätiedot */}
-          <div style={{ display: 'flex', flexDirection: 'column', gridColumn: '1' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gridColumn: '1' }} className='divForProduct'>
             <TextItem>{highlightText(product.name, filter)}
               {(!colorCodingEnabled || !productHasColors) && renderAdditionalInfoText()}
             </TextItem>
@@ -73,7 +73,7 @@ const ProductItemComponent = forwardRef(
           </div>
 
           {/* Toinen sarake: ikonit */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gridColumn: '2' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gridColumn: '2' }} className='divForIcons'>
             <IconContainer className='iconContainer'>
               <IconWrapper onClick={() => handleEditProduct(product)}>
                 <FontAwesomeIcon icon={faEdit} />
