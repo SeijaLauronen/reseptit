@@ -28,6 +28,7 @@ export const GrabbableItem = styled(Item)`
   box-shadow: 
     inset 0 4px 6px rgba(0, 0, 0, 0.1),  /* Sisäinen yleinen varjo */
     inset 0 1px 3px rgba(0, 0, 0, 0.08); /* Sisäinen hieno varjo */
+    background-color: #f5fdff; //hento sininen
 `;
 
 export const ProductListItem = styled(Item)`
@@ -40,6 +41,10 @@ export const ProductListItem = styled(Item)`
 `;
 
 export const CategoryItem = styled(GrabbableItem)`
+  padding-left: 10px;
+  margin: 3px 0;
+  font-size: large;  
+  font-weight: bold;
 `;
 
 export const ProductClassSelectionHeader = styled.div`

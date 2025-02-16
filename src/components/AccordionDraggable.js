@@ -7,7 +7,7 @@ import DraggableArea from './DraggableArea';
 import { IconContainer, IconWrapper } from './Container';
 
 const AccordionWrapper = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 6px;
   border: 2px solid #ccc;
   border-radius: 4px;  
 `;
@@ -19,7 +19,8 @@ const AccordionTitle = styled.div`
   //background-color:rgb(243, 243, 217);
   //background-color: lightcyan;
   //: #edfcfc;
-  background-color: #f7fafc;
+  //background-color: #f7fafc;
+  background-color: #f5fdff; //hento sininen
   border-bottom: 1px solid #ccc;
   display: flex;
   justify-content: space-between;
@@ -35,7 +36,7 @@ const AccordionTitle = styled.div`
 //box-shadow: [x-offset] [y-offset] [blur-radius] [spread-radius] [color] [inset];
   box-shadow: 
     inset 0 4px 6px rgba(0, 0, 0, 0.1),  /* Sisäinen yleinen varjo */
-    inset 0 1px 3px rgba(0, 0, 0, 0.08); /* Sisäinen hieno varjo */ 
+    inset 0 1px 3px rgba(0, 0, 0, 0.08); /* Sisäinen hieno varjo */   
 `;
 
 const AccordionContent = styled.div`

@@ -17,14 +17,15 @@ const AccordionTitle = styled.div`
   //padding: ${({ $accordionmini }) => '3px' || '10px'}; /* Oletusarvo 10px */ 
   padding: ${({ $accordionmini }) => ($accordionmini ? '3px' : '10px')}; /* Oletusarvo 10px */
   //padding: 10px;
-  cursor: pointer;
-  background-color: #f7f7f7;
+  cursor: pointer;  
+  background-color: #efefef;  // #f7f7f7;
   border-bottom: 1px solid #ccc;
   display: flex;
   justify-content: space-between;
   align-items: center;
   word-wrap: break-word;
   word-break: break-all;
+  font-weight: bold;
 `;
 
 // transientti props $isOpen, koska styled komponentti ja isJotain
