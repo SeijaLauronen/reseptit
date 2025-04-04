@@ -45,7 +45,7 @@ const ProductItemComponent = forwardRef(
     const productHasColors = Object.keys(colors).some(colorKey => product[colorKey]);
     return (
       <div>
-        <ProductListItem ref={ref}>          
+        <ProductListItem ref={ref} className='ProductListItem'>          
 
           {/* Ensimmäinen sarake: nimi ja värikoodit ja lisätiedot */}
           <div style={{ display: 'flex', flexDirection: 'column', gridColumn: '1' }} className='divForProduct'>
