@@ -48,6 +48,14 @@ const SettingRow = styled.span`
   align-items: center;
   gap: 20px;
   margin: 10px;
+
+  /* Ei auttanut gridiksi muuttaminen, kokeillaa vielä tätä */
+  label {
+    word-break: break-word; /* Pakottaa sanan katkeamisen */
+    overflow-wrap: anywhere; /* Sallii rivittäytymisen mihin tahansa kohtaan */
+    //hyphens: auto; /* Lisää tavutusviivoja tarvittaessa (valinnainen) */
+    white-space: normal !important; /* Ohittaa mahdolliset ylikirjoitukset */
+  }
 `
 
 
