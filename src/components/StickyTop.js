@@ -60,6 +60,53 @@ export const ProductStickyTop = styled(StickyTop)`
     padding-bottom: 2px;
   }
 
+
 `;
 
 
+export const DayStickyTop = styled(StickyTop)`
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* vasen, keskiosa, oikea */
+  align-items: center;
+  gap: 10px; /* Sarakkeiden väli */  
+  padding-left: 10px;
+  padding-bottom: 5px;
+
+  .day-header {
+    justify-self: start;
+  }
+
+  .day-switch {
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .day-right {
+    justify-self: end;
+  }
+`;
+
+export const DayStickyTopY = styled(StickyTop)`
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  .day-header {
+    justify-self: start;
+  }
+
+  .day-switch {    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Väli labelin ja switchin väliin */
+    height: 100%; /* tarvittaessa */
+  }
+
+  .day-right {
+    justify-self: end;
+  }
+`;
