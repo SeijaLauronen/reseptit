@@ -120,8 +120,10 @@ const helpTexts = {
 
       <b>Päiväsuunnitelmat</b>
       <p>
-        Päiväsuunnitelmissa voit lisätä haluamasi määrän päiviä ja voit muuttaa niiden järjestystä raahaamalla.
+        Päiväsuunnitelmissa voit lisätä haluamasi määrän päiviä ja voit muuttaa niiden järjestystä raahaamalla. 
         <br />
+        Voit suodattaa näkymään pelkästään <i>valitut päivät</i>. (Valinta klikkamalla päivän nimen edessä olevaa painiketta.)
+        <br /><br />
         Näkymä on monitasoinen: <br />
         päivät - ateriat - tuoteluokat - tuotteet.
       </p><p>

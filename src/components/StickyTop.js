@@ -74,11 +74,14 @@ export const DayStickyTop = styled(StickyTop)`
 
   .day-header {
     justify-self: start;
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .day-switch {
     justify-self: center;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 10px;
   }

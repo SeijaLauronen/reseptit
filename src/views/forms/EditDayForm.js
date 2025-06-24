@@ -58,14 +58,14 @@ const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
                 <ColorItemDroppable
                   color={colors[selectedColor]}
                   style={{ pointerEvents: 'none' }} // Estää valitun värin klikkauksen
-                  selected={true}
+                  selected={!!day.active}
                 >
                   {colorDefinitions[selectedColor]?.shortname || ''}
                 </ColorItemDroppable>
               </SelectedItem>
             ) : (
               <ColorItemContainer>
-                <ColorItemDroppable selected={true}>Ei valintaa</ColorItemDroppable>
+                <ColorItemDroppable selected={!!day.active}>Ei valintaa</ColorItemDroppable>
               </ColorItemContainer>
             )}
           </DropdownButton>
@@ -74,7 +74,7 @@ const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
               <ColorItemContainer>
                 <ColorItemDroppable
                   onClick={() => handleColorSelect('')}
-                  selected={true}
+                  selected={!!day.active}
                 >Ei valintaa
                 </ColorItemDroppable>
               </ColorItemContainer>
@@ -83,7 +83,7 @@ const EditDayForm = ({ day, onSave, onCancel, onDelete, isOpen }) => {
                 <ColorItemContainer key={colorKey} onClick={() => handleColorSelect(colorKey)}>
                   <ColorItemDroppable
                     color={colors[colorKey]}
-                    selected={true}
+                    selected={!!day.active}
                   >
                     {colorDefinitions[colorKey]?.shortname || ''}
                   </ColorItemDroppable>

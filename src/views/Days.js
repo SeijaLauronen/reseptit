@@ -38,13 +38,14 @@ const MealTitleStyled = styled.span`
 const DayTitleStyled = styled.span`
   font-weight: bold;
   font-size: larger;
+  color: ${(props) => (props.$active ? 'black' : 'grey')};
 `;
 
 const DayTitleWrapper = styled.div` 
   display: flex;  
   align-items: center;  
 
-  .active {    
+  .activemark {    
     cursor: pointer;
     margin-right: 14px;
     display: inline-flex;
@@ -398,7 +399,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
     : days;
 
   const noActiveMessage = "Valittuja päiviä ei ole, asetetaan kaikki näkymään. " +
-  (colorCodingEnabled ? "Päivän voit valita klikkaamalla nimen edessä olevaa värikoodia." : "");
+  (colorCodingEnabled ? "Päivän voit valita klikkaamalla päivän nimen edessä olevaa painiketta." : "");
   // Container in styled komponentti, käytetään transientti props $isJotain...
   // transientti props $isOpen ei käytetä, koska EditCategoryForm ei ole styled komponentti
   return (
@@ -450,7 +451,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
 
             <div className="day-switch">
               <label>
-                Aktiiviset
+                Vain valitut
               </label>
               <SwitchButtonComponent
                 checked={showActiveDaysOnly}
@@ -497,7 +498,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                               {colorDefinitions[day.color]?.shortname || ''}
                             </ColorItemInTitle>
                           ) : (
-                            <span className='active'
+                            <span className='activemark'
                               onClick={() => handleToggleDayColor(day)}
                             >
                               <input
@@ -508,7 +509,7 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
                               />
                             </span>
                           )}
-                          <DayTitleStyled>{day.name}</DayTitleStyled>
+                          <DayTitleStyled $active={!!day.active}>{day.name}</DayTitleStyled>
                         </DayTitleWrapper>
                       }
                       icons={
