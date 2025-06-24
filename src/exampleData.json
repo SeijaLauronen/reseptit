@@ -486,7 +486,8 @@
       "order": 2,
       "id": 3,
       "info": "Paljon hiilareita, kohtuulliisti proteiinia, paljon kasviksia.\nMuista syödä 2-4 tunnin välein.\nKäy lenkillä.",
-      "color": "c1"
+      "color": "c1",
+      "active": true
     },
     {
       "name": "To, Pe",
@@ -565,7 +566,8 @@
           "name": "Päivällinen",
           "mealClasses": []
         }
-      ]
+      ],
+      "active": true
     },
     {
       "name": "Viikonloppu",
@@ -609,7 +611,8 @@
             }
           ]
         }
-      ]
+      ],
+      "active": true
     },
     {
       "name": "Keskiviikko",
