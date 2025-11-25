@@ -107,6 +107,9 @@ export const ShoppingListItem = styled(Item)`
   }
 `;
 
+export const DayProductItem = styled(ShoppingListItem)`
+`;
+
 export const TextItem = styled.span`
   // Tekstin rivittymisen asetukset
   overflow-wrap: break-word; // Mieluummin katkaisee sanojen välistä

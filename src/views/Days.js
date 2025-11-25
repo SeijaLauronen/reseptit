@@ -23,7 +23,6 @@ import styled from 'styled-components';
 import SwitchButtonComponent from '../components/SwitchButtonCompnent';
 import FollowDayPlan from '../components/FollowDayPlan';
 
-
 const ClassTitleStyled = styled.span`
   font-weight: bold;
   font-size: medium;
@@ -55,7 +54,9 @@ const DayTitleWrapper = styled.div`
 `;
 
 // TODO onDaySelect...
-const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
+//const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
+const Days = ({ refresh = false, isMenuOpen }) => {
+  console.log('Days rendering');
 
   /*
     const [days, setDays] = useState([
@@ -110,23 +111,52 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
   const { colorCodingEnabled } = useSettings();
   const { colors, colorDefinitions } = useColors();
   const [products, setProducts] = useState([]);
+  const [days, setDays] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchAndSetProducts = async () => {
+  const [productClassesLoaded, setProductClassesLoaded] = useState(false);
+
+  // Yhdistetty data-loadaus
+  const loadAllData = async () => {
+    setIsLoading(true);
     try {
-      const allProducts = await getProducts();
+      const [allDays, allProducts] = await Promise.all([
+        getDays(),
+        getProducts(),
+        //fetchAndSetProductClasses() // ← LISÄTTY
+      ]);
+      setDays(allDays);
       setProducts(allProducts);
-
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+
+  // Lataa productClasses erikseen
   useEffect(() => {
-    fetchAndSetProducts();
-  }, [refresh]); //TODO onkohan tämä ok
+    const loadProductClasses = async () => {
+      await fetchAndSetProductClasses();
+      setProductClassesLoaded(true);
+    };
 
-  const [days, setDays] = useState([]);
+    loadProductClasses();
+  }, []);
 
+
+  useEffect(() => {
+    loadAllData();
+  }, []);
+
+  useEffect(() => {
+    loadAllData();
+  }, [refresh]);
+
+
+
+  // TODO korvaa tämä yhdistetyllä loadAllData
   const fetchAndSetDays = async () => {
     try {
       const allDays = await getDays();
@@ -137,10 +167,40 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
   };
 
 
-  useEffect(() => {
-    fetchAndSetDays();
-  }, [refresh]);
 
+  /*
+  
+    const fetchAndSetProducts = async () => {
+      try {
+        const allProducts = await getProducts();
+        setProducts(allProducts);
+  
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+  
+    useEffect(() => {
+      fetchAndSetProducts();
+    }, [refresh]); //TODO onkohan tämä ok
+  
+    const [days, setDays] = useState([]);
+  
+    const fetchAndSetDays = async () => {
+      try {
+        const allDays = await getDays();
+        setDays(allDays);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+  
+  
+    useEffect(() => {
+      fetchAndSetDays();
+    }, [refresh]);
+  
+  */
 
   const [newDay, setNewDay] = useState('');
   const [editingDay, setEditingDay] = useState(null);
@@ -155,10 +215,11 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
   // TODO pitäisikö tämä haku tehdä siellä komponenetissa kertaalleen... Tarkista
   const { fetchAndSetProductClasses } = useProductClass();  //Käytetään Hook:ia, että saadaan mahdollisesti päivitetyt tiedot käyttöön heti. itemissä käytetään suoraan productClasses, ei välitetä täältä
   const { productClasses } = useProductClass();
+  /*
   useEffect(() => {
     fetchAndSetProductClasses(); // Haetaan tuoteryhmät kertaalleen, kun tullaan tälle näkymälle. Hookin kautta päivittyvät,, jos niitä on muutettu
   }, []); // TODO pitääkö laittaa fetchAndSetProductClasses
-
+*/
 
   // Lähes kaikki muut setting:sit ovat tuolla SettinsContextissa, mutta tätä käytetään vain tässä paikallisesti....
   // Tila alustetaan localStoragesta, jossa etsitään 'dayView' arvoa
@@ -420,6 +481,13 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
     (colorCodingEnabled ? "Päivän voit valita klikkaamalla päivän nimen edessä olevaa painiketta." : "");
   // Container in styled komponentti, käytetään transientti props $isJotain...
   // transientti props $isOpen ei käytetä, koska EditCategoryForm ei ole styled komponentti
+
+  // Älä renderöi mitään ennen kuin data on ladattu
+
+  if (isLoading || !productClassesLoaded) {
+    return <div>Ladataan päiväsuunnitelmia...</div>;
+  }
+
   return (
     <MyErrorBoundary>
       <>
@@ -488,8 +556,13 @@ const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
 
           </DayStickyTop>
 
-          {followPlan ? (
-            <FollowDayPlan days={visibleDays} productClasses={productClasses} products={products} />
+          {followPlan && visibleDays.length > 0 ? (
+            <FollowDayPlan
+            
+              days={visibleDays}
+              productClasses={productClasses}
+              products={products} />
+
           ) : (
 
             <DragDropContext
