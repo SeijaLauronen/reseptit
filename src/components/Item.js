@@ -108,6 +108,7 @@ export const ShoppingListItem = styled(Item)`
 `;
 
 export const DayProductItem = styled(ShoppingListItem)`
+   margin: 2px 20px;
 `;
 
 export const TextItem = styled.span`

@@ -21,6 +21,7 @@ import { useColors } from '../ColorContext'; // Hook
 import { useSettings } from '../SettingsContext';
 import styled from 'styled-components';
 import SwitchButtonComponent from '../components/SwitchButtonCompnent';
+import { PrimaryButton } from '../components/Button';
 import FollowDayPlan from '../components/FollowDayPlan';
 
 const ClassTitleStyled = styled.span`
@@ -532,7 +533,7 @@ const Days = ({ refresh = false, isMenuOpen }) => {
           { /* console.log("expandedStates", expandedStates) */}
           <DayStickyTop>
             <div className="day-header">
-              <b>Päiväsuunnitelmat</b>
+              <b>Päivät</b>
             </div>
 
             <div className="day-switch">
@@ -543,13 +544,12 @@ const Days = ({ refresh = false, isMenuOpen }) => {
                 checked={showActiveDaysOnly}
                 onChange={toggleActiveDaysOnly}
               />
-              <label>
-                Toteutus
-              </label>
-              <SwitchButtonComponent
-                checked={followPlan}
-                onChange={toggleFollowPlan}
-              />
+              
+              {followPlan ? 
+              (<PrimaryButton onClick={toggleFollowPlan}>Suunnittele</PrimaryButton>)
+              :
+              <PrimaryButton onClick={toggleFollowPlan}>Toteuta</PrimaryButton>
+              }
 
             </div>
             <div></div>

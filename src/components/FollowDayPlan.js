@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Accordion from './Accordion';
-import DayProductItem from './Item';
+import { DayProductItem } from './Item';
 import { InputWrapper } from '../components/Container';
 
 
@@ -88,7 +88,7 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
                     <div key={index}>
 
                         {day.meals && day.meals.length > 0 ? (
-                            <ul>
+                            <>
                                 {day.meals.map((meal, mealIndex) => (
 
 
@@ -96,7 +96,7 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
 
 
                                         {meal.mealClasses && meal.mealClasses.length > 0 ? (
-                                            <ul>
+                                            <>
                                                 {meal.mealClasses.map((mealClass, mcIndex) => { /* huom return, koska aaltosulut ja monta lauseketta */
                                                     const productClass = productClasses.find((pc) => pc.id === mealClass.classId);
                                                     // Muunnetaan mealClass.products lista-arvoksi, ettei löydäm 3:sta, jos listalla on esim. 2,34,64 jne
@@ -109,13 +109,13 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
                                                     );
 
                                                     return (
-                                                        <li key={mcIndex}>
+                                                        <span key={mcIndex}>
                                                             {mealClass.info ? mealClass.info + ': ' : ''}
                                                             {productClass ? productClass.name : '- '}
                                                             {mealClass.products && mealClass.products.length > 0 ? (
                                                                 <>
                                                                     {selectedProducts.map((product, pIndex) => (
-                                                                        <DayProductItem key={pIndex}>
+                                                                        <DayProductItem>
                                                                             <InputWrapper>
                                                                                 <input
 
@@ -123,8 +123,7 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
                                                                                     checked={isProductChecked(day.id, meal.mealId, product.id)}
                                                                                     onChange={() => handleToggleCheckedProduct(day.id, meal.mealId, product.id)}
                                                                                 />
-                                                                                <span>{product.name} {product.dose ? product.dose : ''}</span>
-                                                                                <span>{day.id},{meal.mealId},{product.id}</span>
+                                                                                <span>{product.name} {product.dose ? product.dose : ''}</span>                                                                                
                                                                             </InputWrapper>
 
                                                                         </DayProductItem>
@@ -135,17 +134,17 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
                                                                 <span> </span>
                                                             )}
 
-                                                        </li>
+                                                        </span>
                                                     );
                                                 })}
-                                            </ul>
+                                            </>
                                         ) : (
                                             <p> </p>
                                         )}
 
                                     </Accordion>
                                 ))}
-                            </ul>
+                            </>
                         ) : (
                             <p> - </p>
                         )}
