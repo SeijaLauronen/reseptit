@@ -118,9 +118,13 @@ const helpTexts = {
   days: (
     <>
 
-      <b>Päiväsuunnitelmat</b>
+      <b>Päivät</b>
       <p>
-        Päiväsuunnitelmissa voit lisätä haluamasi määrän päiviä ja voit muuttaa niiden järjestystä raahaamalla. 
+        Päivät sisältää <i>suunnittelunäkymän</i> ja <i>toteutusnäkymän</i>. 
+      </p><p>
+        <b>Suunnittelunäkymä</b>
+      </p><p>
+        Suunnittelunäkymässä voit lisätä haluamasi määrän päiviä ja voit muuttaa niiden järjestystä raahaamalla. 
         <br />
         Voit suodattaa näkymään pelkästään <i>valitut päivät</i>. (Valinta klikkamalla päivän nimen edessä olevaa painiketta.)
         <br /><br />
@@ -149,6 +153,13 @@ const helpTexts = {
       </p><p>
         <b>Tuotteet</b> ovat painikkeina, joita voit valita päälle/pois.
         Valitut näytetään luokan nimen perässä.
+      </p><p>
+      <b>Toteutusnäkymä</b>
+      </p><p>
+      Myös tässä näkymässä voi valita näkyviin joko kaikki tai pelkästään <i>valitut päivät</i>. 
+      Päivien valinta on tehtävä suunnittelunäkymässä.      
+      </p><p>
+        Toteutusnäkymässä voit ruksata päivälle suunnitellut tuotteet valituiksi, esimerkiksi ruoat syödyiksi.      
       </p>
     </>
   ),

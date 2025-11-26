@@ -52,7 +52,6 @@ export const ProductStickyTop = styled(StickyTop)`
     grid-column: 1 / span 2; /* Vie koko rivin */
     display: flex;
     gap: 10px; /* Väli elementtien välillä */
-    //border: solid grey 1px;
     background-color:#bfe0c8;//#f1f2bd; //'#447877'; //'#bfe0c8'; //#edfaf1;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     padding-left: 8px;
@@ -60,10 +59,7 @@ export const ProductStickyTop = styled(StickyTop)`
     padding-bottom: 2px;
   }
 
-
 `;
-
-
 
 export const DayStickyTop = styled(StickyTop)`
 
@@ -73,7 +69,9 @@ export const DayStickyTop = styled(StickyTop)`
   gap: 10px; /* Sarakkeiden väli */
   align-items: center; /* Kohdista ikonit keskelle pystysuunnassa */
   padding-left: 10px;
-  padding-bottom: 1px;
+  padding-bottom: 0px;
+  padding-top: 10px;
+  box-shadow: inset 0 -4px 4px -2px rgba(0, 0, 0, 0.1); //Varjo alareunaan
 
   .topHeader{
     grid-column: 1 / span 2; /* Vie koko rivin */
@@ -99,12 +97,9 @@ export const DayStickyTop = styled(StickyTop)`
     grid-column: 1 / span 3; /* Vie koko rivin */
     display: flex;
     gap: 10px; /* Väli elementtien välillä */
-    //border: solid grey 1px;
-    //background-color:#bfe0c8;//#f1f2bd; //'#447877'; //'#bfe0c8'; //#edfaf1;
-    //box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.2);
     padding-left: 8px;
-    padding-top: 6px;
-    padding-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px; 
   }
 
 `;

@@ -22,7 +22,7 @@ export const ProductContainer = styled(Container)`
 
 // Lisää tilaa ylös, koska värifiltteri mahdollinen
 export const DayContainer = styled(ProductContainer)`
-  background-color: #fdfdf1ff; // hyvin vaalea keltainen
+  //background-color: #fdfdf1ff; // hyvin vaalea keltainen
 `;
 
 export const FormContainer = styled.div`

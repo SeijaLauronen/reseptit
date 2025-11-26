@@ -3,30 +3,21 @@ import styled from 'styled-components';
 
 export const TabContainer = styled.div`
   display: flex;
-  //border-bottom: 1px solid #ddd;
-  border-bottom: none;
-  //margin-bottom: 1rem;
   margin-bottom: 0px;
-  margin-right: 5px;
-  //background-color: #f8f9fa; // Tästä tulee tabin väri, joka ei ole valittuna
-  background-color: #e1f5eb; // Tästä tulee tabin väri, joka ei ole valittuna
-  border-radius: 4px 4px 0 0;
-  width: 100%; /* Täyttää koko leveyden */
-  //background-color: transparent; /* Tausta on nyt DayTabRow:ssa */
-  
+  margin-right: 0px;     
+  background-color: transparent;
+  width: 100%; /* Täyttää koko leveyden */  
+  // Varjo saadaan ylemmästä komponentista, kun tämä on transparent
+  // box-shadow: inset 0 -4px 6px -6px rgba(0, 0, 0, 0.9);// Varjo alareunaan sisäpuolelle  
 `;
 
 export const Tab = styled.button`
-  padding: 12px 24px;
+  padding: 10px 24px 8px 24px;
   border: none;
-  //background: ${props => props.$active ? '#007bff' : 'transparent'};
-  //background: ${props => props.$active ? '#007bff' : 'white'}; // #fdfdf1ff; // hyvin vaalea keltainen
-  background: ${props => props.$active ? '#fdfdf1ff' : '#e9ecef'};
-  //color: ${props => props.$active ? 'white' : '#666'};
-//   color: ${props => props.$active ? 'black' : '#666'};
+  background: ${props => props.$active ? 'white' : '#bfdad4ff'};
   color: 'black';
   cursor: pointer;
-  box-shadow: 2px 0px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px -4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 12px 12px 0 0;
   margin-right: 1px;
   font-weight: ${props => props.$active ? 'bold' : 'normal'};
@@ -44,17 +35,14 @@ export const Tab = styled.button`
   }
   
   // Aktiivisen tabin alareunan indikaattori
-  &::after {
-    /*
+  &::after {    
     content: '';
     position: absolute;
     bottom: -1px;
     left: 0;
     right: 0;
-    height: 3px;
-    background: ${props => props.$active ? '#007bff' : 'transparent'};
-    border-radius: 2px 2px 0 0;
-    */
+    height: 3px;    
+    background: ${props => props.$active ? 'white' : 'transparent'};    
   }
 `;
 
