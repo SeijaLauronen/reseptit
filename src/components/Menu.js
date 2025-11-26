@@ -16,7 +16,7 @@ import SettingsManagement from '../SettingsManagement';
 import ProductClassManagement from '../ProductClassManagement';
 import useStorageEstimate from '../hooks/useStorageEstimate';
 
-const programVersion = '2025-11-25: 2.341';
+const programVersion = '2025-11-26: 2.342';
 
 //päivitä versiohistoria myös tänne, huom, vain ostokseni-sovelluksen!:
 //https://github.com/SeijaLauronen/SeijaLauronen.github.io/blob/main/ostokseniversio.html

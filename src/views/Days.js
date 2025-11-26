@@ -5,11 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import EditDayForm from './forms/EditDayForm';
 import EditMealForm from './forms/EditMealForm';
-import { DayStickyTop } from '../components/StickyTop';
+import { DayStickyTop, DayTabRow, DayTopRow } from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
-import Container, { ButtonGroup, GroupLeft, GroupRight, Group, IconContainer, IconWrapper } from '../components/Container';
+import { DayContainer, ButtonGroup, GroupLeft, GroupRight, Group, IconContainer, IconWrapper } from '../components/Container';
 import Toast from '../components/Toast';
 import MyErrorBoundary from '../components/ErrorBoundary';
 import Accordion from '../components/Accordion';
@@ -23,6 +23,7 @@ import styled from 'styled-components';
 import SwitchButtonComponent from '../components/SwitchButtonCompnent';
 import { PrimaryButton } from '../components/Button';
 import FollowDayPlan from '../components/FollowDayPlan';
+import { TabContainer, Tab } from '../components/TabComponents';
 
 const ClassTitleStyled = styled.span`
   font-weight: bold;
@@ -116,6 +117,13 @@ const Days = ({ refresh = false, isMenuOpen }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [productClassesLoaded, setProductClassesLoaded] = useState(false);
+
+
+
+  const [tabActive, setTabActive] = useState(() => {
+    const follow = localStorage.getItem('followPlan');
+    return follow === 'followPlan' ? 'Toteutus' : 'Suunnittelu';
+  });
 
   // Yhdistetty data-loadaus
   const loadAllData = async () => {
@@ -474,6 +482,11 @@ const Days = ({ refresh = false, isMenuOpen }) => {
     setError(null);
   };
 
+  const handleTabClick = (tabName) => () => {
+    setTabActive(tabName);
+    tabName === 'Toteutus' ? setFollowPlan(true) : setFollowPlan(false);
+  };
+
   const visibleDays = showActiveDaysOnly
     ? days.filter(day => day.active)
     : days;
@@ -529,229 +542,241 @@ const Days = ({ refresh = false, isMenuOpen }) => {
           />
         )}
 
-        <Container $isMenuOpen={isMenuOpen} $isDayFormOpen={isDayFormOpen}>
+        <DayContainer $isMenuOpen={isMenuOpen} $isDayFormOpen={isDayFormOpen} className='daycontainer'>
           { /* console.log("expandedStates", expandedStates) */}
           <DayStickyTop>
-            <div className="day-header">
+            <div className="topHeader">
               <b>Päivät</b>
-            </div>
 
-            <div className="day-switch">
-              <label>
-                Vain valitut
-              </label>
-              <SwitchButtonComponent
-                checked={showActiveDaysOnly}
-                onChange={toggleActiveDaysOnly}
-              />
-              
-              {followPlan ? 
-              (<PrimaryButton onClick={toggleFollowPlan}>Suunnittele</PrimaryButton>)
-              :
-              <PrimaryButton onClick={toggleFollowPlan}>Toteuta</PrimaryButton>
-              }
+              <div className="day-switch">
+                <label>
+                  Näytä vain valitut päivät
+                </label>
+                <SwitchButtonComponent
+                  checked={showActiveDaysOnly}
+                  onChange={toggleActiveDaysOnly}
+                />
+              </div>
 
             </div>
-            <div></div>
+
+            <div className="tab-row">
+              <TabContainer className="tab-container">
+                <Tab
+                  $active={tabActive === 'Suunnittelu'}
+                  onClick={handleTabClick('Suunnittelu')}
+                >
+                  Suunnittelu
+                </Tab>
+                <Tab
+                  $active={tabActive === 'Toteutus'}
+                  onClick={handleTabClick('Toteutus')}
+                >
+                  Toteutus
+                </Tab>
+              </TabContainer>
+            </div>
 
           </DayStickyTop>
 
           {followPlan && visibleDays.length > 0 ? (
             <FollowDayPlan
-            
+
               days={visibleDays}
               productClasses={productClasses}
               products={products} />
 
           ) : (
 
-            <DragDropContext
-              onDragEnd={handleDragEndDays}
-              onBeforeCapture={(start) => {
-                if (start.draggableId.includes("meal")) {
-                  //if (start.type === "meal") {
-                  // Estetään ulompi konteksti, kun sisempi alkaa
-                  document.body.style.pointerEvents = "none";
-                }
-              }}
-              onBeforeDragEnd={() => {
-                // Palautetaan normaali tila, kun raahaus loppuu
-                document.body.style.pointerEvents = "auto";
-              }}
-            >
-              <Droppable droppableId="droppable-days" type="day">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {visibleDays.map((day, index) => (
-                      <AccordionDraggable
-                        item={day}
-                        key={day.id.toString()}
-                        draggableId={'day-' + day.id.toString()}
-                        index={index}
-                        title={
-                          <DayTitleWrapper>
-                            {colorCodingEnabled ? (
-                              <ColorItemInTitle className='ColorItemInTitle'
-                                color={colors[day.color]}
-                                //selected={!!day.active} //jos haluttaisiin varmistaa, että varmasti on boolean
-                                selected={day.active}
-                                onClick={() => handleToggleDayColor(day)}
-                              >
-                                {colorDefinitions[day.color]?.shortname || ''}
-                              </ColorItemInTitle>
-                            ) : (
-                              <span className='activemark'
-                                onClick={() => handleToggleDayColor(day)}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={!!day.active}
-                                  readOnly
-                                  style={{ pointerEvents: 'none' }}
-                                />
-                              </span>
-                            )}
-                            <DayTitleStyled $active={!!day.active}>{day.name}</DayTitleStyled>
-                          </DayTitleWrapper>
-                        }
-                        icons={
-                          <IconWrapper className='IconWrapper' onClick={() => handleEditDay(day)}>
-                            <FontAwesomeIcon icon={faEdit} />
-                          </IconWrapper>
-                        }
-                        //defaultExpanded={day.order === 1} //ylin päivä oletuksena auki
-                        defaultExpanded={true}
-                        isExpanded={expandedStates[day.id] || false} // Jos ei ole tallennettua tilaa, oletuksena kiinni
-                        onToggle={(isExpanded) => handleAccordionToggle(day.id, isExpanded)}
-                        isDroppable={false}
-                      >
-                        <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{day.info}</pre>
-                        {day.meals && day.meals.length > 0 ? (
-                          day.meals.map((meal, mealIndex) => (
-                            meal ? (
-                              <Accordion
-                                item={meal}
-                                key={meal.mealId.toString()}
-                                title={<MealTitleStyled>{meal.name}</MealTitleStyled>}
-                                defaultExpanded={true}
-                                icons={
-                                  <IconContainer>
-                                    <IconWrapper onClick={() => handleEditMeal(day, meal)}>
-                                      <FontAwesomeIcon icon={faEdit} />
-                                    </IconWrapper>
-                                  </IconContainer>
-                                }
-                              >
-                                <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{meal.info}</pre>
-                                {getSortedMealClasses(meal.mealClasses, productClasses)?.map((mealClass) => {
-                                  //{meal.mealClasses?.map((mealClass) => {
-                                  const productClass = productClasses.find((p) => p.id === mealClass.classId);
-                                  const name = productClass?.name || "Vapaa valinta";
-                                  const info = mealClass.info ? ` ${mealClass.info}` : ""; // Lisätään väli vain, jos info on olemassa
-                                  const classTitle = mealClass.optional ? `(${name}${info})` : `${name}${info}`;
+            <div className='daydiv'>
+              <DragDropContext
+                onDragEnd={handleDragEndDays}
+                onBeforeCapture={(start) => {
+                  if (start.draggableId.includes("meal")) {
+                    //if (start.type === "meal") {
+                    // Estetään ulompi konteksti, kun sisempi alkaa
+                    document.body.style.pointerEvents = "none";
+                  }
+                }}
+                onBeforeDragEnd={() => {
+                  // Palautetaan normaali tila, kun raahaus loppuu
+                  document.body.style.pointerEvents = "auto";
+                }}
+              >
+                <Droppable droppableId="droppable-days" type="day">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {visibleDays.map((day, index) => (
+                        <AccordionDraggable
+                          item={day}
+                          key={day.id.toString()}
+                          draggableId={'day-' + day.id.toString()}
+                          index={index}
+                          title={
+                            <DayTitleWrapper>
+                              {colorCodingEnabled ? (
+                                <ColorItemInTitle className='ColorItemInTitle'
+                                  color={colors[day.color]}
+                                  //selected={!!day.active} //jos haluttaisiin varmistaa, että varmasti on boolean
+                                  selected={day.active}
+                                  onClick={() => handleToggleDayColor(day)}
+                                >
+                                  {colorDefinitions[day.color]?.shortname || ''}
+                                </ColorItemInTitle>
+                              ) : (
+                                <span className='activemark'
+                                  onClick={() => handleToggleDayColor(day)}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={!!day.active}
+                                    readOnly
+                                    style={{ pointerEvents: 'none' }}
+                                  />
+                                </span>
+                              )}
+                              <DayTitleStyled $active={!!day.active}>{day.name}</DayTitleStyled>
+                            </DayTitleWrapper>
+                          }
+                          icons={
+                            <IconWrapper className='IconWrapper' onClick={() => handleEditDay(day)}>
+                              <FontAwesomeIcon icon={faEdit} />
+                            </IconWrapper>
+                          }
+                          //defaultExpanded={day.order === 1} //ylin päivä oletuksena auki
+                          defaultExpanded={true}
+                          isExpanded={expandedStates[day.id] || false} // Jos ei ole tallennettua tilaa, oletuksena kiinni
+                          onToggle={(isExpanded) => handleAccordionToggle(day.id, isExpanded)}
+                          isDroppable={false}
+                        >
+                          <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{day.info}</pre>
+                          {day.meals && day.meals.length > 0 ? (
+                            day.meals.map((meal, mealIndex) => (
+                              meal ? (
+                                <Accordion
+                                  item={meal}
+                                  key={meal.mealId.toString()}
+                                  title={<MealTitleStyled>{meal.name}</MealTitleStyled>}
+                                  defaultExpanded={true}
+                                  icons={
+                                    <IconContainer>
+                                      <IconWrapper onClick={() => handleEditMeal(day, meal)}>
+                                        <FontAwesomeIcon icon={faEdit} />
+                                      </IconWrapper>
+                                    </IconContainer>
+                                  }
+                                >
+                                  <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{meal.info}</pre>
+                                  {getSortedMealClasses(meal.mealClasses, productClasses)?.map((mealClass) => {
+                                    //{meal.mealClasses?.map((mealClass) => {
+                                    const productClass = productClasses.find((p) => p.id === mealClass.classId);
+                                    const name = productClass?.name || "Vapaa valinta";
+                                    const info = mealClass.info ? ` ${mealClass.info}` : ""; // Lisätään väli vain, jos info on olemassa
+                                    const classTitle = mealClass.optional ? `(${name}${info})` : `${name}${info}`;
 
-                                  // Muunnetaan mealClass.products lista-arvoksi, ettei löydäm 3:sta, jos listalla on esim. 2,34,64 jne
-                                  const productIds = mealClass.products
-                                    ? String(mealClass.products).replace(/[{}]/g, '').split(',').map(Number)
-                                    : [];
+                                    // Muunnetaan mealClass.products lista-arvoksi, ettei löydäm 3:sta, jos listalla on esim. 2,34,64 jne
+                                    const productIds = mealClass.products
+                                      ? String(mealClass.products).replace(/[{}]/g, '').split(',').map(Number)
+                                      : [];
 
-                                  // Suodatetaan tuotteet, jotka kuuluvat tähän mealClass-luokkaan tai luokkana on vapaa valinta: -1
-                                  let selectedProducts = products?.filter(
-                                    (product) => productIds.includes(product.id) && (mealClass.classId === product.classId || mealClass.classId === -1)
-                                  );
-
-                                  // TODO värikoodilla suodatus myös valittuihin tuotteisiin, eivät siis näy, vaikka olisi valittu                                
-                                  if (colorCodingEnabled && day.color && day.color !== '') {
-                                    selectedProducts = selectedProducts?.filter(
-                                      (product) => product[day.color] === true
+                                    // Suodatetaan tuotteet, jotka kuuluvat tähän mealClass-luokkaan tai luokkana on vapaa valinta: -1
+                                    let selectedProducts = products?.filter(
+                                      (product) => productIds.includes(product.id) && (mealClass.classId === product.classId || mealClass.classId === -1)
                                     );
-                                  };
+
+                                    // TODO värikoodilla suodatus myös valittuihin tuotteisiin, eivät siis näy, vaikka olisi valittu                                
+                                    if (colorCodingEnabled && day.color && day.color !== '') {
+                                      selectedProducts = selectedProducts?.filter(
+                                        (product) => product[day.color] === true
+                                      );
+                                    };
 
 
-                                  // Luodaan tuotteista nimet ja annokset sisältävä merkkijono                                
-                                  const selectedProductDetails = selectedProducts
-                                    ?.map((product) => {
-                                      const details = [product.name, product.dose].filter(Boolean).join(" ");
-                                      return details;
-                                    })
-                                    .join(", "); // Yhdistetään pilkulla erotetuksi merkkijonoksi
+                                    // Luodaan tuotteista nimet ja annokset sisältävä merkkijono                                
+                                    const selectedProductDetails = selectedProducts
+                                      ?.map((product) => {
+                                        const details = [product.name, product.dose].filter(Boolean).join(" ");
+                                        return details;
+                                      })
+                                      .join(", "); // Yhdistetään pilkulla erotetuksi merkkijonoksi
 
 
-                                  //const content = `${name} ${info} ${selectedProductDetails || ''}`;
+                                    //const content = `${name} ${info} ${selectedProductDetails || ''}`;
 
-                                  // Rakennetaan otsikon sisältö
-                                  const titleContent = (
-                                    <span>
-                                      <ClassTitleStyled>{classTitle}</ClassTitleStyled>
-                                      {selectedProductDetails ? `: ${selectedProductDetails}` : ""}
-                                    </span>
-                                  );
-
-
-                                  return (
-                                    <Accordion classnames="mealClassAccordion"
-                                      key={mealClass.classId}
-                                      //title={mealClass.optional ? `(${titleContent})` : titleContent}
-                                      //title={name}
-                                      accordionmini={true}
-                                      title={titleContent}
-                                      defaultExpanded={false}
-                                    >
-
-                                      <ItemToggleContainer>
-                                        {products?.map((product) => {
-                                          // Muunnetaan mealClass.products lista-arvoksi, ettei löydä esim 3:sta, jos listalla on esim. 2,34,64 jne
-
-                                          let show = true;
-                                          if (colorCodingEnabled && day.color && day.color !== '' && product[day.color] !== true) {
-                                            show = false;
-                                          }
-
-                                          return show &&
-                                            (mealClass.classId === product.classId || mealClass.classId === -1) && (
-                                              <ItemToggle
-                                                key={product.id}
-                                                item={product}
-                                                print={`${product.name} ${product.dose || ''}`}
-                                                isItemSelected={productIds.includes(product.id)}
-                                                onSelect={(product, isProductSelected) =>
-                                                  handleProductSelect(day, meal, mealClass, product, isProductSelected)
-                                                }
-                                              />
-                                            );
-                                        })}
-                                      </ItemToggleContainer>
-
-                                    </Accordion>
-                                  );
-                                })}
-                              </Accordion>
-                            ) : (
-                              <p key={mealIndex}>Ateriaa ei löydy</p>
-                            )
-                          ))
-                        ) : (
-                          <>
-                            {/* */}
-                          </>
-
-                        )}
-                        <GroupRight>
-                          <AddButton onClick={() => handleAddMeal(day)}>Lisää ateria</AddButton>
-                        </GroupRight>
+                                    // Rakennetaan otsikon sisältö
+                                    const titleContent = (
+                                      <span>
+                                        <ClassTitleStyled>{classTitle}</ClassTitleStyled>
+                                        {selectedProductDetails ? `: ${selectedProductDetails}` : ""}
+                                      </span>
+                                    );
 
 
+                                    return (
+                                      <Accordion classnames="mealClassAccordion"
+                                        key={mealClass.classId}
+                                        //title={mealClass.optional ? `(${titleContent})` : titleContent}
+                                        //title={name}
+                                        accordionmini={true}
+                                        title={titleContent}
+                                        defaultExpanded={false}
+                                      >
 
-                      </AccordionDraggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                                        <ItemToggleContainer>
+                                          {products?.map((product) => {
+                                            // Muunnetaan mealClass.products lista-arvoksi, ettei löydä esim 3:sta, jos listalla on esim. 2,34,64 jne
+
+                                            let show = true;
+                                            if (colorCodingEnabled && day.color && day.color !== '' && product[day.color] !== true) {
+                                              show = false;
+                                            }
+
+                                            return show &&
+                                              (mealClass.classId === product.classId || mealClass.classId === -1) && (
+                                                <ItemToggle
+                                                  key={product.id}
+                                                  item={product}
+                                                  print={`${product.name} ${product.dose || ''}`}
+                                                  isItemSelected={productIds.includes(product.id)}
+                                                  onSelect={(product, isProductSelected) =>
+                                                    handleProductSelect(day, meal, mealClass, product, isProductSelected)
+                                                  }
+                                                />
+                                              );
+                                          })}
+                                        </ItemToggleContainer>
+
+                                      </Accordion>
+                                    );
+                                  })}
+                                </Accordion>
+                              ) : (
+                                <p key={mealIndex}>Ateriaa ei löydy</p>
+                              )
+                            ))
+                          ) : (
+                            <>
+                              {/* */}
+                            </>
+
+                          )}
+                          <GroupRight>
+                            <AddButton onClick={() => handleAddMeal(day)}>Lisää ateria</AddButton>
+                          </GroupRight>
+
+
+
+                        </AccordionDraggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
           )}
 
-        </Container>
+        </DayContainer>
 
         {!followPlan && (
           <StickyBottom>

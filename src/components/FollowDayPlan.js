@@ -109,13 +109,13 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
                                                     );
 
                                                     return (
-                                                        <span key={mcIndex}>
+                                                        <span key={`${day.id}-${meal.mealId}-${mcIndex}`}>
                                                             {mealClass.info ? mealClass.info + ': ' : ''}
                                                             {productClass ? productClass.name : '- '}
                                                             {mealClass.products && mealClass.products.length > 0 ? (
                                                                 <>
                                                                     {selectedProducts.map((product, pIndex) => (
-                                                                        <DayProductItem>
+                                                                        <DayProductItem key={`${day.id}-${meal.mealId}-${product.id}`}>
                                                                             <InputWrapper>
                                                                                 <input
 
