@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import EditDayForm from './forms/EditDayForm';
 import EditMealForm from './forms/EditMealForm';
-import { DayStickyTop, DayTabRow, DayTopRow } from '../components/StickyTop';
+import { DayStickyTop, DayTabStickyTop } from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
@@ -584,30 +584,12 @@ const Days = ({ refresh = false, isMenuOpen }) => {
           { /* console.log("expandedStates", expandedStates) */}
           <DayStickyTop>
             <div className="topHeader">
-              {/*<b>Päivät</b>
-              }
-              <div className="day-switch">
-                <label>
-                  Näytä vain valitut päivät
-                </label>
-                <SwitchButtonComponent
-                  checked={showActiveDaysOnly}
-                  onChange={toggleActiveDaysOnly}
-                />
-              </div>
-
-              <div className="day-switch">
-                <DayFilterToggle checked={showActiveDaysOnly} onChange={toggleActiveDaysOnly} />
-              </div>
-              */}
-
               <ToggleSwitchButton
                 checked={showActiveDaysOnly}
                 onChange={toggleActiveDaysOnly}
                 leftLabel="Kaikki päivät"
                 rightLabel="Vain valitut"
               />              
-
             </div>
 
             <div className="tab-row">
@@ -628,6 +610,7 @@ const Days = ({ refresh = false, isMenuOpen }) => {
             </div>
 
           </DayStickyTop>
+          <DayTabStickyTop/>
 
           {followPlan && visibleDays.length > 0 ? (
             <FollowDayPlan

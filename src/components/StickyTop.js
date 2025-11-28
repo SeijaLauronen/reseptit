@@ -87,4 +87,15 @@ export const DayStickyTop = styled(StickyTop)`
 
 `;
 
+// Tabien alareuna sisältöalueen väriseksi
+export const DayTabStickyTop = styled(StickyTop)`
+ background-color: white;
+    top: 140px;
+    min-height: 4px;
+    padding: 0px;
+    @media (max-width: 300px) {
+      min-height: 0px;   
+    }
+`;
+
 
