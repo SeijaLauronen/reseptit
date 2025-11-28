@@ -49,4 +49,47 @@ const SwitchButtonComponent = ({
   );
 };
 
+// ---- YLEISKÄYTTÖINEN TOGGLE (KAKSI LABELIA) ----
+export const ToggleSwitchButton = ({
+  checked,
+  onChange,
+  leftLabel = 'Off',
+  rightLabel = 'On',
+  style = {},
+  labelStyle = {},
+  ...switchProps
+}) => {
+  const activeStyle = {
+    fontWeight: 600,
+    opacity: 1,
+    ...labelStyle
+  };
+
+  const inactiveStyle = {
+    opacity: 0.5,
+    ...labelStyle
+  };
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        ...style
+      }}
+    >
+      <span style={checked ? inactiveStyle : activeStyle}>{leftLabel}</span>
+
+      <SwitchButtonComponent
+        checked={checked}
+        onChange={onChange}
+        {...switchProps}
+      />
+
+      <span style={checked ? activeStyle : inactiveStyle}>{rightLabel}</span>
+    </div>
+  );
+};
+
 export default SwitchButtonComponent;

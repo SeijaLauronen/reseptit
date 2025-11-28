@@ -62,44 +62,27 @@ export const ProductStickyTop = styled(StickyTop)`
 `;
 
 export const DayStickyTop = styled(StickyTop)`
-
   display: grid;
-  grid-template-rows: auto auto ; /* Kaksi riviä */  
-  grid-template-columns: 1fr auto; /* Kaksi saraketta: ensimmäinen sarake nimi+värit, toinen sarake ikonit */
-  gap: 10px; /* Sarakkeiden väli */
+  justify-content: center;
+  grid-template-rows: auto auto ; /* Kaksi riviä */    
+  row-gap: 15px;
   align-items: center; /* Kohdista ikonit keskelle pystysuunnassa */
   padding-left: 10px;
   padding-bottom: 0px;
-  padding-top: 10px;
+  padding-top: 14px;
   box-shadow: inset 0 -4px 4px -2px rgba(0, 0, 0, 0.1); //Varjo alareunaan
-
-  .topHeader{
-    grid-column: 1 / span 2; /* Vie koko rivin */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .day-switch {
-    justify-self: center;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .day-right {
-    justify-self: end;
+  
+  .topHeader{    
+    padding-right: 10px;
+    padding-left: 10px;
+    grid-row: 1;
   }
 
   /* Alempi rivi  */
   .tab-row {
-    grid-column: 1 / span 3; /* Vie koko rivin */
-    display: flex;
-    gap: 10px; /* Väli elementtien välillä */
-    padding-left: 8px;
-    padding-top: 0px;
-    padding-bottom: 0px; 
+    grid-row: 2;
+    display: flex;    
+    padding: 4px 4px 0px 4px; // ylhäällä, oikealla, alhaalla, vasen
   }
 
 `;

@@ -20,7 +20,9 @@ import { useProductClass } from '../ProductClassContext'; // Hook
 import { useColors } from '../ColorContext'; // Hook
 import { useSettings } from '../SettingsContext';
 import styled from 'styled-components';
+//import SwitchButtonComponent {ToggleSwitchButton} from '../components/SwitchButtonCompnent';
 import SwitchButtonComponent from '../components/SwitchButtonCompnent';
+import { ToggleSwitchButton } from '../components/SwitchButtonCompnent';
 import { PrimaryButton } from '../components/Button';
 import FollowDayPlan from '../components/FollowDayPlan';
 import { TabContainer, Tab } from '../components/TabComponents';
@@ -498,8 +500,44 @@ const Days = ({ refresh = false, isMenuOpen }) => {
 
   // Älä renderöi mitään ennen kuin data on ladattu
 
+  const DayFilterToggleX = ({ checked, onChange }) => {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <SwitchButtonComponent checked={checked} onChange={onChange} />
+        <span style={{ fontSize: '0.9rem' }}>
+          {checked ? 'Vain valitut' : 'Näytä kaikki'}
+        </span>
+      </div>
+    );
+  };
+
+  const DayFilterToggle = ({ checked, onChange }) => {
+    const activeStyle = {
+      fontWeight: 600,
+      opacity: 1
+    };
+
+    const inactiveStyle = {
+      opacity: 0.5
+    };
+
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px'
+      }}>
+        <span style={checked ? inactiveStyle : activeStyle}> Kaikki päivät</span>
+
+        <SwitchButtonComponent checked={checked} onChange={onChange} />
+
+        <span style={checked ? activeStyle : inactiveStyle}>Vain valitut päivät</span>
+      </div>
+    );
+  };
+
   if (isLoading || !productClassesLoaded) {
-    return <div>Ladataan päiväsuunnitelmia...</div>;
+    return <div></div>;
   }
 
   return (
@@ -546,8 +584,8 @@ const Days = ({ refresh = false, isMenuOpen }) => {
           { /* console.log("expandedStates", expandedStates) */}
           <DayStickyTop>
             <div className="topHeader">
-              <b>Päivät</b>
-
+              {/*<b>Päivät</b>
+              }
               <div className="day-switch">
                 <label>
                   Näytä vain valitut päivät
@@ -557,6 +595,18 @@ const Days = ({ refresh = false, isMenuOpen }) => {
                   onChange={toggleActiveDaysOnly}
                 />
               </div>
+
+              <div className="day-switch">
+                <DayFilterToggle checked={showActiveDaysOnly} onChange={toggleActiveDaysOnly} />
+              </div>
+              */}
+
+              <ToggleSwitchButton
+                checked={showActiveDaysOnly}
+                onChange={toggleActiveDaysOnly}
+                leftLabel="Kaikki päivät"
+                rightLabel="Vain valitut"
+              />              
 
             </div>
 

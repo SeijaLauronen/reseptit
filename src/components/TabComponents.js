@@ -12,6 +12,7 @@ export const TabContainer = styled.div`
 `;
 
 export const Tab = styled.button`
+  font-size: 14px;
   padding: 10px 24px 8px 24px;
   border: none;
   background: ${props => props.$active ? 'white' : '#bfdad4ff'};
