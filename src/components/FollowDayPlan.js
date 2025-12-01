@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Accordion from './Accordion';
-import { DayProductItem } from './Item';
+import Item, { DayProductItem, DayClassItem } from './Item';
 import { InputWrapper } from '../components/Container';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ChangeButton } from './Button';
 
-
-const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
+const FollowDayPlan = ({ days = [], productClasses = [], products = [] }) => {
     const [checkedProducts, setCheckedProducts] = useState([]);
     const [initialized, setInitialized] = useState(false);
 
@@ -12,13 +13,13 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
     useEffect(() => {
         const saved = localStorage.getItem('followedPlan');
         if (saved) {
-            const savedProducts = JSON.parse(saved);            
+            const savedProducts = JSON.parse(saved);
             setCheckedProducts(savedProducts);
         }
         setInitialized(true);
     }, []); // Tyhjä riippuvuuslista = suoritetaan vain kerran
-    
-    
+
+
     // Siivoa vanhentuneet tuotteet KUN days on saatavilla JA komponentti on alustettu
     useEffect(() => {
         if (initialized && days.length > 0) {
@@ -29,10 +30,10 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
             }
         }
     }, [days, initialized]); // Suoritetaan kun days tai initialized muuttuu
-    
 
- // Tallenna aina kun checkedProducts muuttuu
- 
+
+    // Tallenna aina kun checkedProducts muuttuu
+
     useEffect(() => {
         if (initialized) {
             localStorage.setItem('followedPlan', JSON.stringify(checkedProducts));
@@ -40,19 +41,19 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
     }, [checkedProducts, initialized]);
 
 
-      // Siivoaa vanhentuneet tuotteet checkedProducts-taulukosta
+    // Siivoaa vanhentuneet tuotteet checkedProducts-taulukosta
     const cleanCheckedProducts = (checkedArray, currentDays) => {
         return checkedArray.filter(key => {
             const [dayId, mealId, productId] = key.split('-').map(Number);
-            
+
             // Etsitään päivä
             const day = currentDays.find(d => d.id === dayId);
             if (!day) return false; // Poistetaan jos päivää ei löydy
-            
+
             // Etsitään ateria
             const meal = day.meals?.find(m => m.mealId === mealId);
             if (!meal) return false; // Poistetaan jos ateriaa ei löydy
-            
+
             // Etsitään tuote aterian mealClassesista
             const productExists = meal.mealClasses?.some(mealClass => {
                 const productIds = mealClass.products
@@ -60,7 +61,7 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
                     : [];
                 return productIds.includes(productId);
             });
-            
+
             return productExists; // Säilytetään vain jos tuote löytyy
         });
     };
@@ -74,10 +75,74 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
         );
     }
 
+    //(day.id, meal.mealId, meal.name, mcIndex, productClass.id, productClass.name)}
+    const handlechangeProducts = (dayId, mealId, melaName, mealIndex, productClassId, productClassName) => {
+        //alert(`Ei vielä toteutettu: Vaihdetaan tuotteita päivä: ${dayId}, ateria: ${mealId}`);
+        alert(`Ei vielä toteutettu: Vaihdetaan tuotteita päivä: ${dayId}, ateria: ${mealId} ${melaName}, mealIndex: ${mealIndex}, tuoteluokka: ${productClassId} ${productClassName}`);
+    }
+
     const isProductChecked = (dayId, mealId, productId) => {
         const key = `${dayId}-${mealId}-${productId}`;
         return checkedProducts.includes(key);
     }
+
+    // Apufunktio: palauta kaikki tuotteiden id:t yhdestä mealista
+    const getProductIdsFromMeal = (meal) => {
+        if (!meal || !meal.mealClasses) return [];
+        const ids = meal.mealClasses.flatMap(mc =>
+            mc.products
+                ? String(mc.products).replace(/[{}]/g, '').split(',').map(s => Number(s)).filter(n => !Number.isNaN(n))
+                : []
+        );
+        // poista duplikaatit
+        return Array.from(new Set(ids));
+    };
+
+    // Tarkistaa ovatko KAIKKI aterian tuotteet valittuna
+    const isDayMealProductsChecked = (dayId, mealId) => {
+        // etsi päivä ja ateria
+        const day = days.find(d => d.id === dayId);
+        if (!day) return false;
+        const meal = day.meals?.find(m => m.mealId === mealId);
+        if (!meal) return false;
+
+        const allProductIds = getProductIdsFromMeal(meal);
+        if (allProductIds.length === 0) return false;
+
+        return allProductIds.every(pid => checkedProducts.includes(`${dayId}-${mealId}-${pid}`));
+    };
+
+    // Toggle: lisää kaikki tuotteet jos ei kaikki valittu, muuten poistaa kaikki
+    const handleToggleCheckedDayMeal = (dayId, mealId) => {
+        // etsi päivä ja ateria
+        const day = days.find(d => d.id === dayId);
+        if (!day) return;
+        const meal = day.meals?.find(m => m.mealId === mealId);
+        if (!meal) return;
+
+        const productIds = getProductIdsFromMeal(meal);
+        if (productIds.length === 0) return;
+
+        // muodosta avaimet
+        const mealKeys = productIds.map(pid => `${dayId}-${mealId}-${pid}`);
+
+        setCheckedProducts(prev => {
+            const prevSet = new Set(prev);
+
+            const allPresent = mealKeys.every(k => prevSet.has(k));
+
+            if (allPresent) {
+                // poista kaikki mealKeys
+                const newArr = prev.filter(item => !mealKeys.includes(item));
+                return newArr;
+            } else {
+                // lisää ne, jotka puuttuvat
+                const newSet = new Set(prev);
+                mealKeys.forEach(k => newSet.add(k));
+                return Array.from(newSet);
+            }
+        });
+    };
 
     return (
         <div>
@@ -90,11 +155,22 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
                         {day.meals && day.meals.length > 0 ? (
                             <>
                                 {day.meals.map((meal, mealIndex) => (
-
-
-                                    <Accordion key={mealIndex} title={meal.name} defaultExpanded={true} accordionmini={true} className='Accordion'>
-
-
+                                    <Accordion
+                                        key={mealIndex}
+                                        title={
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isDayMealProductsChecked(day.id, meal.mealId)}
+                                                    onChange={() => handleToggleCheckedDayMeal(day.id, meal.mealId)}
+                                                />
+                                                <span>{meal.name}</span>
+                                            </div>
+                                        }
+                                        defaultExpanded={true}
+                                        accordionmini={true}
+                                        className='Accordion'
+                                    >
                                         {meal.mealClasses && meal.mealClasses.length > 0 ? (
                                             <>
                                                 {meal.mealClasses.map((mealClass, mcIndex) => { /* huom return, koska aaltosulut ja monta lauseketta */
@@ -110,8 +186,14 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
 
                                                     return (
                                                         <span key={`${day.id}-${meal.mealId}-${mcIndex}`}>
-                                                            {mealClass.info ? mealClass.info + ': ' : ''}
-                                                            {productClass ? productClass.name : '- '}
+                                                            <DayClassItem>
+                                                                <ChangeButton 
+                                                                    onClick={() => handlechangeProducts(day.id, meal.mealId, meal.name, mcIndex, productClass.id, productClass.name)}
+                                                                />
+                                                                {productClass ? productClass.name : '- '}
+                                                                {mealClass.info ? ' ' + mealClass.info + ': ' : ''}
+                                                            </DayClassItem>
+
                                                             {mealClass.products && mealClass.products.length > 0 ? (
                                                                 <>
                                                                     {selectedProducts.map((product, pIndex) => (
@@ -123,7 +205,7 @@ const FollowDayPlan = ({ days =[], productClasses=[], products=[] }) => {
                                                                                     checked={isProductChecked(day.id, meal.mealId, product.id)}
                                                                                     onChange={() => handleToggleCheckedProduct(day.id, meal.mealId, product.id)}
                                                                                 />
-                                                                                <span>{product.name} {product.dose ? product.dose : ''}</span>                                                                                
+                                                                                <span>{product.name} {product.dose ? product.dose : ''}</span>
                                                                             </InputWrapper>
 
                                                                         </DayProductItem>

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion, faCopy, faPaste, faShare, faUndo, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTrash, faSave, faTimes, faPlus, faQuestion, faCopy, faPaste, faShare, faUndo, faTriangleExclamation, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import FilterWithCrossIcon from './FilterIcon';
 
 const Button = styled.button`
@@ -72,12 +72,62 @@ const IconButtonGreen = styled(({ icon, defaultText, ...props }) => (
   }
 `;
 
+const IconButtonGrey = styled(({ icon, defaultText, ...props }) => (
+  <ButtonComponent icon={icon} defaultText={defaultText} {...props} />
+))`
+
+  background-color: #efefef; 
+  color: black ;
+  padding: 5px 10px;
+  &:hover {
+    background-color:#ccc ;
+  }
+  &:focus {
+    background-color:#ccc ;
+  }
+
+  /*
+ background-color: ${props => (props.disabled ? '#ccc' : props.bgColor || '#007BFF')};
+  color: ${props => (props.disabled ? '#666' : props.color || 'white')};
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+  opacity: 1;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: ${props => (props.disabled ? '#ccc' : props.hoverBgColor || '#0056b3')};
+  }
+
+  svg {
+    font-size: 14px;
+  }
+  width: ${props => (props.fullwidth ? '100%' : 'auto')}; 
+
+  @media (max-width: 350px) {
+    padding: 10px 8px;    
+  }
+*/
+
+
+
+
+`;
+
+
 export const SaveButton = (props) => <IconButtonGreen icon={faSave} defaultText="Tallenna" {...props} />;
 export const OkButton = (props) => <IconButtonGreen icon={faCheck} defaultText="OK" {...props} />;
 export const CopyButton = (props) => <IconButtonGreen icon={faCopy} defaultText="Kopioi" {...props} />;
 export const PasteButton = (props) => <IconButtonGreen icon={faPaste} defaultText="Liitä" {...props} />;
 export const ShareButton = (props) => <IconButtonGreen icon={faShare} defaultText="Jaa" {...props} />;
 export const AddButton = (props) => <IconButtonGreen icon={faPlus} defaultText="" {...props} />;
+export const ChangeButton = (props) => <IconButtonGrey icon={faArrowRightArrowLeft} defaultText="" {...props} />;
 
 export const CancelButton = styled(props => (
   <ButtonComponent icon={faTimes} defaultText="Peruuta" {...props} />
