@@ -147,6 +147,7 @@ const Days = ({ refresh = false, isMenuOpen }) => {
 
 
   // Lataa productClasses erikseen
+  // TODO try catch
   useEffect(() => {
     const loadProductClasses = async () => {
       await fetchAndSetProductClasses();
@@ -157,9 +158,11 @@ const Days = ({ refresh = false, isMenuOpen }) => {
   }, []);
 
 
+  /*
   useEffect(() => {
     loadAllData();
   }, []);
+  */
 
   useEffect(() => {
     loadAllData();
@@ -614,10 +617,13 @@ const Days = ({ refresh = false, isMenuOpen }) => {
 
           {followPlan && visibleDays.length > 0 ? (
             <FollowDayPlan
-
-              days={visibleDays}
+              days={visibleDays}              
+              setDays={setDays}
               productClasses={productClasses}
-              products={products} />
+              allProducts={products}
+              colors={colors}
+              onSaveDay={handleSaveDay}
+               />
 
           ) : (
 
