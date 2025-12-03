@@ -7,7 +7,7 @@ import { ChangeButton } from './Button';
 import EditFollowDayForm from '../views/forms/EditFollowDayForm';
 // TODO allProducts ??
 
-const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = [] }) => {
+const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = [], onSaveDay }) => {
 
     const [editPlannedMeal, setPlannedMeal] = useState({
         open: false,
@@ -181,12 +181,12 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
     // TODO tallennus kantaan asti
     const handleSavePlannedMealChanges = (dialog, newProductIds) => {
         const { dayId, mealId, classIndex } = dialog;
-
+        let changedDay = null;
         setDays(prevDays =>
             prevDays.map(day => {
                 if (day.id !== dayId) return day;
-
-                return {
+                changedDay =
+                {
                     ...day,
                     meals: day.meals.map(meal => {
                         if (meal.mealId !== mealId) return meal;
@@ -204,10 +204,14 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
                         };
                     })
                 };
+                return changedDay;
             })
         );
 
         setPlannedMeal({ open: false });
+        if (dayId && changedDay) {
+            onSaveDay(dayId, changedDay); // kutsu ulkopuolista tallennusfunktiota
+        }
     };
 
 

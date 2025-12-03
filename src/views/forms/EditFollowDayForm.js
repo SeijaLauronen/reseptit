@@ -76,7 +76,7 @@ const EditFollowDayForm = ({
     };
 
 
-    const handleSave = () => {
+    const handleSave = () => {        
         // palauta numeroina ilman duplikaatteja
         const normalized = Array.from(new Set(localSelection.map(Number).filter(n => !Number.isNaN(n))));
         console.log("EditFollowDayForm handleSave", normalized);

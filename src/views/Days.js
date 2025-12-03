@@ -134,12 +134,12 @@ const Days = ({ refresh = false, isMenuOpen }) => {
       const [allDays, allProducts] = await Promise.all([
         getDays(),
         getProducts(),
-        //fetchAndSetProductClasses() // ← LISÄTTY
       ]);
       setDays(allDays);
       setProducts(allProducts);
     } catch (err) {
-      setError(err.message);
+      console.error("loadAllData error:", err);
+      setError(err.message || "Dataa ei voitu ladata");
     } finally {
       setIsLoading(false);
     }
@@ -147,74 +147,36 @@ const Days = ({ refresh = false, isMenuOpen }) => {
 
 
   // Lataa productClasses erikseen
-  // TODO try catch
   useEffect(() => {
     const loadProductClasses = async () => {
-      await fetchAndSetProductClasses();
-      setProductClassesLoaded(true);
+      try {
+        await fetchAndSetProductClasses();
+        setProductClassesLoaded(true);
+      } catch (err) {
+        console.error("ProductClasses load error:", err);
+        setError("Tuoteluokkia ei voitu ladata");
+        setProductClassesLoaded(false);
+      }
     };
 
     loadProductClasses();
   }, []);
 
 
-  /*
-  useEffect(() => {
-    loadAllData();
-  }, []);
-  */
-
   useEffect(() => {
     loadAllData();
   }, [refresh]);
 
 
-
-  // TODO korvaa tämä yhdistetyllä loadAllData
   const fetchAndSetDays = async () => {
     try {
       const allDays = await getDays();
       setDays(allDays);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Päivädataa ei voitu ladata");
     }
   };
 
-
-
-  /*
-  
-    const fetchAndSetProducts = async () => {
-      try {
-        const allProducts = await getProducts();
-        setProducts(allProducts);
-  
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-  
-    useEffect(() => {
-      fetchAndSetProducts();
-    }, [refresh]); //TODO onkohan tämä ok
-  
-    const [days, setDays] = useState([]);
-  
-    const fetchAndSetDays = async () => {
-      try {
-        const allDays = await getDays();
-        setDays(allDays);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-  
-  
-    useEffect(() => {
-      fetchAndSetDays();
-    }, [refresh]);
-  
-  */
 
   const [newDay, setNewDay] = useState('');
   const [editingDay, setEditingDay] = useState(null);
@@ -229,11 +191,6 @@ const Days = ({ refresh = false, isMenuOpen }) => {
   // TODO pitäisikö tämä haku tehdä siellä komponenetissa kertaalleen... Tarkista
   const { fetchAndSetProductClasses } = useProductClass();  //Käytetään Hook:ia, että saadaan mahdollisesti päivitetyt tiedot käyttöön heti. itemissä käytetään suoraan productClasses, ei välitetä täältä
   const { productClasses } = useProductClass();
-  /*
-  useEffect(() => {
-    fetchAndSetProductClasses(); // Haetaan tuoteryhmät kertaalleen, kun tullaan tälle näkymälle. Hookin kautta päivittyvät,, jos niitä on muutettu
-  }, []); // TODO pitääkö laittaa fetchAndSetProductClasses
-*/
 
   // Lähes kaikki muut setting:sit ovat tuolla SettinsContextissa, mutta tätä käytetään vain tässä paikallisesti....
   // Tila alustetaan localStoragesta, jossa etsitään 'dayView' arvoa
@@ -592,7 +549,7 @@ const Days = ({ refresh = false, isMenuOpen }) => {
                 onChange={toggleActiveDaysOnly}
                 leftLabel="Kaikki päivät"
                 rightLabel="Vain valitut"
-              />              
+              />
             </div>
 
             <div className="tab-row">
@@ -613,17 +570,17 @@ const Days = ({ refresh = false, isMenuOpen }) => {
             </div>
 
           </DayStickyTop>
-          <DayTabStickyTop/>
+          <DayTabStickyTop />
 
           {followPlan && visibleDays.length > 0 ? (
             <FollowDayPlan
-              days={visibleDays}              
+              days={visibleDays}
               setDays={setDays}
               productClasses={productClasses}
               allProducts={products}
               colors={colors}
               onSaveDay={handleSaveDay}
-               />
+            />
 
           ) : (
 
