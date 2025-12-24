@@ -26,41 +26,12 @@ import { ToggleSwitchButton } from '../components/SwitchButtonCompnent';
 import { PrimaryButton } from '../components/Button';
 import FollowDayPlan from '../components/FollowDayPlan';
 import { TabContainer, Tab } from '../components/TabComponents';
-
-const ClassTitleStyled = styled.span`
-  font-weight: bold;
-  font-size: medium;
-  //color: #1f227a;
-  color: #3d43e3;
-`;
-
-const MealTitleStyled = styled.span`
-  font-weight: bold;
-  font-size: large;
-`;
-
-const DayTitleStyled = styled.span`
-  font-weight: bold;
-  font-size: larger;
-  color: ${(props) => (props.$active ? 'black' : 'grey')};
-`;
-
-const DayTitleWrapper = styled.div` 
-  display: flex;  
-  align-items: center;  
-
-  .activemark {    
-    cursor: pointer;
-    margin-right: 14px;
-    display: inline-flex;
-    align-items: center;                             
-  }
-`;
+import { ClassTitleStyled, MealTitleStyled, DayTitleStyled, DayTitleWrapper } from '../components/DayComponents';
 
 // TODO onDaySelect...
 //const Days = ({ refresh = false, isMenuOpen, onDaySelect }) => {
 const Days = ({ refresh = false, isMenuOpen }) => {
-  console.log('Days rendering');
+  //console.log('Days rendering');
 
   /*
     const [days, setDays] = useState([
@@ -579,7 +550,10 @@ const Days = ({ refresh = false, isMenuOpen }) => {
               productClasses={productClasses}
               allProducts={products}
               colors={colors}
+              colorCodingEnabled={colorCodingEnabled}
+              colorDefinitions={colorDefinitions}
               onSaveDay={handleSaveDay}
+              onToggleDayActive={handleToggleDayColor}
             />
 
           ) : (

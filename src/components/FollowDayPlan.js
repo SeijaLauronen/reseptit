@@ -5,9 +5,11 @@ import { InputWrapper } from '../components/Container';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ChangeButton } from './Button';
 import EditFollowDayForm from '../views/forms/EditFollowDayForm';
+import { DayTitleWrapper, DayTitleStyled } from './DayComponents';
+import { ColorItemInTitle } from './ColorItem';
 // TODO allProducts ??
 
-const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = [], onSaveDay }) => {
+const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = [], colors, colorCodingEnabled, colorDefinitions, onSaveDay, onToggleDayActive }) => {
 
     const [editPlannedMeal, setPlannedMeal] = useState({
         open: false,
@@ -105,6 +107,7 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
             classId,
             className
         });
+        console.log("handlechangeProducts", editPlannedMeal);
     };
 
     const isProductChecked = (dayId, mealId, productId) => {
@@ -139,11 +142,30 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
     };
 
     // OMA
-    const filterProductsForChange = (classId) => {
-        const productsForChange = allProducts.filter(p => (classId === -1 ? true : p.classId === classId));
-        console.log("filterProductsForChange", classId, productsForChange);
+    const filterProductsForChange = (classId, day) => {
+        const productsByClass = allProducts.filter(p => (classId === -1 ? true : p.classId === classId));
+
+        let productsForChange = productsByClass;
+
+        if (day !== null && colorCodingEnabled && day?.color && day?.color !== '') {
+            productsForChange = productsByClass.filter(p => (p[day?.color] ? true : false));
+        }
+
+        console.log("filterProductsForChange", classId, day?.color, productsForChange);
+        //console.log("filterProductsForChange", classId, productsForChange);
         return productsForChange;
     }
+    
+    const filterProductsForChangeXXX = (classId, day) => {
+        return allProducts
+            // suodata luokan mukaan (tai kaikki jos classId === -1)
+            .filter(p => classId === -1 || p.classId === classId)
+            // suodata värin mukaan vain jos ehdot täyttyvät
+            .filter(p => {
+                if (!day || !colorCodingEnabled || !day.color) return true;
+                return Boolean(p[day.color]);
+            });
+    };
 
     // Toggle: lisää kaikki tuotteet jos ei kaikki valittu, muuten poistaa kaikki
     const handleToggleCheckedDayMeal = (dayId, mealId) => {
@@ -222,6 +244,8 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
     );
     const selectedProductIds = selectedClass?.products || [];
     // console.log("FollowDayPlan selectedProductIds", selectedProductIds);
+    console.log("FollowDayPlan rendering", day);
+    console.log("editPlannedMeal", editPlannedMeal);
 
     return (
         <div>
@@ -230,13 +254,7 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
                 isOpen={editPlannedMeal.open}
                 title={editPlannedMeal.className}
                 classId={editPlannedMeal.classId}
-                products={filterProductsForChange(editPlannedMeal.classId)} // suodatetut tuotteet
-                selectedProductIds2={days[editPlannedMeal.dayId]
-                    ?.meals[editPlannedMeal.mealId]
-                    ?.mealClasses.find(mc => mc.classId === editPlannedMeal.classId)
-                    ?.products}
-                selectedProductIds3={getProductIdsFromMeal(days[editPlannedMeal.dayId]
-                    ?.meals[editPlannedMeal.mealId])}
+                products={filterProductsForChange(editPlannedMeal.classId, day)} // suodatetut tuotteet
                 selectedProductIds={selectedProductIds}
                 onCancel={() => setPlannedMeal({ ...editPlannedMeal, open: false })}
                 onSave={(newIds) => handleSavePlannedMealChanges(editPlannedMeal, newIds)}
@@ -245,7 +263,28 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
 
             {days.map((day, index) => (
 
-                <Accordion key={index} title={day.name} defaultExpanded={true} className='Accordion'>
+                <Accordion
+                    key={index}
+                    //title={day.name}
+                    defaultExpanded={true}
+                    title={
+                        <DayTitleWrapper>
+                            {colorCodingEnabled ? (
+                                <ColorItemInTitle
+                                    color={colors[day.color]}
+                                    //selected={!!day.active} //jos haluttaisiin varmistaa, että varmasti on boolean
+                                    selected={day.active}
+                                    onClick={() => onToggleDayActive(day)}
+                                >
+
+                                    {colorDefinitions[day.color]?.shortname || ''}
+                                </ColorItemInTitle>
+                            ) : null
+                            }
+                            <DayTitleStyled $active={!!day.active}>{day.name}</DayTitleStyled>
+                        </DayTitleWrapper>
+                    }
+                    className='Accordion'>
                     <div key={index}>
 
                         {day.meals && day.meals.length > 0 ? (

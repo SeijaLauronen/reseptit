@@ -23,27 +23,27 @@ const EditFollowDayForm = ({
     useEffect(() => {
         if (isOpen) {
 
-            
+
             setLocalSelection(
                 Array.isArray(selectedProductIds)
                     ? selectedProductIds.map(Number)
                     : []
             );
-            
-           //Toka yritys:
-           /*
-            const arr = Array.isArray(selectedProductIds) ? selectedProductIds.map(Number) : [];
-            setLocalSelection(Array.from(new Set(arr.filter(n => !Number.isNaN(n)))));
 
-            */
-            console.log("useEffect1", selectedProductIds);
-            
+            //Toka yritys:
+            /*
+             const arr = Array.isArray(selectedProductIds) ? selectedProductIds.map(Number) : [];
+             setLocalSelection(Array.from(new Set(arr.filter(n => !Number.isNaN(n)))));
+ 
+             */
+            //console.log("useEffect1", selectedProductIds);
+
         }
     }, [isOpen, selectedProductIds]);
 
 
     // Lisätty synkronointi myös silloin kun propsit muuttuvat vaikka dialogi olisi jo auki
-    
+
     useEffect(() => {
         const arr = Array.isArray(selectedProductIds) ? selectedProductIds.map(Number) : [];
         const normalized = Array.from(new Set(arr.filter(n => !Number.isNaN(n))));
@@ -53,7 +53,7 @@ const EditFollowDayForm = ({
         if (!same) setLocalSelection(normalized);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedProductIds]); // intentionally not listing localSelection
-    
+
 
 
     // Robust toggle: jos ItemToggle antaa isSelected (boolean) käytämme sitä,
@@ -76,10 +76,10 @@ const EditFollowDayForm = ({
     };
 
 
-    const handleSave = () => {        
+    const handleSave = () => {
         // palauta numeroina ilman duplikaatteja
         const normalized = Array.from(new Set(localSelection.map(Number).filter(n => !Number.isNaN(n))));
-        console.log("EditFollowDayForm handleSave", normalized);
+        //console.log("EditFollowDayForm handleSave", normalized);
         onSave(normalized);
     };
 
@@ -96,13 +96,14 @@ const EditFollowDayForm = ({
             <ScrollableFormContainer>
                 <ItemToggleContainer>
                     {products.map(product => {
-                        console.log(
+                        /*console.log(
                             "Product:", product.id,
                             "type:", typeof product.id,
                             "LocalSelection:", localSelection,
                             "Contains:", localSelection.includes(Number(product.id)),
                             "selectedProductIds:", selectedProductIds
                         );
+                        */                        
                         return (
                             <ItemToggle
                                 key={product.id}
