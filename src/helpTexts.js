@@ -121,13 +121,14 @@ const helpTexts = {
       <b>Päivät</b>
       <p>
         Päivät sisältää <i>suunnittelunäkymän</i> ja <i>toteutusnäkymän</i>. 
+         <br />
+        Voit valita näkymään kaikki tai pelkästään <i>aktivoidut päivät</i>. (Aktivointi päälle tai pois klikkaamalla päivän nimen edessä olevaa painiketta.)
+        <br />
       </p><p>
         <b>Suunnittelunäkymä</b>
       </p><p>
         Suunnittelunäkymässä voit lisätä haluamasi määrän päiviä ja voit muuttaa niiden järjestystä raahaamalla. 
-        <br />
-        Voit suodattaa näkymään pelkästään <i>valitut päivät</i>. (Valinta klikkamalla päivän nimen edessä olevaa painiketta.)
-        <br /><br />
+       <br />
         Näkymä on monitasoinen: <br />
         päivät - ateriat - tuoteluokat - tuotteet.
       </p><p>
@@ -156,10 +157,11 @@ const helpTexts = {
       </p><p>
       <b>Toteutusnäkymä</b>
       </p><p>
-      Myös tässä näkymässä voi valita näkyviin joko kaikki tai pelkästään <i>valitut päivät</i>. 
-      Päivien valinta on tehtävä suunnittelunäkymässä.      
+      Myös tässä näkymässä voi valita näkyviin joko kaikki tai pelkästään <i>valitut päivät</i>.            
       </p><p>
         Toteutusnäkymässä voit ruksata päivälle suunnitellut tuotteet valituiksi, esimerkiksi ruoat syödyiksi.      
+      </p><p>
+        Voit myös vaihtaa aterian tuotteita luokittelukohtaisesti oikeassa reunassa näkyvien nuolipainikkeen avulla.      
       </p>
     </>
   ),

@@ -116,13 +116,14 @@ export const DayClassItem = styled.div`
   margin: 2px 20px;
   padding: 6px ; 
   display: flex;
+  justify-content: space-between;
   gap: 10px;
   align-items: center;
   word-wrap: break-word;
   word-break: break-all;
   border: none;
   background-color: #fff;  
-  margin-left: 5px;;
+  margin-left: 5px;;  
 `;
 
 export const TextItem = styled.span`
