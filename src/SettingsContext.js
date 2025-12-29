@@ -138,7 +138,11 @@ export const SettingsProvider = ({ children }) => {
     localStorage.removeItem('dayPlanEnabled');
     localStorage.removeItem('filterSearchProducts');
     localStorage.removeItem('hideQuantityUnit');
-    localStorage.removeItem('productView'); // Tämä asetetaan Tuote-näkymässä, toisin kuin muut
+    localStorage.removeItem('productView'); // Tämä asetetaan Tuote-näkymässä
+    localStorage.removeItem('dayView'); // Tämä asetetaan Päivä-näkymässä    
+    localStorage.removeItem('followPlan'); // Tämä asetetaan Päivä-näkymässä    
+    localStorage.removeItem('followedPlan'); // Tämä asetetaan Päivä-näkymässä
+
   }
 
   const setLocalStorageDefaults = () => {
