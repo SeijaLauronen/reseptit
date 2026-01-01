@@ -60,7 +60,10 @@ const SettingRow = styled.span`
 
 
 const SettingsManagement = ({ isOpen, onClose }) => {
-    const { keepQuantityEnabled, toggleKeepQuantity, openQuantityByLongPress, toggleOpenQuantityByLongPress, showProductClass, toggleShowProductClass, showDose, toggleShowDose, filterSearchProducts, toggleFilterSearchProducts, hideQuantityUnit, toggleHideQuantityUnit } = useSettings();
+    const { keepQuantityEnabled, toggleKeepQuantity, openQuantityByLongPress, toggleOpenQuantityByLongPress,
+        showProductClass, toggleShowProductClass, showDose, toggleShowDose, 
+        filterSearchProducts, toggleFilterSearchProducts, 
+        hideQuantityUnit, toggleHideQuantityUnit, hidePrice, toggleHidePrice } = useSettings();
 
     useEffect(() => {
         if (isOpen) {
@@ -113,6 +116,15 @@ const SettingsManagement = ({ isOpen, onClose }) => {
                         onHandleColor="#0000ff"
                         offHandleColor="#ffffff"
                         */
+                        />
+                    </SettingRow>
+                    <SettingRow>
+                        <label>Piilota <SettingHeader>hinnat</SettingHeader> ostoslistalta.
+                        </label>
+
+                        <SwitchButtonComponent
+                            checked={hidePrice}
+                            onChange={toggleHidePrice}                       
                         />
                     </SettingRow>
                 </SettingCard>

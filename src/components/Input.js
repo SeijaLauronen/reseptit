@@ -34,6 +34,9 @@ export const InputUnit = styled(InputQuantity)`
   }    
 `;
 
+export const InputPrice = styled(InputQuantity)`       
+`;
+
 export const InputName = styled(Input)`
    margin-left: 10px;
    width: 200px;   

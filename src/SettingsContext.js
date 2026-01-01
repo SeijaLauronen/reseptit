@@ -60,6 +60,20 @@ export const SettingsProvider = ({ children }) => {
     setHideQuantityUnit(prevState => !prevState);
   }
 
+   // Asetus: hidePrice
+  const [hidePrice, setHidePrice] = useState(() => {
+    const saved = localStorage.getItem('hidePrice');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('hidePrice', JSON.stringify(hidePrice));
+  }, [hidePrice]);
+
+  const toggleHidePrice = () => {
+    setHidePrice(prevState => !prevState);
+  }
+
   // Asetus: openQuantityByLongPress
   const [openQuantityByLongPress, setOpenQuantityByLongPress] = useState(() => {
     const saved = localStorage.getItem('openQuantityByLongPress');
@@ -138,6 +152,7 @@ export const SettingsProvider = ({ children }) => {
     localStorage.removeItem('dayPlanEnabled');
     localStorage.removeItem('filterSearchProducts');
     localStorage.removeItem('hideQuantityUnit');
+    localStorage.removeItem('hidePrice');
     localStorage.removeItem('productView'); // Tämä asetetaan Tuote-näkymässä
     localStorage.removeItem('dayView'); // Tämä asetetaan Päivä-näkymässä    
     localStorage.removeItem('followPlan'); // Tämä asetetaan Päivä-näkymässä    
@@ -167,6 +182,7 @@ export const SettingsProvider = ({ children }) => {
       dayPlanEnabled, toggleDayPlanEnabled, setDayPlanEnabled,
       filterSearchProducts, toggleFilterSearchProducts, setFilterSearchProducts,
       hideQuantityUnit, toggleHideQuantityUnit, setHideQuantityUnit,
+      hidePrice, toggleHidePrice, setHidePrice,
       deleteLocalStorage, setLocalStorageDefaults
     }}>
       {children}

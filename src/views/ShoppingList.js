@@ -6,7 +6,7 @@ import { OkButton, PrimaryButton, CloseButtonComponent, CopyButton, ShareButton 
 import { ShoppingListItem } from '../components/Item';
 import Container, { SlideInContainerRight, ButtonGroup } from '../components/Container';
 import { InputWrapper, GroupLeft, GroupRight } from '../components/Container';
-import { InputQuantity, InputUnit } from '../components/Input';
+import { InputQuantity, InputUnit, InputPrice } from '../components/Input';
 import { getProducts, getProductById, getCategories, updateProduct, updateProducts, getProductsOnShoppingList, updateProductField } from '../controller';
 import Info from '../components/Info';
 import Toast from '../components/Toast';
@@ -27,7 +27,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
   const [shoppingListText, setShoppingListText] = useState('');
   const [importText, setImportText] = useState('');
   const { keepQuantityEnabled } = useSettings();
-  const { hideQuantityUnit } = useSettings();
+  const { hideQuantityUnit, hidePrice } = useSettings();
   const noCategoryName = "Ei kategoriaa";
 
   const handleOpenInfo = (message) => {
@@ -150,6 +150,39 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
 
   const handleQuantityChange = (id, quantity) => handleFieldChange(id, 'quantity', quantity);
   const handleUnitChange = (id, unit) => handleFieldChange(id, 'unit', unit);
+  const handlePriceChange = (id, price) => handleFieldChange(id, 'price', price); //TODO myös yhteen laskeminen
+
+  const parsePrice = (value) => {
+    if (!value) return 0;
+
+    // hyväksyy "2", "2.5", "2,5", " 2,50 "
+    const normalized = value
+      .toString()
+      .trim()
+      .replace(',', '.');
+
+    const num = Number(normalized);
+    return isNaN(num) ? 0 : num;
+  };
+
+  const totalPrice = React.useMemo(() => {
+    return products.reduce((sum, product) => {
+      return sum + parsePrice(product.price);
+    }, 0);
+  }, [products]);
+
+  const selectedTotalPrice = React.useMemo(() => {
+    return products.reduce((sum, product) => {
+      if (!selectedProducts.has(product.id)) return sum;
+      return sum + parsePrice(product.price);
+    }, 0);
+  }, [products, selectedProducts]);
+
+  const formatEuro = (value) =>
+    value.toLocaleString('fi-FI', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
   const groupedProducts = categories.reduce((acc, category) => {
     const categoryProducts = products.filter(product => product.categoryId == category.id); //Tarkoituksella == eikä ===
@@ -242,6 +275,9 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
         <Container $isMenuOpen={isMenuOpen} $isPrintOpen={isPrintOpen}>
           <StickyTop>
             <b>Ostoslista</b>
+            {!hidePrice && (
+              <div>Hinnat: {formatEuro(selectedTotalPrice)} / {formatEuro(totalPrice)} €</div>
+            )}
           </StickyTop>
           {groupedProducts.map(category => (
             <Accordion key={category.id} title={category.heading} defaultExpanded={true} accordionmini={true} className='Accordion'>
@@ -256,37 +292,65 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                     />
                     <span>{product.name}</span>
                   </InputWrapper>
-                  {!hideQuantityUnit ? (
+                  {(!hideQuantityUnit || !hidePrice) && (
+
                     <InputWrapper className='InputWrapperLow' $low={true}>
-                      <InputQuantity
-                        lang="fi-FI"  //jotta hyväksyy pisteen puhelimen näppikseltä
-                        disabled={isPrintOpen}
-                        type="text" //"number" ei hyväksy pistettä, siksi laitetaan text
-                        inputMode="decimal"  // tällä saadaan kuitenkin numeronäppäimistö mobiilissa
-                        step="any" //vaihtoehtoisesti voidaan laittaa tämä, niin hyväksyy desimaalit (?)
-                        min="0"
-                        value={product.quantity || ''}
-                        onChange={(e) => {
-                          let value = e.target.value;
-                          if (/^[0-9]*[.,]?[0-9]*$/.test(value)) {
-                            // ei toimi... 
-                            //const value = e.target.value.replace('.', ','); // Korvaa piste pilkulla
-                            // value = value.replace('.', ','); // tämä, jos target luettiin jo?
-                            handleQuantityChange(product.id, value)
-                            //handleQuantityChange(product.id, e.target.value)
-                          }
-                        }}
-                        placeholder="Määrä"
-                      />
-                      <InputUnit
-                        disabled={isPrintOpen}
-                        type="text"
-                        value={product.unit || ''}
-                        onChange={(e) => handleUnitChange(product.id, e.target.value)}
-                        placeholder="Yksikkö"
-                      />
+                      {!hideQuantityUnit && (
+                        <>
+                          <InputQuantity
+                            lang="fi-FI"  //jotta hyväksyy pisteen puhelimen näppikseltä
+                            disabled={isPrintOpen}
+                            type="text" //"number" ei hyväksy pistettä, siksi laitetaan text
+                            inputMode="decimal"  // tällä saadaan kuitenkin numeronäppäimistö mobiilissa
+                            step="any" //vaihtoehtoisesti voidaan laittaa tämä, niin hyväksyy desimaalit (?)
+                            min="0"
+                            value={product.quantity || ''}
+                            onChange={(e) => {
+                              let value = e.target.value;
+                              if (/^[0-9]*[.,]?[0-9]*$/.test(value)) {
+                                // ei toimi... 
+                                //const value = e.target.value.replace('.', ','); // Korvaa piste pilkulla
+                                // value = value.replace('.', ','); // tämä, jos target luettiin jo?
+                                handleQuantityChange(product.id, value)
+                                //handleQuantityChange(product.id, e.target.value)
+                              }
+                            }}
+                            placeholder="Määrä"
+                          />
+                          <InputUnit
+                            disabled={isPrintOpen}
+                            type="text"
+                            value={product.unit || ''}
+                            onChange={(e) => handleUnitChange(product.id, e.target.value)}
+                            placeholder="Yksikkö"
+                          />
+                        </>
+                      )}
+                      {!hidePrice && (                        
+                        <InputPrice
+                          lang="fi-FI"  //jotta hyväksyy pisteen puhelimen näppikseltä
+                          disabled={isPrintOpen}
+                          type="text" //"number" ei hyväksy pistettä, siksi laitetaan text
+                          inputMode="decimal"  // tällä saadaan kuitenkin numeronäppäimistö mobiilissa
+                          step="any" //vaihtoehtoisesti voidaan laittaa tämä, niin hyväksyy desimaalit (?)
+                          min="0"
+                          value={product.price || ''}
+                          onChange={(e) => {
+                            let value = e.target.value;
+                            if (/^[0-9]*[.,]?[0-9]*$/.test(value)) {
+                              // ei toimi... 
+                              //const value = e.target.value.replace('.', ','); // Korvaa piste pilkulla
+                              // value = value.replace('.', ','); // tämä, jos target luettiin jo?
+                              handlePriceChange(product.id, value)
+                              //handleQuantityChange(product.id, e.target.value)
+                            }
+                          }}
+                          placeholder="Hinta"
+                        />                        
+                      )}
+
                     </InputWrapper>
-                  ) : null}
+                  )}
 
                 </ShoppingListItem>
               ))}

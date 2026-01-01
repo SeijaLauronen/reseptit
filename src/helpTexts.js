@@ -63,7 +63,12 @@ const helpTexts = {
     <>
       <b>Ostoslista</b>
       <p>
-        Ostoslistalla näkyvät tuote-sivulla ostoskoriin valitsemasi tuotteet. Voit antaa ostettavan määrän ja yksikön.
+        Ostoslistalla näkyvät tuote-sivulla ostoskoriin valitsemasi tuotteet. 
+        Voit antaa ostettavan <i>määrän</i> ja <i>yksikön</i> sekä <i>kokonaishinnan</i>.
+        Asetuksista voit määritellä, näytetäänkö ne ostoslistalla.
+      </p>
+      <p>
+        Jos olet valinnut hinnat näkyviin, tuotteiden yhteenlasketut hinnat näytetään listan yläreunassa: valituille tuotteille / kaikille ostoslistan tuotteille.        
       </p>
       <p>
         Tuotteet näytetään kategorioitten mukaisessa järjestyksessä, jonka voit asettaa kategoriat-sivulla.
