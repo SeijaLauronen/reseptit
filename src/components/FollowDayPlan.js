@@ -48,7 +48,6 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
 
 
     // Tallenna aina kun checkedProducts muuttuu
-
     useEffect(() => {
         if (initialized) {
             localStorage.setItem('followedPlan', JSON.stringify(checkedProducts));
@@ -86,7 +85,6 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
         });
     };
 
-
     const handleToggleCheckedProduct = (dayId, mealId, productId) => {
         const key = `${dayId}-${mealId}-${productId}`;
         setCheckedProducts(prev =>
@@ -96,12 +94,6 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
         );
     }
 
-    //(day.id, meal.mealId, meal.name, mcIndex, productClass.id, productClass.name)}
-    // const handlechangeProducts = (dayId, mealId, melaName, mealIndex, productClassId, productClassName) => {
-    //alert(`Ei vielä toteutettu: Vaihdetaan tuotteita päivä: ${dayId}, ateria: ${mealId}`);
-    //alert(`Ei vielä toteutettu: Vaihdetaan tuotteita päivä: ${dayId}, ateria: ${mealId} ${melaName}, mealIndex: ${mealIndex}, tuoteluokka: ${productClassId} ${productClassName}`);
-
-    //  }
     const handlechangeProducts = (dayId, mealId, mealName, classIndex, classId, className) => {
         setPlannedMeal({
             open: true,
@@ -112,7 +104,7 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
             classId,
             className
         });
-        console.log("handlechangeProducts", editPlannedMeal);
+        //console.log("handlechangeProducts", editPlannedMeal);
     };
 
     const isProductChecked = (dayId, mealId, productId) => {
@@ -152,15 +144,17 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
         );
     };
 
+    const passesColorFilter = (product, day, colorCodingEnabled) => {
+        if (!day || !colorCodingEnabled || !day.color) return true;
+        return Boolean(product[day.color]);
+    };
+
     const filterProductsForChange = (classId, day) => {
         return allProducts
             // suodata luokan mukaan (tai kaikki jos classId === -1)
             .filter(p => classId === -1 || p.classId === classId)
-            // suodata värin mukaan vain jos ehdot täyttyvät
-            .filter(p => {
-                if (!day || !colorCodingEnabled || !day.color) return true;
-                return Boolean(p[day.color]);
-            });
+            // suodata värin mukaan
+            .filter(p => passesColorFilter(p, day, colorCodingEnabled));
     };
 
     // Onko ateria kuitattu ilman tuotteita
@@ -254,10 +248,13 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
     const selectedClass = meal?.mealClasses.find(
         mc => mc.classId === editPlannedMeal.classId
     );
+
+    // Ei fillteröidä värejä tässä, koska käyttäjä saattaa muuttaa päivän värikoodia, niin antaa kaikkien valintojen pysyä 
+    // mutta näytetään vain värikoodin mukaiset tuotteet valintaikkunassa 
     const selectedProductIds = selectedClass?.products || [];
-    // console.log("FollowDayPlan selectedProductIds", selectedProductIds);
-    console.log("FollowDayPlan rendering", day);
-    console.log("editPlannedMeal", editPlannedMeal);
+
+    //console.log("FollowDayPlan rendering", day);
+    //console.log("editPlannedMeal", editPlannedMeal);
 
     return (
         <div>
@@ -336,9 +333,13 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
                                                         ? String(mealClass.products).replace(/[{}]/g, '').split(',').map(Number)
                                                         : [];
                                                     // Suodatetaan tuotteet, jotka kuuluvat tähän mealClass-luokkaan tai luokkana on vapaa valinta: -1
-                                                    // TODO kts onko allProducts vai jokin muu...
+                                                    // TODO kts onko allProducts vai jokin muu...                                                    
+
                                                     let selectedProducts = allProducts?.filter(
-                                                        (product) => productIds.includes(product.id) && (mealClass.classId === product.classId || mealClass.classId === -1)
+                                                        (product) =>
+                                                            productIds.includes(product.id) &&
+                                                            (mealClass.classId === product.classId || mealClass.classId === -1) &&
+                                                            passesColorFilter(product, day, colorCodingEnabled)
                                                     );
 
                                                     const baseName = productClass?.name ?? 'Vapaa valinta';
