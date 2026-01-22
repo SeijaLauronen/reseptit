@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Accordion from './Accordion';
-import Item, { DayProductItem, DayClassItem } from './Item';
+import { DayProductItem, DayClassItem } from './Item';
 import { InputWrapper } from '../components/Container';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ChangeButton } from './Button';
 import EditFollowDayForm from '../views/forms/EditFollowDayForm';
 import { DayTitleWrapper, DayTitleStyled } from './DayComponents';
@@ -57,31 +56,7 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
     }, [checkedProducts, initialized]);
 
 
-    // Siivoaa vanhentuneet tuotteet checkedProducts-taulukosta
-    const cleanCheckedProductsXXX = (checkedArray, currentDays) => {
-        return checkedArray.filter(key => {
-            const [dayId, mealId, productId] = key.split('-').map(Number);
-
-            // Etsitään päivä
-            const day = currentDays.find(d => d.id === dayId);
-            if (!day) return false; // Poistetaan jos päivää ei löydy
-
-            // Etsitään ateria
-            const meal = day.meals?.find(m => m.mealId === mealId);
-            if (!meal) return false; // Poistetaan jos ateriaa ei löydy
-
-            // Etsitään tuote aterian mealClassesista
-            const productExists = meal.mealClasses?.some(mealClass => {
-                const productIds = mealClass.products
-                    ? String(mealClass.products).replace(/[{}]/g, '').split(',').map(Number)
-                    : [];
-                return productIds.includes(productId);
-            });
-
-            return productExists; // Säilytetään vain jos tuote löytyy
-        });
-    };
-
+    // Siivoaa vanhentuneet tuotteet checkedProducts-taulukosta    
     const cleanCheckedProducts = (checkedArray, currentDays) => {
         return checkedArray.filter(key => {
             const parts = key.split('-');
@@ -158,19 +133,6 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
     };
 
     // Tarkistaa ovatko KAIKKI aterian tuotteet valittuna
-    const isDayMealProductsCheckedXXX = (dayId, mealId) => {
-        // etsi päivä ja ateria
-        const day = days.find(d => d.id === dayId);
-        if (!day) return false;
-        const meal = day.meals?.find(m => m.mealId === mealId);
-        if (!meal) return false;
-
-        const allProductIds = getProductIdsFromMeal(meal);
-        if (allProductIds.length === 0) return false;
-
-        return allProductIds.every(pid => checkedProducts.includes(`${dayId}-${mealId}-${pid}`));
-    };
-
     const isDayMealProductsChecked = (dayId, mealId) => {
         const day = days.find(d => d.id === dayId);
         if (!day) return false;
@@ -189,22 +151,6 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
             checkedProducts.includes(`${dayId}-${mealId}-${pid}`)
         );
     };
-
-
-    // OMA
-    const filterProductsForChangeXXX = (classId, day) => {
-        const productsByClass = allProducts.filter(p => (classId === -1 ? true : p.classId === classId));
-
-        let productsForChange = productsByClass;
-
-        if (day !== null && colorCodingEnabled && day?.color && day?.color !== '') {
-            productsForChange = productsByClass.filter(p => (p[day?.color] ? true : false));
-        }
-
-        console.log("filterProductsForChange", classId, day?.color, productsForChange);
-        //console.log("filterProductsForChange", classId, productsForChange);
-        return productsForChange;
-    }
 
     const filterProductsForChange = (classId, day) => {
         return allProducts
@@ -379,7 +325,9 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
                                         accordionmini={true}
                                         className='Accordion'
                                     >
+                                        {/* mealClasses = aterioille valitut tuoteluokat (productClass) */}
                                         {meal.mealClasses && meal.mealClasses.length > 0 ? (
+
                                             <>
                                                 {meal.mealClasses.map((mealClass, mcIndex) => { /* huom return, koska aaltosulut ja monta lauseketta */
                                                     const productClass = productClasses.find((pc) => pc.id === mealClass.classId);
@@ -393,12 +341,15 @@ const FollowDayPlan = ({ days = [], setDays, productClasses = [], allProducts = 
                                                         (product) => productIds.includes(product.id) && (mealClass.classId === product.classId || mealClass.classId === -1)
                                                     );
 
-                                                    return (
+                                                    const baseName = productClass?.name ?? 'Vapaa valinta';
+                                                    const infoPart = mealClass.info ? `: ${mealClass.info}` : '';
+                                                    const fullTitle = `${baseName}${infoPart}`;
+                                                    const mealClassTitle = mealClass.optional ? `(${fullTitle})` : fullTitle;
 
+                                                    return (
                                                         <span key={`${day.id}-${meal.mealId}-${mcIndex}`}>
                                                             <DayClassItem>
-                                                                {productClass ? productClass.name : '- '}
-                                                                {mealClass.info ? ' ' + mealClass.info + ': ' : ''}
+                                                                {mealClassTitle}
                                                                 <ChangeButton
                                                                     onClick={() => handlechangeProducts(day.id, meal.mealId, meal.name, mcIndex, productClass ? productClass.id : -1, productClass ? productClass.name : "Vapaa valinta")}
                                                                 />
