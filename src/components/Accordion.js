@@ -37,7 +37,7 @@ const AccordionContent = styled.div`
 `;
 
 //Huom! ei tarvitse antaa kaikkia propseja!! Erilainen kuin funktio. Esim colorItem voi puuttua
-const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false, accordionmini, isOpenExternally = null }) => {
+const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false, accordionmini, isOpenExternally = null, onToggle }) => {
   const [isOpen, setIsOpen] = useState(defaultExpanded);
 
   useEffect(() => {
@@ -47,12 +47,12 @@ const Accordion = ({ title, colorItem, icons, children, defaultExpanded = false,
     }
   }, [isOpenExternally]);
 
-
   const toggleAccordion = () => {
-    // Jos accordion avattiin ulkoisesti, annetaan käyttäjän hallita TODO...
-    //if (isOpenExternally === null) {
-      setIsOpen(!isOpen); // Toggle manuaalisesti käyttäjän toimesta
-    //}
+    const newState = !isOpen;
+    setIsOpen(newState);
+    if (onToggle) {
+      onToggle(newState); // Ilmoita vanhemmalle
+    }
   };
 
   return (
