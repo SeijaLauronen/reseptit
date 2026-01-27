@@ -41,7 +41,7 @@ const FooterButton = styled.button`
   }
 `;
 
-const Footer = ({ setView, currentView }) => {
+const Footer = ({ setView, currentView, selectedCategoryId }) => {
   const { dayPlanEnabled } = useSettings();  
   return (
     <FooterContainer>
@@ -57,7 +57,7 @@ const Footer = ({ setView, currentView }) => {
         $isActive={currentView === 'products'}
         $isDayPlanEnabled={dayPlanEnabled}
       >
-        Tuotteet
+        {selectedCategoryId ? 'Tuotteet ↓↑' : 'Tuotteet'}
       </FooterButton>
       <FooterButton
         onClick={() => setView('shoppingList')}

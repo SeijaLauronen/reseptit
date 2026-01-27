@@ -16,7 +16,7 @@ import ProductItemComponent from '../components/ProductItemComponent';
 import { useColors } from '../ColorContext';
 import { ColorItemsWrapper, ColorItemContainer, ColorItemSelection } from '../components/ColorItem';
 import { useSettings } from '../SettingsContext';
-import FilterWithCrossIcon, { SearchWithCrossIcon }  from '../components/FilterIcon';
+import FilterWithCrossIcon, { SearchWithCrossIcon } from '../components/FilterIcon';
 import SwitchButtonComponent from '../components/SwitchButtonCompnent';
 import { CountDisplay } from '../components/CountDisplay';
 import { useProductClass } from '../ProductClassContext'; // Hook
@@ -478,7 +478,7 @@ const Products = ({ refresh = false, categoryId }) => {
       <MyContainer $isEditFormOpen={editingProduct}>
         <ProductStickyTop $showFilterRow={colorCodingEnabled} className='ProductStickyTop'>
           <div className='topHeader'>
-            <b>{selectedCategoryName && `${selectedCategoryName}:`}Tuotteet</b>
+            <b>{selectedCategoryName && `→ ${selectedCategoryName}: `}Tuotteet</b>
 
             {!selectedCategoryId && (
 
@@ -567,14 +567,14 @@ const Products = ({ refresh = false, categoryId }) => {
 
       <StickyBottom>
 
-        {filterSearchProducts ? (          
-            <FilterWithCrossIcon className='FilterWithCrossIcon"'
-              $filterEnabled={newProduct}
-              onClick={handleClearFilter}
-              //count={countFoundProducts}
-              //filtertext={newProduct ? `Lkm: ${countFoundProducts}` : ' '}
-              filtertext={' '}
-            />  
+        {filterSearchProducts ? (
+          <FilterWithCrossIcon className='FilterWithCrossIcon"'
+            $filterEnabled={newProduct}
+            onClick={handleClearFilter}
+            //count={countFoundProducts}
+            //filtertext={newProduct ? `Lkm: ${countFoundProducts}` : ' '}
+            filtertext={' '}
+          />
         ) : (
           <SearchWithCrossIcon className='SearchWithCrossIcon"'
             $filterEnabled={newProduct}
@@ -587,7 +587,7 @@ const Products = ({ refresh = false, categoryId }) => {
           {filter ? countFoundProducts : ''}
         </CountDisplay>
 
-        <SpeechInput          
+        <SpeechInput
           value={newProduct}
           onChange={handleInputChange}
           placeholder="Etsi tai lisää tuote"
