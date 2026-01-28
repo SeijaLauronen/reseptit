@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar as faStarSolid, faTimes, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import EditProductForm from './forms/EditProductForm';
 import Accordion from '../components/Accordion';
 import { ProductStickyTop } from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
-import InputAdd from '../components/Input';
-import { InputAddProduct, SpeechInput } from '../components/Input';
-import { AddButton, ButtonWithFilterIcon } from '../components/Button';
+import { SpeechInput } from '../components/Input';
+import { AddButton } from '../components/Button';
 import Container, { ProductContainer, IconWrapper } from '../components/Container';
 import { getCategories, getProducts, getProductById, addProduct, updateProduct, deleteProduct } from '../controller';
 import Toast from '../components/Toast';

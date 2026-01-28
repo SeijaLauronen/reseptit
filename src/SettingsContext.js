@@ -161,6 +161,7 @@ export const SettingsProvider = ({ children }) => {
     localStorage.removeItem('dayPlanOpenItems'); // Tämä asetetaan Päivän suunnittelunäkymässä
     localStorage.removeItem('lastSelectedCategoryId'); // App.js
     localStorage.removeItem('lastView'); // App.js
+    localStorage.removeItem('shoppingClosedCategories'); // ShoppingList.js
 
   }
 

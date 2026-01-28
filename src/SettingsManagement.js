@@ -25,22 +25,6 @@ padding: 5px;
 const SettingHeader = styled.span`
     font-weight: bold;
 `
-const SettingRowX = styled.span`
- display: flex;
- justify-content: space-between;
- align-items: center;
- gap: 20px; // elementtien väli
- margin: 10px;
- //flex-wrap: wrap; // Sallii rivittäytymisen, OnePlus varten tämä rivi, ei hyvä
-
- // OnePlus varten tämä:
- 
- labelX {
-    flex: 1;          // Vie saatavilla olevan tilan 
-    min-width: 0;     // Pakottaa tekstin kunnollisen rivittäytymisen 
- }
-    
-`
 //OnePlus:aa varten kokeillaan tätä:
 const SettingRow = styled.span`
   display: grid;

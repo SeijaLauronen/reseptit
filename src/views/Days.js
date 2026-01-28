@@ -9,21 +9,17 @@ import { DayStickyTop, DayTabStickyTop } from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
 import { AddButton } from '../components/Button';
-import { DayContainer, ButtonGroup, GroupLeft, GroupRight, Group, IconContainer, IconWrapper } from '../components/Container';
+import { DayContainer, GroupRight, IconContainer, IconWrapper } from '../components/Container';
 import Toast from '../components/Toast';
 import MyErrorBoundary from '../components/ErrorBoundary';
 import Accordion from '../components/Accordion';
 import AccordionDraggable from '../components/AccordionDraggable';
 import ItemToggle, { ItemToggleContainer } from '../components/ItemToggle';
-import { ColorItemSelection, ColorItemInTitle } from '../components/ColorItem';
+import { ColorItemInTitle } from '../components/ColorItem';
 import { useProductClass } from '../ProductClassContext'; // Hook
 import { useColors } from '../ColorContext'; // Hook
 import { useSettings } from '../SettingsContext';
-import styled from 'styled-components';
-//import SwitchButtonComponent {ToggleSwitchButton} from '../components/SwitchButtonCompnent';
-import SwitchButtonComponent from '../components/SwitchButtonCompnent';
 import { ToggleSwitchButton } from '../components/SwitchButtonCompnent';
-import { PrimaryButton } from '../components/Button';
 import FollowDayPlan from '../components/FollowDayPlan';
 import { TabContainer, Tab } from '../components/TabComponents';
 import { ClassTitleStyled, MealTitleStyled, DayTitleStyled, DayTitleWrapper } from '../components/DayComponents';
@@ -99,15 +95,6 @@ const Days = ({ refresh = false, isMenuOpen }) => {
     return follow === 'followPlan' ? 'Toteutus' : 'Suunnittelu';
   });
 
-  //TODO järkeistä followPlan ja tabActive
-  /*
-  const [tabActive, setTabActive] = useState(() => {
-    const saved = localStorage.getItem('tabActive');
-    return saved || 'Suunnittelu';
-  });
-
-  const followPlan = tabActive === 'Toteutus';
-  */
 
   // Yhdistetty data-loadaus
   const loadAllData = async () => {
@@ -150,6 +137,7 @@ const Days = ({ refresh = false, isMenuOpen }) => {
   }, [refresh]);
 
 
+  // Tulee valitus, että puuttuu fetchAndSetProductClasses riippuvuuksista, mutta se aiheuttaisi loputtoman loopin
   const fetchAndSetDays = async () => {
     try {
       const allDays = await getDays();
@@ -163,8 +151,6 @@ const Days = ({ refresh = false, isMenuOpen }) => {
   const [newDay, setNewDay] = useState('');
   const [editingDay, setEditingDay] = useState(null);
   const [isDayFormOpen, setIsDayFormOpen] = useState(false);
-
-  const [newMeal, setNewMeal] = useState('');
   const [editingMeal, setEditingMeal] = useState(null);
   const [isMealFormOpen, setIsMealFormOpen] = useState(false);
   const [error, setError] = useState('');
@@ -198,7 +184,7 @@ const Days = ({ refresh = false, isMenuOpen }) => {
     localStorage.setItem('followPlan', followPlan ? 'followPlan' : '');
   }, [followPlan]);
 
-  //const [expandedStates, setExpandedStates] = useState({}); // Avattujen accordionien tilat, säilyy vain tällä komponentilla
+  // Avattujen accordionien tilat
   const [dayPlanOpenItems, setDayPlanOpenItems] = useState(() => {
     const saved = localStorage.getItem('dayPlanOpenItems');
     return saved ? JSON.parse(saved) : [];
@@ -304,10 +290,15 @@ const Days = ({ refresh = false, isMenuOpen }) => {
       mealClasses: []
     };
 
+    // Lisätään ateriaan liittyvä merkintä localStorageen avoimeksi XXXX
+    const mealKey = `${day.id}-${newMealId}`;
+    setDayPlanOpenItems((prev) =>
+      [...prev, String(mealKey)]
+    );
+
     setIsMealFormOpen(true);
     setEditingMeal(newMeal);
     setEditingDay(day);
-    setNewMeal(null);
   };
 
 
@@ -513,12 +504,6 @@ const Days = ({ refresh = false, isMenuOpen }) => {
 
   const toggleActiveDaysOnly = () => {
     setShowActiveDaysOnly(!showActiveDaysOnly);
-    setError(null);
-  };
-
-
-  const toggleFollowPlan = () => {
-    setFollowPlan(!followPlan);
     setError(null);
   };
 

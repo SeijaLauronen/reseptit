@@ -87,6 +87,19 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
     }
   }, [isPrintOpen, products, selectedProducts]); // TODO lisättävä buildShoppingListText ?
 
+
+
+  // Listalla suljettujen kategorioitten tilat
+  const [shoppingClosedCategories, setShoppingClosedCategories] = useState(() => {
+    const saved = localStorage.getItem('shoppingClosedCategories');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('shoppingClosedCategories', JSON.stringify(shoppingClosedCategories));
+  }, [shoppingClosedCategories]);
+
+
   const handleToggleSelect = async (id) => {
     try {
       /* Kopioidaan nykyinen tila newSet:iin, johon muutokset ja jolla korvataan selectedProducts  */
@@ -280,7 +293,17 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
             )}
           </StickyTop>
           {groupedProducts.map(category => (
-            <Accordion key={category.id} title={category.heading} defaultExpanded={true} accordionmini={true} className='Accordion'>
+            <Accordion
+              key={category.id}
+              title={category.heading}
+              defaultExpanded={! shoppingClosedCategories.includes(String(category.id))}
+              onToggle={(isExpanded) => setShoppingClosedCategories(prev =>
+                isExpanded
+                  ? prev.filter(id => id !== String(category.id))
+                  : [...prev, String(category.id)]
+              )}
+              accordionmini={true}
+              className='Accordion'>
               {category.products.map(product => (
                 <ShoppingListItem key={product.id} className='ShoppingListItem'>
                   <InputWrapper>
@@ -326,7 +349,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                           />
                         </>
                       )}
-                      {!hidePrice && (                        
+                      {!hidePrice && (
                         <InputPrice
                           lang="fi-FI"  //jotta hyväksyy pisteen puhelimen näppikseltä
                           disabled={isPrintOpen}
@@ -346,7 +369,7 @@ const ShoppingList = ({ refresh = false, isMenuOpen }) => {
                             }
                           }}
                           placeholder="Hinta"
-                        />                        
+                        />
                       )}
 
                     </InputWrapper>
