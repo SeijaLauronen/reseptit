@@ -761,7 +761,6 @@ const Days = ({ refresh = false, isMenuOpen }) => {
                                                 </span>
                                               );
 
-
                                               return (
                                                 <Accordion classnames="mealClassAccordion"
                                                   key={mealClass.classId}
