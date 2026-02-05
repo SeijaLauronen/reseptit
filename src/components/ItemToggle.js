@@ -7,13 +7,14 @@ const ToggleContainer = styled.span`
   cursor: pointer;
   border: 1px solid ${({ $isitemselected }) => ($isitemselected ? 'blue' : 'gray')};
   background-color: ${({ $isitemselected }) => ($isitemselected ? '#cce5ff' : 'white')};
-  border-radius: 5px;
+  border-radius: 5px;  
+  word-break: break-word; // tämä näyttäisi nyt riittävän siihen, että sanat katkeaa ensisijaisesti sanojen välistä, mutta tarvittaessa myös kesleltä
 `;
 
-const ItemToggle = ({ item, print, isItemSelected, onSelect }) => {  
+const ItemToggle = ({ item, print, isItemSelected, onSelect }) => {
 
   const handleClick = () => {
-    const newState = !isItemSelected;    
+    const newState = !isItemSelected;
     onSelect(item, newState);
   };
 

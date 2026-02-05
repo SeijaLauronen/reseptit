@@ -13,19 +13,21 @@ const AccordionWrapper = styled.div`
   max-width: 100%;  
 `;
 
-const AccordionTitle = styled.div`
-  //padding: ${({ $accordionmini }) => '3px' || '10px'}; /* Oletusarvo 10px */ 
-  padding: ${({ $accordionmini }) => ($accordionmini ? '3px' : '10px')}; /* Oletusarvo 10px */
-  //padding: 10px;
+const AccordionTitle = styled.div`  
+  padding: ${({ $accordionmini }) => ($accordionmini ? '3px' : '10px')}; /* Oletusarvo 10px */  
   cursor: pointer;  
   background-color: #efefef;  // #f7f7f7;
   border-bottom: 1px solid #ccc;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  word-wrap: break-word;
-  word-break: break-all;
   font-weight: bold;
+  // tässä näyttäisi olevan "ylikirjoitusta", mutta näin tuntuisi toimivan parhaiten:
+  word-wrap: break-word;
+  word-break: break-all; // tämä, että jos ylipitkä sana, niin katkiaisee sen  
+  overflow-wrap: break-word; // Mieluummin katkaisee sanojen välistä
+  word-break: break-word; // Katkaisee sanan keskeltä vain tarvittaessa
+
 `;
 
 // transientti props $isOpen, koska styled komponentti ja isJotain

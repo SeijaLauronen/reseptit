@@ -290,7 +290,7 @@ const Days = ({ refresh = false, isMenuOpen }) => {
       mealClasses: []
     };
 
-    // Lisätään ateriaan liittyvä merkintä localStorageen avoimeksi XXXX
+    // Lisätään ateriaan liittyvä merkintä localStorageen avoimeksi
     const mealKey = `${day.id}-${newMealId}`;
     setDayPlanOpenItems((prev) =>
       [...prev, String(mealKey)]
