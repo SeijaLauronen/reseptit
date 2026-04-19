@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import { getDays, addDay, updateDay, deleteDay, getProducts } from '../controller';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faCopy } from '@fortawesome/free-solid-svg-icons';
 import EditDayForm from './forms/EditDayForm';
 import EditMealForm from './forms/EditMealForm';
 import { DayStickyTop, DayTabStickyTop } from '../components/StickyTop';
@@ -224,6 +224,44 @@ const Days = ({ refresh = false, isMenuOpen }) => {
   const handleEditDay = (day) => {
     setIsDayFormOpen(true);
     setEditingDay(day);
+  };
+
+  const handleDuplicateDay = async (originalDay) => {
+    try {
+      const newOrder = originalDay.order + 1;
+
+      // Päivitä kaikkien myöhempien päivien order +1
+      const daysToUpdate = days.filter(day => day.order >= newOrder);
+      for (const day of daysToUpdate) {
+        await updateDay(day.id, { ...day, order: day.order + 1 });
+      }
+
+      // Jätä id pois alkuperäisestä objektista
+      const { id, ...originalWithoutId } = originalDay;
+
+      // Luo kopio päivästä
+      const duplicatedDay = {
+        ...originalWithoutId,
+        name: `Kopio - ${originalDay.name}`,
+        order: newOrder,        
+        meals: originalDay.meals ? originalDay.meals.map(meal => ({
+          ...meal,
+          // Säilytä mealId:t, koska ne ovat uniikkeja päivän sisällä
+        })) : []
+      };
+
+      // Lisää uusi päivä tietokantaan
+      const newDayId = await addDay(duplicatedDay);
+
+      // Päivitä näkymä
+      fetchAndSetDays();
+
+      // Avaa uusi päivä oletuksena auki
+      setDayPlanOpenItems((prev) => [...prev, String(newDayId)]);
+
+    } catch (err) {
+      setError(err.message || "Virhe kopioidessa päivää");
+    }
   };
 
   const resetForm = () => {
@@ -677,9 +715,14 @@ const Days = ({ refresh = false, isMenuOpen }) => {
                               </DayTitleWrapper>
                             }
                             icons={
-                              <IconWrapper className='IconWrapper' onClick={() => handleEditDay(day)}>
-                                <FontAwesomeIcon icon={faEdit} />
-                              </IconWrapper>
+                              <IconContainer>
+                                <IconWrapper onClick={() => handleEditDay(day)}>
+                                  <FontAwesomeIcon icon={faEdit} />
+                                </IconWrapper>
+                                <IconWrapper onClick={() => handleDuplicateDay(day)}>
+                                  <FontAwesomeIcon icon={faCopy} />
+                                </IconWrapper>
+                              </IconContainer>
                             }
                             defaultExpanded={dayPlanOpenItems.includes(String(day.id))}
                             onToggle={(isExpanded) => setDayPlanOpenItems(prev =>

@@ -225,7 +225,7 @@ export const getDays = async () => {
   return days.sort((a, b) => a.order-b.order); //Huom, integereille ei localComparea, vaan näin
 };
 
-export const addDay = async (day) => {
+export const addDay = async (day) => {  
   const error = validateDay(day);
   if (error) {
     throw new Error(error);
