@@ -1,4 +1,8 @@
 // helpTexts.js
+import helpCategoriesImage from './helpimages/help-categories.jpg';
+import helpMenuImage from './helpimages/help-menu.jpg';
+import helpPagesImage from './helpimages/help-pages.jpg';
+import helpAllPagesImage from './helpimages/help-all-pages.jpg';
 
 const helpTexts = {
   categories: (
@@ -6,20 +10,24 @@ const helpTexts = {
 
       <b>Ostokset - sovellus</b>
       <p>
-        4 näkymää: kategoriat, tuotteet, ostoslista ja päivät, joista viimeisin asetettavissa näkymään valikon asetuksista.
-        Näkymiä vaihdat alalaidan painikkeista. Kullekin näkymälle on oma infotekstinsä.
+        Sovellus sisältää 4 näkymää: <br /> kategoriat, tuotteet, ostoslista ja päivät.      
+        <img src={helpAllPagesImage} alt="Sovellukset näkymät: kategoriat, tuotteet, ostoslista, päivät" style={{ maxWidth: '100%', height: 'auto' }} />
       </p>
-
+      <p>        
+        Näkymiä vaihdat alhaalta painikkeista. Päivänäkymän saat näkyviin asetuksista. Kullekin näkymälle avautuu oma ohje kysymysmerkistä.
+        <img src={helpPagesImage} alt="Näkymän vaihtaminen alareunan painikkeista" style={{ maxWidth: '100%', height: 'auto' }} />        
+      </p>
+      
       <b>Kategoriat -näkymä</b>
       <p>
-        Voit lisätä mieleisiäsi kategorioita, kuten Hedelmät, Vihannekset, Leivät jne.
-      </p><p>
+        Ohjelman käytön kannalta kategorioita ei ole pakko määritellä ja käyttää ollenkaan.
+        Voit kuitenkin lisätä mieleisiäsi kategorioita, kuten Hedelmät, Vihannekset, Leivät jne.
+        <img src={helpCategoriesImage} alt="Sivut" style={{ maxWidth: '100%', height: 'auto' }} />
         Voit muuttaa kategorioiden järjestystä raahaamalla kategorian sopivaan kohtaan.
-      </p><p>
+        <br />
         Tuotteet -sivulle pääset joko alavalikosta tai kategorian nuolipainikkeesta.
         Jos menet nuolipainikkeesta, Tuote-sivulla näytetään vain sen kategorian tuotteet ja uusi tuote lisätään kyseiseen kategoriaan.
-      </p><p>
-        Ohjelman käytön kannalta kategorioita ei ole pakko määritellä ja käyttää ollenkaan.
+      
       </p>
     </>
   ),
@@ -137,7 +145,9 @@ const helpTexts = {
         Näkymä on monitasoinen: <br />
         päivät - ateriat - tuoteluokat - tuotteet.
       </p><p>
-        Lisäämäsi <b>päivän</b> kohdalla on kaksi painiketta oikeassa laidassa. <i>Kynän</i> kuvasta pääset muokkaamaan päivän nimeä, valitsemaan sille värikoodin, ja lisäämään muistiinpanoja.
+        Lisäämäsi <b>päivän</b> kohdalla on kolme painiketta oikeassa laidassa. <i>Kynän</i> kuvasta pääset muokkaamaan päivän nimeä, valitsemaan sille värikoodin, ja lisäämään muistiinpanoja.
+        <br />
+        <i>Kopioi</i> kuvakkeesta päivä monistetaan ja nimen alkuun tulee "Kopio-" etuliite.
         <br />
         <i>Nuoli ylös/alas</i> laajentaa tai kutistaa päivän tiedot. Laajennetussa näkymässä pääset lisäämään päivälle aterioita.
       </p><p>
