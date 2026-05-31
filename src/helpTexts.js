@@ -4,6 +4,22 @@ import helpMenuImage from './helpimages/help-menu.jpg';
 import helpPagesImage from './helpimages/help-pages.jpg';
 import helpAllPagesImage from './helpimages/help-all-pages.jpg';
 
+import helpProductFindImage from './helpimages/help-product-find.jpg';
+import helpProductAddToCategoryImage from './helpimages/help-product-add1.jpg';
+import helpProductAddImage from './helpimages/help-product-add2.jpg';
+import helpProductView1Image from './helpimages/help-product-view1.jpg';
+import helpProductShopAmountImage from './helpimages/help-product-amount.jpg';
+import helpProductDefineColorsImage from './helpimages/help-product-define-colors.jpg';
+import helpProductFilterColorsImage from './helpimages/help-product-filter-colors.jpg';
+import helpProductClassesImage from './helpimages/help-product-classes.jpg';
+import helpProductDefineClassesImage from './helpimages/help-product-define-classes.jpg';
+import helpProductUseClassesImage from './helpimages/help-product-use-classes.jpg';
+import helpShoppinglistImage from './helpimages/help-shoppinglist.jpg';
+import helpDaysPlanImage from './helpimages/help-days-plan.jpg';
+import helpDaysPlanActiveImage from './helpimages/help-days-plan-active.jpg';
+import helpDaysPlanProductsImage from './helpimages/help-days-plan-products.jpg';
+import helpDaysPlanEditImage from './helpimages/help-days-plan-edit.jpg';
+
 const helpTexts = {
   categories: (
     <>
@@ -35,35 +51,50 @@ const helpTexts = {
     <>
       <b>Tuotteet</b>
       <p>
+        <img src={helpProductFindImage} alt="Tuotteen etsiminen ja lisääminen" style={{ maxWidth: '100%', height: 'auto' }} />        
         Kirjoittaessasi <b>alareunan tekstikenttään</b> sivulta etsitään tekstiä vastaavia tuotteita ja ne korostetaan.
         Yleisistä asetuksista voit määritellä, suodatetaanko näkymään vain löydetyt tuotteet.
         Voit tyhjentää kentän vasemmalla puolella olevasta ruksipainikkeesta tai lisätä tuotteen + painikkeesta.
       </p>
       <p>
+        <img src={helpProductAddToCategoryImage} alt="Tuotteen lisääminen kategoriaan" style={{ maxWidth: '100%', height: 'auto' }} />        
         Jos tulit sivulle <b>kategorian nuolipainikkeesta</b>, sivulla näytetään vain sen kategorian tuotteet
         ja uusi tuote lisätään kyseiseen kategoriaan.
       </p>
       <p>
+        <img src={helpProductAddImage} alt="Tuotteen lisääminen" style={{ maxWidth: '100%', height: 'auto' }} />        
         Jos tulit sivulle <b>alavalikon kautta</b>, näytetään kaikki tuotteet. Tällöin uudelle tuotteelle
         ei anneta kategoriaa, mutta voit asettaa sen kynän kuvaa klikkaamalla.
-        Asettamalla yläreunasta "Kategoriat" näkymään, tuotteet näytetään kategorioittain
-        ja ylimpänä ne, joille ei ole asetettu kategoriaa.
+        
       </p>
       <p>
+        <img src={helpProductView1Image} alt="Tuotteet kategorioittan ja suosikit" style={{ maxWidth: '100%', height: 'auto' }} />        
+        Asettamalla yläreunasta "Kategoriat" näkymään, tuotteet näytetään <b>kategorioittain</b> ja ylimpänä ne, 
+        joille ei ole asetettu kategoriaa. Voit kutistaa ja laajentaa kategoioiden sisällön nuolipainikkeesta.
         Voit asettaa tuotteita <b>suosikeiksi</b> ja yläpalkin tähdestä suodattaa näkyviin vain suosikit.
       </p>
       <p>
+        <img src={helpProductShopAmountImage} alt="Tuote ostoskoriin" style={{ maxWidth: '100%', height: 'auto' }} />        
         Klikkaamalla <b>ostoskorin</b> kuvaa voit asettaa tuotteen ostoslistalle tai pois sieltä.
-        Asetuksista voi määritellä, haluatko avata määrädialogin automaattisesti vai vasta pitkällä klikkauksella.
+        Asetuksista voi määritellä, haluatko avata määrädialogin automaattisesti kun tuote klikataan ostoskoriin 
+        vai erikseen pitkällä klikkauksella. Määrää ei ole pakko antaa.
       </p>
       <p>
+        <img src={helpProductDefineColorsImage} alt="Tuotteiden värikoodit" style={{ maxWidth: '100%', height: 'auto' }} />        
         Voit suodattaa tuotteita <b>väreittäin</b>. Menun asetuksista voi säätää, käytetäänkö tuotteilla värikoodeja.
         Halutessasi voit määritellä väreille merkitykset menun valikosta "Värien määrittely".
+      </p>
+      <p>
+        <img src={helpProductFilterColorsImage} alt="Tuotteiden suodatus värikoodeilla" style={{ maxWidth: '100%', height: 'auto' }} />        
         Tuotteelle voit valita värit ja tuotesivun yläpalkin suodattimesta voi valita näkyviin haluamasi värit/värittömät
         ja poistaa valinnat klikkaamalla suodattimen kuvaa.
       </p>
       <p>
-        Voit antaa tuotteille <b>luokitustietoja</b>, esim proteiinit, hiilihydraatit jne, kun määrittelet luokat ensin asetuksista.
+        <img src={helpProductDefineClassesImage} alt="Tuotteiden luokittelu" style={{ maxWidth: '100%', height: 'auto' }} />
+        Voit antaa tuotteille <b>luokitustietoja</b>, esim proteiinit, hiilihydraatit jne, kun määrittelet luokat ensin asetuksista. 
+        <img src={helpProductUseClassesImage} alt="Tuotteiden luokittelu" style={{ maxWidth: '100%', height: 'auto' }} />
+        Niitä hyödynnetään päiväsuunnitelmien tekemisessä, mutta ne voidaan valita näkymään myös tuotelistauksessa, 
+        johon voidaan määritellä näkymään myös tuotteelle asetettu annos.
       </p>
     </>
   ),
@@ -74,6 +105,7 @@ const helpTexts = {
         Ostoslistalla näkyvät tuote-sivulla ostoskoriin valitsemasi tuotteet. 
         Voit antaa ostettavan <i>määrän</i> ja <i>yksikön</i> sekä <i>kokonaishinnan</i>.
         Asetuksista voit määritellä, näytetäänkö ne ostoslistalla.
+        <img src={helpShoppinglistImage} alt="Ostoslista" style={{ maxWidth: '100%', height: 'auto' }} />
       </p>
       <p>
         Jos olet valinnut hinnat näkyviin, tuotteiden yhteenlasketut hinnat näytetään listan yläreunassa: valituille tuotteille / kaikille ostoslistan tuotteille.        
@@ -132,24 +164,29 @@ const helpTexts = {
     <>
 
       <b>Päivät</b>
-      <p>
-        Päivät sisältää <i>suunnittelunäkymän</i> ja <i>toteutusnäkymän</i>. 
-         <br />
+      <p>        
+        Päivät sisältää <br />
+        <i>suunnittelunäkymän</i> ja <i>toteutusnäkymän</i>. 
+        <img src={helpDaysPlanImage} alt="Päivien suunnittelu" style={{ maxWidth: '100%', height: 'auto' }} />                 
+        </p><p>
         Voit valita näkymään kaikki tai pelkästään <i>aktivoidut päivät</i>. (Aktivointi päälle tai pois klikkaamalla päivän nimen edessä olevaa painiketta.)
         <br />
+        <img src={helpDaysPlanActiveImage} alt="Kaikki tai vain aktivoidut päivät" style={{ maxWidth: '100%', height: 'auto' }} />        
       </p><p>
         <b>Suunnittelunäkymä</b>
-      </p><p>
+        <br />
         Suunnittelunäkymässä voit lisätä haluamasi määrän päiviä ja voit muuttaa niiden järjestystä raahaamalla. 
        <br />
         Näkymä on monitasoinen: <br />
         päivät - ateriat - tuoteluokat - tuotteet.
+        <img src={helpDaysPlanProductsImage} alt="Tuotteiden määrittely ja valinta" style={{ maxWidth: '100%', height: 'auto' }} />                 
       </p><p>
         Lisäämäsi <b>päivän</b> kohdalla on kolme painiketta oikeassa laidassa. <i>Kynän</i> kuvasta pääset muokkaamaan päivän nimeä, valitsemaan sille värikoodin, ja lisäämään muistiinpanoja.
         <br />
         <i>Kopioi</i> kuvakkeesta päivä monistetaan ja nimen alkuun tulee "Kopio-" etuliite.
         <br />
         <i>Nuoli ylös/alas</i> laajentaa tai kutistaa päivän tiedot. Laajennetussa näkymässä pääset lisäämään päivälle aterioita.
+        <img src={helpDaysPlanEditImage} alt="Päivän tietojen muokkaus ja kopiointi" style={{ maxWidth: '100%', height: 'auto' }} />                 
       </p><p>
         <b>Aterian</b> lisäys painikkeesta ja muokkaus kynän kuvasta avaa ikkunan, jossa näytetään <i> luokat, jotka olet määritellyt erikseen</i> <small>(Asetukset-Tuoteluokkien määrittely)</small>  ja lisäksi luokasta riippumaton "Vapaa valinta".
       </p><p>
