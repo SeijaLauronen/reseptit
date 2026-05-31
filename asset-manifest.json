@@ -1,17 +1,32 @@
 {
   "files": {
     "main.css": "/reseptit/static/css/main.e6c13ad2.css",
-    "main.js": "/reseptit/static/js/main.71ad77fc.js",
+    "main.js": "/reseptit/static/js/main.79e0c2c8.js",
     "static/media/help-all-pages.jpg": "/reseptit/static/media/help-all-pages.e2f3f31a0437a6d918ce.jpg",
+    "static/media/help-days-plan-products.jpg": "/reseptit/static/media/help-days-plan-products.ef1638eb1fcac804cdf0.jpg",
+    "static/media/help-days-plan.jpg": "/reseptit/static/media/help-days-plan.23fdc357843f1815c6c8.jpg",
     "static/media/help-categories.jpg": "/reseptit/static/media/help-categories.3d1a0452d674d4b8a001.jpg",
+    "static/media/help-days-plan-active.jpg": "/reseptit/static/media/help-days-plan-active.176ec7bc9715c477e185.jpg",
+    "static/media/help-days-plan-edit.jpg": "/reseptit/static/media/help-days-plan-edit.548009987319ce6a0d18.jpg",
+    "static/media/help-product-find.jpg": "/reseptit/static/media/help-product-find.8234a1835dc995cf16df.jpg",
+    "static/media/help-product-add2.jpg": "/reseptit/static/media/help-product-add2.3a2a845e2f0b2a359f9c.jpg",
     "static/media/help-pages.jpg": "/reseptit/static/media/help-pages.778410a084e7617f187c.jpg",
+    "static/media/help-product-view1.jpg": "/reseptit/static/media/help-product-view1.1ddda232a55926feb685.jpg",
+    "static/media/help-product-use-classes.jpg": "/reseptit/static/media/help-product-use-classes.763fdac8c6ba452d3ba9.jpg",
+    "static/media/help-product-add1.jpg": "/reseptit/static/media/help-product-add1.d0294dc01037f72cfb5c.jpg",
+    "static/media/help-product-classes.jpg": "/reseptit/static/media/help-product-classes.0f0d974b930b8ec83e64.jpg",
+    "static/media/help-product-define-colors.jpg": "/reseptit/static/media/help-product-define-colors.dc109aa78f0ca8e04e97.jpg",
+    "static/media/help-shoppinglist.jpg": "/reseptit/static/media/help-shoppinglist.7ef18e2dc0e29d7455fc.jpg",
+    "static/media/help-product-filter-colors.jpg": "/reseptit/static/media/help-product-filter-colors.6271ee6660dddc8d4d06.jpg",
+    "static/media/help-product-define-classes.jpg": "/reseptit/static/media/help-product-define-classes.b2575aff3a6c07f4c2ab.jpg",
+    "static/media/help-product-amount.jpg": "/reseptit/static/media/help-product-amount.ecabef4ebdeac6a0307b.jpg",
     "static/media/help-menu.jpg": "/reseptit/static/media/help-menu.e543189e9a306bba4d59.jpg",
     "index.html": "/reseptit/index.html",
     "main.e6c13ad2.css.map": "/reseptit/static/css/main.e6c13ad2.css.map",
-    "main.71ad77fc.js.map": "/reseptit/static/js/main.71ad77fc.js.map"
+    "main.79e0c2c8.js.map": "/reseptit/static/js/main.79e0c2c8.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.71ad77fc.js"
+    "static/js/main.79e0c2c8.js"
   ]
 }
