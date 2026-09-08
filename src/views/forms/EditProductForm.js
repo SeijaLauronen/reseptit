@@ -9,6 +9,7 @@ import { useColors } from '../../ColorContext';
 import { ColorItemsWrapper, ColorItemContainer, ColorItemContainerLabel, ColorItemSelection, ColorItem } from '../../components/ColorItem';
 import styled from 'styled-components';
 import { useProductClass } from '../../ProductClassContext';
+import ProductDoseFineliSelector from '../../fineli/components/ProductDoseFineliSelector';
 
 const StyledDiv = styled.div`
   margin-bottom: 15px;
@@ -48,6 +49,8 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
   const noColor = { code: '#FFF', name: 'White' };
 
+  const [selectedFineli, setSelectedFineli] = useState(null);
+
   const fetchAndSetCategories = async () => {
     try {
       const allCategories = await getCategories(false); // aakkosjärjestyksessä
@@ -84,6 +87,10 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
       product.dose = dose;
       product.classId = parseInt(productClassId, 10);
       product.info = prodinfo;
+      // store selected Fineli mapping if chosen
+      if (selectedFineli) {
+        product.fineliId = selectedFineli.fineliId;
+      }
       Object.keys(colors).forEach(colorKey => {
         product[colorKey] = productSelectedColors.includes(colorKey);
       });
@@ -186,7 +193,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
               </StyledDiv>)
             }
-            
+
             <StyledDiv>
               <label>Muistiinpanot: </label>
               <InputTextArea
@@ -195,6 +202,23 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                 placeholder="Muistiinpanot"
               />
             </StyledDiv>
+
+            <StyledDiv>
+              {/* muu lomake */}
+              <ProductDoseFineliSelector
+                initialQuery={name}
+                autoSearch={true}
+                onSelect={item => {
+                  setSelectedFineli(item);
+                  // päivitä lomakkeen kenttä:
+                  // setFieldValue('doseFineliId', item.fineliId);
+                }}
+              />
+
+              {selectedFineli && <div>Valittu: {selectedFineli.name} (ID: {selectedFineli.fineliId})</div>}
+            </StyledDiv>
+
+
           </ScrollableFormContainer>
         )}
         {editAmount && (
