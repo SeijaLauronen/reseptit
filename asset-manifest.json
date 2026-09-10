@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/reseptit/static/css/main.e6c13ad2.css",
-    "main.js": "/reseptit/static/js/main.b516efcc.js",
+    "main.js": "/reseptit/static/js/main.f4716895.js",
     "static/media/help-all-pages.jpg": "/reseptit/static/media/help-all-pages.e2f3f31a0437a6d918ce.jpg",
     "static/media/help-days-plan-products.jpg": "/reseptit/static/media/help-days-plan-products.ef1638eb1fcac804cdf0.jpg",
     "static/media/help-days-plan.jpg": "/reseptit/static/media/help-days-plan.23fdc357843f1815c6c8.jpg",
@@ -23,10 +23,10 @@
     "static/media/help-menu.jpg": "/reseptit/static/media/help-menu.e543189e9a306bba4d59.jpg",
     "index.html": "/reseptit/index.html",
     "main.e6c13ad2.css.map": "/reseptit/static/css/main.e6c13ad2.css.map",
-    "main.b516efcc.js.map": "/reseptit/static/js/main.b516efcc.js.map"
+    "main.f4716895.js.map": "/reseptit/static/js/main.f4716895.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.b516efcc.js"
+    "static/js/main.f4716895.js"
   ]
 }
