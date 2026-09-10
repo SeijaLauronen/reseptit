@@ -9,15 +9,16 @@ export default function useFineli() {
   const search = useCallback(async (query) => {
     setLoading(true);
     setError(null);
+
     try {
       const res = await FineliService.search(query);
       setResults(res);
-      setLoading(false);
       return res;
     } catch (err) {
       setError(err);
-      setLoading(false);
       return [];
+    } finally {
+      setLoading(false);
     }
   }, []);
 

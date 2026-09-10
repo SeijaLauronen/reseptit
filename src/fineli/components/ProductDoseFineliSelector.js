@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import useFineli from '../useFineli';
 
 export default function ProductDoseFineliSelector({ onSelect, initialQuery = '', autoSearch = true, debounceMs = 300 }) {
@@ -8,7 +8,8 @@ export default function ProductDoseFineliSelector({ onSelect, initialQuery = '',
   const [infoMessage, setInfoMessage] = useState('');
   const debounceRef = useRef(null);
 
-  const doSearch = async (q) => {
+  const doSearch = useCallback(async (q) => {
+  
     setInfoMessage('');
     if (!q || !q.trim()) return;
     const res = await search(q);
@@ -24,11 +25,12 @@ export default function ProductDoseFineliSelector({ onSelect, initialQuery = '',
       setInfoMessage('Valittu automaattisesti yksi tulos');
       return;
     }
-    // multiple results: clear any previous selection
     setSelected(null);
-  };
+  }, [onSelect, search]);
 
-  // Auto-search effect: when initialQuery changes, update query and optionally search (debounced)
+  
+  // Ei lähdetä hakemaan automaattisesti heti kun lomake avataan!
+  /*
   useEffect(() => {
     setQuery(initialQuery || '');
     if (autoSearch && initialQuery && initialQuery.trim()) {
@@ -40,7 +42,8 @@ export default function ProductDoseFineliSelector({ onSelect, initialQuery = '',
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [initialQuery, autoSearch, debounceMs]);
+  }, [initialQuery, autoSearch, debounceMs, doSearch]);
+  */
 
   return (
     <div style={{ border: '1px solid #ddd', padding: 12, borderRadius: 6 }}>
@@ -81,7 +84,9 @@ export default function ProductDoseFineliSelector({ onSelect, initialQuery = '',
       {selected && (
         <div style={{ marginTop: 8, padding: 8, background: '#fafafa', borderRadius: 4 }}>
           <div style={{ fontWeight: 700 }}>Valittu: {selected.name}</div>
-          <div style={{ fontSize: 13 }}>Energia: {selected.nutrients?.energy} kcal / 100g</div>
+          <div style={{ fontSize: 13 }}>
+            Energia: {selected.nutrients?.ENERC ? `${selected.nutrients.ENERC.value} ${selected.nutrients.ENERC.unit}` : '—'}
+          </div>
         </div>
       )}
     </div>

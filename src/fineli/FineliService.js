@@ -1,33 +1,63 @@
-// Simple Fineli service wrapper — mock by default for local testing.
-const useRealApi = false; // set to true and implement real calls when API key available
+import foodsData from './data/processed/fineli-data.json';
 
-const mockData = [
-    { fineliId: '1001', name: 'Maito 1.5% rasvaa', nutrients: { energy: 46, protein: 3.4, fat: 1.5, carbs: 4.8 }, portions: [{ id: 'p1', amount: 100, unit: 'g' }] },
-    { fineliId: '1002', name: 'Ruisleipä, viipale', nutrients: { energy: 250, protein: 8.5, fat: 3.5, carbs: 44 }, portions: [{ id: 'p1', amount: 30, unit: 'g' }] },
-    { fineliId: '1003', name: 'Omena, punainen', nutrients: { energy: 52, protein: 0.3, fat: 0.2, carbs: 14 }, portions: [{ id: 'p1', amount: 150, unit: 'g' }] }, 
-{ fineliId: '1004', name: 'Omena, vihreä', nutrients: { energy: 52, protein: 0.3, fat: 0.2, carbs: 14 }, portions: [{ id: 'p1', amount: 150, unit: 'g' }] }
-];
+function normalizeText(value) {
+  if (!value) return '';
+  if (typeof value === 'string') return value.trim();
+  if (typeof value === 'object' && value.fi) return String(value.fi).trim();
+  return String(value).trim();
+}
+
+function mapFineliItem(item) {
+    
+  if (!item) return null;
+
+  return {
+    id: item.id,
+    fineliId: String(item.id),
+    name: normalizeText(item.name),
+    ediblePortion: item.ediblePortion ?? null,
+    units: Array.isArray(item.units) ? item.units.map(unit => ({
+      code: unit?.code ?? '',
+      grams: Number(unit?.grams ?? 0),
+    })) : [],
+    nutrients: item.nutrients ?? {},
+  };
+  
+/*
+  return {
+    id: 1,
+    fineliId: 1,
+    name: "OMENA, KOTIMAINEN, KUORINEEN",
+    ediblePortion: null,
+    units:  [],
+    nutrients: {},
+  };
+*/
+}
 
 async function search(query) {
-    if (!query || query.trim().length === 0) return [];
-    if (!useRealApi) {
-        const q = query.toLowerCase();
-        await new Promise(r => setTimeout(r, 300)); // simulate latency
-        return mockData.filter(item => item.name.toLowerCase().includes(q));
-    }
+  const trimmed = normalizeText(query);
+  if (!trimmed) return [];
 
-    // TODO: implement real Fineli API calls here (fetch/axios), with API key handling
-    throw new Error('Real Fineli API not configured');
+  const q = trimmed.toUpperCase();
+    
+  return foodsData
+    .map(mapFineliItem)
+    .filter(Boolean)
+    .filter(item => normalizeText(item.name).toUpperCase().includes(q));
 }
 
 async function getById(fineliId) {
-    if (!useRealApi) {
-        return mockData.find(d => d.fineliId === String(fineliId)) || null;
-    }
-    throw new Error('Real Fineli API not configured');
+  if (fineliId === null || fineliId === undefined || fineliId === '') return null;
+
+  const id = String(fineliId);
+  const found = foodsData.find(item => String(item.id) === id);
+  return found ? mapFineliItem(found) : null;
 }
 
-export default {
-    search,
-    getById
+const FineliService = {
+  search,
+  getById,
 };
+
+export default FineliService;
