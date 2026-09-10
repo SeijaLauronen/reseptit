@@ -62,6 +62,11 @@ export const Select = styled.select`
   width: 196px; 
 `;
 
+export const FineliSelect = styled(Select)`
+  margin-left: 0px;
+  width: 100%; 
+`;
+
 export const InputTextArea = styled.textarea`
   width: 80%;
   height: 180px;
