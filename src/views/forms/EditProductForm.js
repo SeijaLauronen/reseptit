@@ -50,6 +50,7 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
   const noColor = { code: '#FFF', name: 'White' };
 
   const [selectedFineli, setSelectedFineli] = useState(null);
+  const [selectedFineliMapping, setSelectedFineliMapping] = useState(null);
 
   const fetchAndSetCategories = async () => {
     try {
@@ -208,14 +209,23 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
               <ProductDoseFineliSelector
                 initialQuery={name}
                 autoSearch={true}
+                dose={dose}
                 onSelect={item => {
                   setSelectedFineli(item);
-                  // päivitä lomakkeen kenttä:
-                  // setFieldValue('doseFineliId', item.fineliId);
                 }}
+                onMappingChange={mapping => setSelectedFineliMapping(mapping)}
               />
 
               {selectedFineli && <div>Valittu: {selectedFineli.name} (ID: {selectedFineli.fineliId})</div>}
+              {/*}
+              {selectedFineliMapping && (
+                <div style={{ marginTop: 8 }}>
+                  <div>Mapping preview:</div>
+                  <pre style={{ fontSize: 12 }}>{JSON.stringify(selectedFineliMapping, null, 2)}</pre>
+                </div>
+              )}
+              */}
+
             </StyledDiv>
 
 
