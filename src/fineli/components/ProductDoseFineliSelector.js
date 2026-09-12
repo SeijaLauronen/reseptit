@@ -3,6 +3,7 @@ import useFineli from '../useFineli';
 import { nutrientDefinitions } from '../nutrients';
 import { FineliSelect } from '../../components/Input';
 import { InputQuantity } from '../../components/Input';
+import { FineliDoseItem } from '../../components/Item';
 
 export default function ProductDoseFineliSelector({
   onSelect,
@@ -21,6 +22,7 @@ export default function ProductDoseFineliSelector({
   const [fineliAmountMax, setFineliAmountMax] = useState('');
   const [validationMessage, setValidationMessage] = useState('');
   const lastSentMappingRef = useRef(null);
+  const lastSentSelectRef = useRef(null);
   const getGramsPerUnit = (unit) => {
     if (!unit) return null;
     if (unit.code === 'G') return 1;
@@ -68,6 +70,17 @@ export default function ProductDoseFineliSelector({
     }
   }, [selected, selectedUnit, fineliAmountMin, fineliAmountMax, dose, onMappingChange]);
 
+  // Notify parent about selected item / unit but only after render (avoid setState-in-render warnings).
+  useEffect(() => {
+    if (typeof onSelect !== 'function') return;
+    const payload = selected ? { ...selected, fineliUnit: selectedUnit ?? null } : null;
+    const s = JSON.stringify(payload);
+    if (lastSentSelectRef.current !== s) {
+      lastSentSelectRef.current = s;
+      onSelect(payload);
+    }
+  }, [selected, selectedUnit, onSelect]);
+
   const doSearch = useCallback(async (q) => {
     setInfoMessage('');
 
@@ -89,10 +102,6 @@ export default function ProductDoseFineliSelector({
 
       // Valitaan ensimmäiseksi tarjolla oleva yksikkö eli G
       setSelectedUnit(item.units?.[0] ?? null);
-
-      if (onSelect) {
-        onSelect(item);
-      }
 
       setInfoMessage('Valittu automaattisesti yksi tulos');
       return;
@@ -174,10 +183,6 @@ export default function ProductDoseFineliSelector({
                     setSelected(null);
                     setSelectedUnit(null);
 
-                    if (onSelect) {
-                      onSelect(null);
-                    }
-
                     return;
                   }
 
@@ -190,10 +195,6 @@ export default function ProductDoseFineliSelector({
 
                     // G on aina ensimmäisenä
                     setSelectedUnit(item.units?.[0] ?? null);
-
-                    if (onSelect) {
-                      onSelect(item);
-                    }
                   }
                 }}
               >
@@ -243,89 +244,90 @@ export default function ProductDoseFineliSelector({
       {/* Unit select moved inline with Min/Max below */}
 
       {selected && (
-        <div style={{ marginTop: 12 }}>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label style={{ fontSize: 12 }}>Min</label>
-              <input
-                type="number"
-                value={fineliAmountMin}
-                onChange={e => setFineliAmountMin(e.target.value)}
-                min={0}
-                style={{ width: 50, padding: 2, margin: 2 }}
-                onBlur={() => {
-                  if (fineliAmountMin !== '') {
-                    const n = parseFloat(fineliAmountMin);
-                    if (!isNaN(n) && n < 0) setFineliAmountMin('0');
-                  }
-                }}
-                placeholder="min"
-              />
-            </div>
+        <div>
+          <FineliDoseItem>
+            <div>
+              <div>
+                <label>Min</label>
+                <InputQuantity
+                  type="number"
+                  value={fineliAmountMin}
+                  onChange={e => setFineliAmountMin(e.target.value)}
+                  min={0}
+                  onBlur={() => {
+                    if (fineliAmountMin !== '') {
+                      const n = parseFloat(fineliAmountMin);
+                      if (!isNaN(n) && n < 0) setFineliAmountMin('0');
+                    }
+                  }}
+                  placeholder="min"
+                />
+              </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label style={{ fontSize: 12 }}>Max</label>
-              <input
-                type="number"
-                value={fineliAmountMax}
-                onChange={e => setFineliAmountMax(e.target.value)}
-                min={0}
-                style={{ width: 50, padding: 2, margin: 2 }}
-                onBlur={() => {
-                  if (fineliAmountMax !== '') {
-                    const n = parseFloat(fineliAmountMax);
-                    if (!isNaN(n) && n < 0) setFineliAmountMax('0');
-                  }
-                }}
-                placeholder="max"
-              />
-            </div>
+              <div>
+                <label>Max</label>
+                <InputQuantity
+                  type="number"
+                  value={fineliAmountMax}
+                  onChange={e => setFineliAmountMax(e.target.value)}
+                  min={0}                  
+                  onBlur={() => {
+                    if (fineliAmountMax !== '') {
+                      const n = parseFloat(fineliAmountMax);
+                      if (!isNaN(n) && n < 0) setFineliAmountMax('0');
+                    }
+                  }}
+                  placeholder="max"
+                />
+              </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label style={{ fontSize: 12 }}>Yksikkö</label>
-              <FineliSelect
-                value={selectedUnit?.code || ''}
-                onChange={e => {
-                  const code = e.target.value;
-                  const unit = selected.units?.find(u => u.code === code);
-                  setSelectedUnit(unit ?? null);
-                  if (onSelect) onSelect({ ...selected, fineliUnit: unit ?? null });
-                }}
-                style={{ minWidth: 160 }}
-              >
-                <option value="">Valitse yksikkö...</option>
-                {selected.units?.map(unit => (
-                  <option key={unit.code} value={unit.code}>
-                    {unit.name}{unit.grams !== null && unit.grams !== undefined ? ` — ${unit.grams} g` : ''}
-                  </option>
-                ))}
-              </FineliSelect>
+              <div>
+                <label>Yksikkö</label>
+                <FineliSelect
+                  value={selectedUnit?.code || ''}
+                  onChange={e => {
+                    const code = e.target.value;
+                    const unit = selected.units?.find(u => u.code === code);
+                    setSelectedUnit(unit ?? null);
+                    // onSelect is handled in useEffect to avoid setState during render
+                  }}
+                  style={{ minWidth: 160 }}
+                >
+                  <option value="">Valitse yksikkö...</option>
+                  {selected.units?.map(unit => (
+                    <option key={unit.code} value={unit.code}>
+                      {unit.name}{unit.grams !== null && unit.grams !== undefined ? ` — ${unit.grams} g` : ''}
+                    </option>
+                  ))}
+                </FineliSelect>
+              </div>
             </div>
-          </div>
+            
+          </FineliDoseItem>
 
           <div style={{ marginTop: 8 }}>
-            {validationMessage && <div style={{ color: 'red' }}>{validationMessage}</div>}
+              {validationMessage && <div style={{ color: 'red' }}>{validationMessage}</div>}
 
-            <div style={{ fontSize: 13, marginTop: 6 }}>
-              {(() => {
-                const min = parseFloat(fineliAmountMin);
-                const max = parseFloat(fineliAmountMax);
-                const gramsPer = getGramsPerUnit(selectedUnit);
+              <div style={{ fontSize: 13, marginTop: 6 }}>
+                {(() => {
+                  const min = parseFloat(fineliAmountMin);
+                  const max = parseFloat(fineliAmountMax);
+                  const gramsPer = getGramsPerUnit(selectedUnit);
 
-                if (!selectedUnit) return 'Valitse yksikkö, jotta määrät voidaan laskea.';
-                if (isNaN(min) && isNaN(max)) return 'Anna min tai max arvo.';
+                  if (!selectedUnit) return 'Valitse yksikkö, jotta määrät voidaan laskea.';
+                  if (isNaN(min) && isNaN(max)) return 'Anna min tai max arvo.';
 
-                const minGrams = !isNaN(min) && gramsPer != null ? (min * gramsPer) : null;
-                const maxGrams = !isNaN(max) && gramsPer != null ? (max * gramsPer) : null;
+                  const minGrams = !isNaN(min) && gramsPer != null ? (min * gramsPer) : null;
+                  const maxGrams = !isNaN(max) && gramsPer != null ? (max * gramsPer) : null;
 
-                return (
-                  <div>
-                    Vastaavuus: {minGrams != null ? `${minGrams} g` : '—'} — {maxGrams != null ? `${maxGrams} g` : '—'}
-                  </div>
-                );
-              })()}
+                  return (
+                    <div>
+                      Vastaavuus: {minGrams != null ? `${minGrams} g` : '—'} — {maxGrams != null ? `${maxGrams} g` : '—'}
+                    </div>
+                  );
+                })()}
+              </div>
             </div>
-          </div>
         </div>
       )}
 
@@ -333,57 +335,57 @@ export default function ProductDoseFineliSelector({
       {selected && (
         <div style={{ marginTop: 12 }}>
           <div style={{ overflowX: 'auto' }}>
-              {(() => {
-                const min = parseFloat(fineliAmountMin);
-                const max = parseFloat(fineliAmountMax);
-                const gramsPer = getGramsPerUnit(selectedUnit);
-                const minGrams = !isNaN(min) && gramsPer != null ? (min * gramsPer) : null;
-                const maxGrams = !isNaN(max) && gramsPer != null ? (max * gramsPer) : null;
-                const fmt = v => {
-                  if (v == null) return '—';
-                  if (Math.abs(v - Math.round(v)) < 1e-9) return String(Math.round(v));
-                  return String(Number(v.toFixed(2)));
-                };
+            {(() => {
+              const min = parseFloat(fineliAmountMin);
+              const max = parseFloat(fineliAmountMax);
+              const gramsPer = getGramsPerUnit(selectedUnit);
+              const minGrams = !isNaN(min) && gramsPer != null ? (min * gramsPer) : null;
+              const maxGrams = !isNaN(max) && gramsPer != null ? (max * gramsPer) : null;
+              const fmt = v => {
+                if (v == null) return '—';
+                if (Math.abs(v - Math.round(v)) < 1e-9) return String(Math.round(v));
+                return String(Number(v.toFixed(2)));
+              };
 
-                return (
-                  <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-                    <thead>
-                      <tr style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>
-                        <th style={{ padding: '6px 8px', fontSize: 12}}>Ravintoarvot</th>
-                        <th style={{ padding: '6px 8px', fontSize: 12 }}>100 g</th>
-                        <th style={{ padding: '6px 8px', fontSize: 12 }}>{minGrams != null ? `${fmt(minGrams)} g` : 'min'}</th>
-                        <th style={{ padding: '6px 8px', fontSize: 12 }}>{maxGrams != null ? `${fmt(maxGrams)} g` : 'max'}</th>
-                        <th style={{ padding: '6px 8px', fontSize: 12 }}>Yksikkö</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {nutrientDefinitions.map(nutrient => {
-                        const per100 = selected.nutrients?.[nutrient.code]?.value ?? null;
+              return (
+                <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+                  <thead>
+                    <tr style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>
+                      <th style={{ padding: '6px 8px', fontSize: 12 }}>Ravintoarvot</th>
+                      <th style={{ padding: '6px 8px', fontSize: 12 }}>100 g</th>
+                      <th style={{ padding: '6px 8px', fontSize: 12 }}>{minGrams != null ? `${fmt(minGrams)} g` : 'min'}</th>
+                      <th style={{ padding: '6px 8px', fontSize: 12 }}>{maxGrams != null ? `${fmt(maxGrams)} g` : 'max'}</th>
+                      <th style={{ padding: '6px 8px', fontSize: 12 }}>Yksikkö</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {nutrientDefinitions.map(nutrient => {
+                      const per100 = selected.nutrients?.[nutrient.code]?.value ?? null;
 
-                        const computeForGrams = g => {
-                          if (g == null || per100 == null) return null;
-                          const v = (g / 100) * per100;
-                          return Number.isFinite(v) ? v : null;
-                        };
+                      const computeForGrams = g => {
+                        if (g == null || per100 == null) return null;
+                        const v = (g / 100) * per100;
+                        return Number.isFinite(v) ? v : null;
+                      };
 
-                        const minVal = computeForGrams(minGrams);
-                        const maxVal = computeForGrams(maxGrams);
+                      const minVal = computeForGrams(minGrams);
+                      const maxVal = computeForGrams(maxGrams);
 
-                        return (
-                          <tr key={nutrient.code} style={{ borderBottom: '1px solid #f2f2f2' }}>
-                            <td style={{ padding: '6px 8px', fontSize: 13 }}>{nutrient.name}</td>
-                            <td style={{ padding: '6px 8px', fontSize: 12 }}>{per100 != null ? `${fmt(per100)}` : '—'}</td>
-                            <td style={{ padding: '6px 8px', fontSize: 12 }}>{fmt(minVal) !== '—' ? `${fmt(minVal)}` : '—'}</td>
-                            <td style={{ padding: '6px 8px', fontSize: 12 }}>{fmt(maxVal) !== '—' ? `${fmt(maxVal)}` : '—'}</td>
-                            <td style={{ padding: '6px 8px', fontSize: 12 }}>{nutrient.unit}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                );
-              })()}
-            </div>
+                      return (
+                        <tr key={nutrient.code} style={{ borderBottom: '1px solid #f2f2f2' }}>
+                          <td style={{ padding: '6px 8px', fontSize: 13 }}>{nutrient.name}</td>
+                          <td style={{ padding: '6px 8px', fontSize: 12 }}>{per100 != null ? `${fmt(per100)}` : '—'}</td>
+                          <td style={{ padding: '6px 8px', fontSize: 12 }}>{fmt(minVal) !== '—' ? `${fmt(minVal)}` : '—'}</td>
+                          <td style={{ padding: '6px 8px', fontSize: 12 }}>{fmt(maxVal) !== '—' ? `${fmt(maxVal)}` : '—'}</td>
+                          <td style={{ padding: '6px 8px', fontSize: 12 }}>{nutrient.unit}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              );
+            })()}
+          </div>
         </div>
       )}
 

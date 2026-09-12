@@ -112,6 +112,94 @@ export const DayProductItem = styled(ShoppingListItem)`
    margin-left: 40px;
 `;
 
+export const FineliDoseItem = styled(ShoppingListItem)`
+   border:none;   
+   margin-left: 0px;
+   margin-top: 12px;
+   padding-left: 0px; 
+   padding-right: 0px; 
+
+   /* Layout for the inner row used by ProductDoseFineliSelector */
+   > div:first-child {
+     display: flex;
+     gap: 8px;
+     align-items: center;
+     width: 100%;
+     flex-wrap: nowrap; /* default: keep all on one row */
+   }
+
+   /* Min column */
+   > div:first-child > div:nth-child(1) {
+     display: flex;
+     flex-direction: column;
+     align-items: flex-start;
+   }
+   > div:first-child > div:nth-child(1) input[type="number"] {
+     width: 55px;
+     box-sizing: border-box;
+   }
+
+   /* Max column */
+   > div:first-child > div:nth-child(2) {
+     display: flex;
+     flex-direction: column;
+     align-items: flex-start;
+   }
+   > div:first-child > div:nth-child(2) input[type="number"] {
+     width: 55px;
+     box-sizing: border-box;
+   }
+
+   /* Unit column takes remaining space */
+   > div:first-child > div:nth-child(3) {
+     flex: 1 1 auto;
+     min-width: 0; /* allow to shrink if needed */
+     display: flex;
+     flex-direction: column;
+   }
+   > div:first-child > div:nth-child(3) select {
+     width: 100%;
+     box-sizing: border-box;
+   }
+
+   label {
+     font-size: 12px;
+   }
+
+  @media (max-width: 420px) {
+    > div:first-child {
+      flex-wrap: wrap; /* allow wrapping on small screens */
+      align-items: flex-start;
+    }
+
+    /* Keep Min and Max on the same row (fixed width) */
+    > div:first-child > div:nth-child(1),
+    > div:first-child > div:nth-child(2) {
+      flex: 0 0 auto;
+      order: 1;
+      margin-right: 6px;
+    }
+
+    > div:first-child > div:nth-child(1) input[type="number"],
+    > div:first-child > div:nth-child(2) input[type="number"] {
+      width: 55px;
+      box-sizing: border-box;
+    }
+
+    /* Unit drops below and takes full width */
+    > div:first-child > div:nth-child(3) {
+      flex-basis: 100%;
+      order: 2;
+      margin-top: 6px;
+    }
+
+    > div:first-child > div:nth-child(3) select {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+`;
+
 export const DayClassItem = styled.div`
   margin: 2px 20px;
   padding: 6px ; 
