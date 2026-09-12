@@ -154,11 +154,14 @@ export const FineliDoseItem = styled(ShoppingListItem)`
    > div:first-child > div:nth-child(3) {
      flex: 1 1 auto;
      min-width: 0; /* allow to shrink if needed */
+     max-width: 100%; // ettei mene yli
      display: flex;
      flex-direction: column;
    }
    > div:first-child > div:nth-child(3) select {
      width: 100%;
+     min-width: 0; 
+     max-width: 100%; // ettei mene yli
      box-sizing: border-box;
    }
 
@@ -166,7 +169,7 @@ export const FineliDoseItem = styled(ShoppingListItem)`
      font-size: 12px;
    }
 
-  @media (max-width: 420px) {
+  @media (max-width: 300px) {
     > div:first-child {
       flex-wrap: wrap; /* allow wrapping on small screens */
       align-items: flex-start;

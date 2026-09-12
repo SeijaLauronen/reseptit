@@ -290,8 +290,7 @@ export default function ProductDoseFineliSelector({
                     const unit = selected.units?.find(u => u.code === code);
                     setSelectedUnit(unit ?? null);
                     // onSelect is handled in useEffect to avoid setState during render
-                  }}
-                  style={{ minWidth: 160 }}
+                  }}                  
                 >
                   <option value="">Valitse yksikkö...</option>
                   {selected.units?.map(unit => (
