@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
+
 import useFineli from '../useFineli';
 import FineliService from '../FineliService';
 import { nutrientDefinitions } from '../nutrients';
@@ -23,157 +24,94 @@ export default function ProductDoseFineliSelector({
   const [fineliAmountMin, setFineliAmountMin] = useState('');
   const [fineliAmountMax, setFineliAmountMax] = useState('');
   const [validationMessage, setValidationMessage] = useState('');
+
   const lastSentMappingRef = useRef(null);
   const lastSentSelectRef = useRef(null);
-  const lastInitialMappingRef = useRef(null);
-  const skipNextEmitRef = useRef(false);
+
+  /*
+   * Alustus tehdään vain kerran komponentin elinkaaren aikana.
+   *
+   * Tärkeää:
+   * initialMapping muuttuu myöhemmin myös silloin, kun käyttäjä
+   * muuttaa Min/Max-arvoja. Silloin sitä EI pidä käsitellä uutena
+   * alustuksena, koska muuten käyttäjän tekemät muutokset
+   * palautuisivat vanhoihin arvoihin.
+   */
+  const initializedRef = useRef(false);
+
+  /*
+   * Muistetaan oliko edellisessä renderöinnissä mapping.
+   *
+   * Tätä käytetään vain "Poista vastaavuus" -tilanteen havaitsemiseen.
+   */
+  const previousInitialMappingRef = useRef(initialMapping);
+
+  /*
+   * Estetään mappingin lähettäminen parentille silloin,
+   * kun olemassa olevaa Fineli-tietoa vasta alustetaan.
+   */
+  const isInitializingRef = useRef(false);
+
+  /*
+   * Jos tuotteella on jo tallennettu Fineli-vastaavuus,
+   * automaattinen nimihaku ei saa korvata sitä.
+   */
+  const hasInitialMappingRef = useRef(
+    Boolean(initialMapping?.fineliId)
+  );
+
   const getGramsPerUnit = (unit) => {
     if (!unit) return null;
-    if (unit.code === 'G') return 1;
-    if (unit.name && /^\s*g(ram)?s?\.?$/i.test(unit.name)) return 1;
-    if (unit.grams != null && !Number.isNaN(Number(unit.grams))) return Number(unit.grams);
+
+    if (unit.code === 'G') {
+      return 1;
+    }
+
+    if (
+      unit.grams !== null &&
+      unit.grams !== undefined &&
+      !Number.isNaN(Number(unit.grams))
+    ) {
+      return Number(unit.grams);
+    }
+
     return null;
   };
 
-  // Prefill from initial mapping when provided (mount or mapping change)
-  useEffect(() => {
-    // Dedupe by stringified value to avoid repeated effects from equivalent objects
-    const nextS = initialMapping == null ? 'null' : (() => {
-      try { return JSON.stringify(initialMapping); } catch (e) { return String(initialMapping); }
-    })();
-    if (lastInitialMappingRef.current === nextS) return;
-    lastInitialMappingRef.current = nextS;
-
-    if (!initialMapping) {
-      // clear internal state when initialMapping explicitly set to null
-      setFineliAmountMin('');
-      setFineliAmountMax('');
-      setSelectedUnit(null);
-      setSelected(null);
-      // when clearing mapping, allow next mapping emission to run
-      skipNextEmitRef.current = false;
-      return;
+  /*
+   * Etsii tallennetun yksikön ladatun Fineli-tuotteen
+   * yksiköistä.
+   */
+  const findSavedUnit = (food, savedUnit) => {
+    if (!food?.units || !savedUnit) {
+      return null;
     }
 
-    setFineliAmountMin(initialMapping.fineliAmount?.min ?? '');
-    setFineliAmountMax(initialMapping.fineliAmount?.max ?? '');
-
-    // If there's a fineliId, try to load the full item so unit select shows all options
-    if (initialMapping.fineliId) {
-      (async () => {
-        try {
-          const full = await FineliService.getById(initialMapping.fineliId);
-          if (full) {
-            setSelected(full);
-
-            // find unit by code or by name
-            let targetUnit = initialMapping.fineliUnit ?? null;
-            if (targetUnit) {
-              if (typeof targetUnit === 'string') {
-                targetUnit = full.units?.find(u => u.code === targetUnit || u.name === targetUnit) ?? { code: targetUnit, name: targetUnit, grams: null };
-              } else {
-                // object with code/name
-                targetUnit = full.units?.find(u => u.code === targetUnit.code || u.name === targetUnit.name) ?? targetUnit;
-              }
-            }
-            setSelectedUnit(targetUnit ?? null);
-            // we've just applied the initial mapping from props — skip emitting it back to parent once
-            skipNextEmitRef.current = true;
-            return;
-          }
-        } catch (err) {
-          // fallback to minimal placeholder below
-        }
-
-        // fallback: normalise unit: allow stored unit to be either a code string or an object
-        let unit = initialMapping.fineliUnit ?? null;
-        if (unit && typeof unit === 'string') {
-          unit = { code: unit, name: unit, grams: null };
-        }
-        setSelectedUnit(unit);
-        setSelected({
-          fineliId: initialMapping.fineliId,
-          name: initialMapping.fineliName || `Fineli ${initialMapping.fineliId}`,
-          units: unit ? [unit] : [],
-          nutrients: initialMapping.nutrients || {}
-        });
-        // applied fallback initial mapping — skip emitting it back to parent once
-        skipNextEmitRef.current = true;
-      })();
-    } else {
-      // no fineliId, just set unit/min/max
-      let unit = initialMapping.fineliUnit ?? null;
-      if (unit && typeof unit === 'string') unit = { code: unit, name: unit, grams: null };
-      setSelectedUnit(unit);
-      // applied initial mapping without fineliId — skip emitting once
-      skipNextEmitRef.current = true;
-    }
-  }, [initialMapping]);
-
-  useEffect(() => {
-    if (skipNextEmitRef.current) {
-      // consume the skip flag once and don't emit mapping on initial prefill
-      skipNextEmitRef.current = false;
-      return;
-    }
-    const min = parseFloat(fineliAmountMin);
-    const max = parseFloat(fineliAmountMax);
-    const gramsPer = getGramsPerUnit(selectedUnit);
-
-    // validation: min/max non-negative and max >= min
-    if (!isNaN(min) && min < 0) {
-      setValidationMessage('Min ei voi olla negatiivinen');
-    } else if (!isNaN(max) && max < 0) {
-      setValidationMessage('Max ei voi olla negatiivinen');
-    } else if (!isNaN(min) && !isNaN(max) && max < min) {
-      setValidationMessage('Max pitää olla vähintään Min-arvon suuruinen');
-    } else {
-      setValidationMessage('');
+    if (typeof savedUnit === 'string') {
+      return (
+        food.units.find(
+          unit =>
+            unit.code === savedUnit ||
+            unit.name === savedUnit
+        ) ?? null
+      );
     }
 
-    const mapping = {
-      dose: dose ?? null,
-      fineliId: selected?.fineliId ?? null,
-      fineliUnit: selectedUnit ?? null,
-      fineliAmount: {
-        min: !isNaN(min) ? min : null,
-        max: !isNaN(max) ? max : null
-      },
-      fineliDose: {
-        min: !isNaN(min) && gramsPer != null ? min * gramsPer : null,
-        max: !isNaN(max) && gramsPer != null ? max * gramsPer : null
-      }
-    };
+    return (
+      food.units.find(
+        unit =>
+          unit.code === savedUnit.code ||
+          unit.name === savedUnit.name
+      ) ?? null
+    );
+  };
 
-    if (typeof onMappingChange === 'function') {
-      // If nothing is selected and amounts are empty, treat as cleared mapping and emit null
-      const isEmpty = !mapping.fineliId && !mapping.fineliUnit && mapping.fineliAmount.min == null && mapping.fineliAmount.max == null;
-      if (isEmpty) {
-        if (lastSentMappingRef.current !== 'null') {
-          lastSentMappingRef.current = 'null';
-          onMappingChange(null);
-        }
-      } else {
-        const s = JSON.stringify(mapping);
-        if (lastSentMappingRef.current !== s) {
-          lastSentMappingRef.current = s;
-          onMappingChange(mapping);
-        }
-      }
-    }
-  }, [selected, selectedUnit, fineliAmountMin, fineliAmountMax, dose, onMappingChange]);
-
-  // Notify parent about selected item / unit but only after render (avoid setState-in-render warnings).
-  useEffect(() => {
-    if (typeof onSelect !== 'function') return;
-    const payload = selected ? { ...selected, fineliUnit: selectedUnit ?? null } : null;
-    const s = JSON.stringify(payload);
-    if (lastSentSelectRef.current !== s) {
-      lastSentSelectRef.current = s;
-      onSelect(payload);
-    }
-  }, [selected, selectedUnit, onSelect]);
-
+  /*
+   * Fineli-haku.
+   *
+   * Tämä määritellään ennen alustusefektiä, jotta
+   * automaattinen haku voi käyttää sitä.
+   */
   const doSearch = useCallback(async (q) => {
     setInfoMessage('');
 
@@ -193,18 +131,381 @@ export default function ProductDoseFineliSelector({
 
       setSelected(item);
 
-      // Valitaan ensimmäiseksi tarjolla oleva yksikkö eli G
+      /*
+       * Uuden haun yhteydessä ensimmäinen yksikkö on oletus.
+       * G on datasetissä ensimmäisenä.
+       */
       setSelectedUnit(item.units?.[0] ?? null);
 
-      setInfoMessage('Valittu automaattisesti yksi tulos');
+      setInfoMessage(
+        'Valittu automaattisesti yksi tulos'
+      );
+
       return;
     }
 
-    // Useita tuloksia: näytetään tuotteen valinta
+    /*
+     * Useita tuloksia: näytetään tuotteen valinta.
+     */
     setSelected(null);
     setSelectedUnit(null);
-  }, [onSelect, search]);
+  }, [search]);
 
+  /*
+   * Alustetaan olemassa oleva Fineli-mapping vain kerran.
+   *
+   * Tämä on olennainen ero aikaisempaan versioon:
+   *
+   * initialMapping voi myöhemmin muuttua, kun käyttäjä muuttaa
+   * Min/Max-arvoja. Silloin emme enää lataa vanhaa mappingia
+   * uudestaan.
+   */
+  useEffect(() => {
+    /*
+     * Ensimmäinen ajo: alustetaan tuotteen olemassa oleva mapping.
+     */
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+
+      /*
+       * Muistetaan alkuperäinen tila.
+       */
+      previousInitialMappingRef.current = initialMapping;
+
+      /*
+       * Ei olemassa olevaa Fineli-mappingia.
+       */
+      if (!initialMapping) {
+        hasInitialMappingRef.current = false;
+        return;
+      }
+
+      /*
+       * Tuotteella on olemassa oleva Fineli-vastaavuus.
+       */
+      isInitializingRef.current = true;
+      hasInitialMappingRef.current = Boolean(
+        initialMapping.fineliId
+      );
+
+      /*
+       * Palautetaan tallennetut Min/Max-arvot.
+       */
+      setFineliAmountMin(
+        initialMapping.fineliAmount?.min ?? ''
+      );
+
+      setFineliAmountMax(
+        initialMapping.fineliAmount?.max ?? ''
+      );
+
+      /*
+       * Haetaan varsinainen Fineli-tietue ID:n perusteella.
+       */
+      if (initialMapping.fineliId) {
+        let cancelled = false;
+
+        const loadFineli = async () => {
+          try {
+            const full =
+              await FineliService.getById(
+                initialMapping.fineliId
+              );
+
+            if (cancelled) {
+              return;
+            }
+
+            if (full) {
+              /*
+               * Tämä antaa selectedille kaikki Fineli-tuotteen
+               * tiedot ja kaikki sen yksiköt.
+               */
+              setSelected(full);
+
+              /*
+               * Palautetaan juuri tallennettu yksikkö.
+               *
+               * Esimerkiksi KPL_M pysyy KPL_M:nä eikä vaihdu
+               * G:ksi.
+               */
+              const savedUnit = findSavedUnit(
+                full,
+                initialMapping.fineliUnit
+              );
+
+              setSelectedUnit(savedUnit);
+
+              /*
+               * Alustus on valmis.
+               */
+              isInitializingRef.current = false;
+
+              return;
+            }
+          } catch (err) {
+            /*
+             * Jos haku epäonnistuu, käytetään fallbackia.
+             */
+          }
+
+          if (cancelled) {
+            return;
+          }
+
+          /*
+           * Fallback: käytetään tallennettua yksikköä sellaisenaan.
+           */
+          let savedUnit =
+            initialMapping.fineliUnit ?? null;
+
+          if (savedUnit && typeof savedUnit === 'string') {
+            savedUnit = {
+              code: savedUnit,
+              name: savedUnit,
+              grams: null
+            };
+          }
+
+          setSelectedUnit(savedUnit);
+
+          setSelected({
+            fineliId:
+              initialMapping.fineliId,
+            name:
+              initialMapping.fineliName ||
+              `Fineli ${initialMapping.fineliId}`,
+            units: savedUnit
+              ? [savedUnit]
+              : [],
+            nutrients:
+              initialMapping.nutrients || {}
+          });
+
+          isInitializingRef.current = false;
+        };
+
+        loadFineli();
+
+        return () => {
+          cancelled = true;
+        };
+      }
+
+      /*
+       * Mappingissa ei ole Fineli-ID:tä.
+       * Säilytetään mahdollinen yksikkö kuitenkin.
+       */
+      let savedUnit =
+        initialMapping.fineliUnit ?? null;
+
+      if (savedUnit && typeof savedUnit === 'string') {
+        savedUnit = {
+          code: savedUnit,
+          name: savedUnit,
+          grams: null
+        };
+      }
+
+      setSelectedUnit(savedUnit);
+      setSelected(null);
+
+      isInitializingRef.current = false;
+
+      return;
+    }
+
+    /*
+     * Komponentti on jo alustettu.
+     *
+     * Jos mapping muuttuu non-null -> null, kyseessä on
+     * käyttäjän "Poista vastaavuus".
+     *
+     * Muut non-null -> non-null muutokset jätetään rauhaan,
+     * koska ne voivat johtua käyttäjän Min/Max-muutoksista.
+     */
+    const previous =
+      previousInitialMappingRef.current;
+
+    if (previous && !initialMapping) {
+      hasInitialMappingRef.current = false;
+
+      setFineliAmountMin('');
+      setFineliAmountMax('');
+      setSelectedUnit(null);
+      setSelected(null);
+    }
+
+    previousInitialMappingRef.current =
+      initialMapping;
+  }, [initialMapping]);
+
+  /*
+   * Automaattinen haku tuotteen nimellä.
+   *
+   * Jos tuotteella on jo olemassa oleva Fineli-vastaavuus,
+   * automaattista hakua ei tehdä.
+   *
+   * Näin tallennettu KPL_M tms. ei pääse vaihtumaan G:ksi.
+   */
+  useEffect(() => {
+    if (!autoSearch) return;
+
+    if (!initialQuery || !initialQuery.trim()) {
+      return;
+    }
+
+    if (hasInitialMappingRef.current) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      doSearch(initialQuery);
+    }, debounceMs);
+
+    return () => clearTimeout(timer);
+  }, [
+    initialQuery,
+    autoSearch,
+    debounceMs,
+    doSearch
+  ]);
+
+  /*
+   * Muodostetaan mapping ja ilmoitetaan siitä parentille.
+   */
+  useEffect(() => {
+    const min = parseFloat(fineliAmountMin);
+    const max = parseFloat(fineliAmountMax);
+    const gramsPer = getGramsPerUnit(selectedUnit);
+
+    /*
+     * Validointi: min/max eivät saa olla negatiivisia
+     * ja max >= min.
+     */
+    if (!isNaN(min) && min < 0) {
+      setValidationMessage(
+        'Min ei voi olla negatiivinen'
+      );
+    } else if (!isNaN(max) && max < 0) {
+      setValidationMessage(
+        'Max ei voi olla negatiivinen'
+      );
+    } else if (
+      !isNaN(min) &&
+      !isNaN(max) &&
+      max < min
+    ) {
+      setValidationMessage(
+        'Max pitää olla vähintään Min-arvon suuruinen'
+      );
+    } else {
+      setValidationMessage('');
+    }
+
+    /*
+     * Älä lähetä keskeneräistä mappingia parentille,
+     * kun olemassa olevaa tuotetta vasta alustetaan.
+     */
+    if (isInitializingRef.current) {
+      return;
+    }
+
+    const mapping = {
+      dose: dose ?? null,
+
+      fineliId:
+        selected?.fineliId ?? null,
+
+      fineliUnit:
+        selectedUnit ?? null,
+
+      fineliAmount: {
+        min: !isNaN(min) ? min : null,
+        max: !isNaN(max) ? max : null
+      },
+
+      fineliDose: {
+        min:
+          !isNaN(min) && gramsPer != null
+            ? min * gramsPer
+            : null,
+
+        max:
+          !isNaN(max) && gramsPer != null
+            ? max * gramsPer
+            : null
+      }
+    };
+
+    if (
+      typeof onMappingChange === 'function'
+    ) {
+      /*
+       * Jos mitään Fineli-tietoa ei ole,
+       * käsitellään mapping poistettuna.
+       */
+      const isEmpty =
+        !mapping.fineliId &&
+        !mapping.fineliUnit &&
+        mapping.fineliAmount.min == null &&
+        mapping.fineliAmount.max == null;
+
+      if (isEmpty) {
+        if (
+          lastSentMappingRef.current !== 'null'
+        ) {
+          lastSentMappingRef.current = 'null';
+          onMappingChange(null);
+        }
+      } else {
+        const s = JSON.stringify(mapping);
+
+        if (
+          lastSentMappingRef.current !== s
+        ) {
+          lastSentMappingRef.current = s;
+          onMappingChange(mapping);
+        }
+      }
+    }
+  }, [
+    selected,
+    selectedUnit,
+    fineliAmountMin,
+    fineliAmountMax,
+    dose,
+    onMappingChange
+  ]);
+
+  /*
+   * Notify parent about selected item / unit but only after render
+   * (avoid setState-in-render warnings).
+   */
+  useEffect(() => {
+    if (typeof onSelect !== 'function') return;
+
+    const payload = selected
+      ? {
+          ...selected,
+          fineliUnit:
+            selectedUnit ?? null
+        }
+      : null;
+
+    const s = JSON.stringify(payload);
+
+    if (
+      lastSentSelectRef.current !== s
+    ) {
+      lastSentSelectRef.current = s;
+      onSelect(payload);
+    }
+  }, [
+    selected,
+    selectedUnit,
+    onSelect
+  ]);
 
   return (
     <div style={{ border: '1px solid #ddd', padding: 12, borderRadius: 6 }}>
@@ -280,18 +581,28 @@ export default function ProductDoseFineliSelector({
                   }
 
                   const item = results.find(
-                    r => String(r.fineliId) === String(val)
+                    r =>
+                      String(r.fineliId) ===
+                      String(val)
                   );
 
                   if (item) {
+                    /*
+                     * Käyttäjä valitsi uuden Fineli-tuotteen.
+                     * Tällöin ensimmäinen yksikkö eli G on
+                     * oletuksena oikein.
+                     */
+                    hasInitialMappingRef.current = false;
+
                     setSelected(item);
 
                     // G on aina ensimmäisenä
-                    setSelectedUnit(item.units?.[0] ?? null);
+                    setSelectedUnit(
+                      item.units?.[0] ?? null
+                    );
                   }
                 }}
               >
-
                 <option value="">
                   Valitse tuote...
                 </option>
@@ -304,7 +615,6 @@ export default function ProductDoseFineliSelector({
                     {r.name}
                   </option>
                 ))}
-
               </FineliSelect>
 
             </div>
@@ -363,7 +673,7 @@ export default function ProductDoseFineliSelector({
                   type="number"
                   value={fineliAmountMax}
                   onChange={e => setFineliAmountMax(e.target.value)}
-                  min={0}                  
+                  min={0}
                   onBlur={() => {
                     if (fineliAmountMax !== '') {
                       const n = parseFloat(fineliAmountMax);
@@ -383,7 +693,7 @@ export default function ProductDoseFineliSelector({
                     const unit = selected.units?.find(u => u.code === code);
                     setSelectedUnit(unit ?? null);
                     // onSelect is handled in useEffect to avoid setState during render
-                  }}                  
+                  }}
                 >
                   <option value="">Valitse yksikkö...</option>
                   {selected.units?.map(unit => (
@@ -394,7 +704,7 @@ export default function ProductDoseFineliSelector({
                 </FineliSelect>
               </div>
             </div>
-            
+
           </FineliDoseItem>
 
           <div style={{ marginTop: 8 }}>
@@ -484,4 +794,3 @@ export default function ProductDoseFineliSelector({
     </div>
   );
 }
-

@@ -237,6 +237,24 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
             </StyledDiv>
 
             <StyledDiv>
+              <Separator className='Separator' />
+              <label>Fineli vastaavuus: </label>
+              {selectedFineliMapping && (
+               
+                  <button type="button" onClick={() => {
+                    // remove mapping
+                    setSelectedFineli(null);
+                    setSelectedFineliMapping(null);
+                  }}>Poista vastaavuus </button>
+                
+              )}
+              
+              {selectedFineli && <div> {selectedFineli.name} </div>}
+
+            </StyledDiv>
+
+
+            <StyledDiv>
               {/* muu lomake */}
               <ProductDoseFineliSelector
                 initialQuery={name}
@@ -259,25 +277,6 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                 }}
               />
 
-              {selectedFineliMapping && (
-                <div style={{ marginTop: 8 }}>
-                  <button type="button" onClick={() => {
-                    // remove mapping
-                    setSelectedFineli(null);
-                    setSelectedFineliMapping(null);
-                  }}>Poista vastaavuus</button>
-                </div>
-              )}
-
-              {selectedFineli && <div>Valittu: {selectedFineli.name} (ID: {selectedFineli.fineliId})</div>}
-              {/*}
-              {selectedFineliMapping && (
-                <div style={{ marginTop: 8 }}>
-                  <div>Mapping preview:</div>
-                  <pre style={{ fontSize: 12 }}>{JSON.stringify(selectedFineliMapping, null, 2)}</pre>
-                </div>
-              )}
-              */}
 
             </StyledDiv>
 
