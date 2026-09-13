@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import useFineli from '../useFineli';
+import FineliService from '../FineliService';
 import { nutrientDefinitions } from '../nutrients';
 import { FineliSelect } from '../../components/Input';
 import { InputQuantity } from '../../components/Input';
@@ -11,7 +12,8 @@ export default function ProductDoseFineliSelector({
   initialQuery = '',
   autoSearch = true,
   debounceMs = 300,
-  dose = null
+  dose = null,
+  initialMapping = null,
 }) {
   const [query, setQuery] = useState(initialQuery || '');
   const { results, loading, error, search } = useFineli();
@@ -23,6 +25,8 @@ export default function ProductDoseFineliSelector({
   const [validationMessage, setValidationMessage] = useState('');
   const lastSentMappingRef = useRef(null);
   const lastSentSelectRef = useRef(null);
+  const lastInitialMappingRef = useRef(null);
+  const skipNextEmitRef = useRef(false);
   const getGramsPerUnit = (unit) => {
     if (!unit) return null;
     if (unit.code === 'G') return 1;
@@ -31,7 +35,87 @@ export default function ProductDoseFineliSelector({
     return null;
   };
 
+  // Prefill from initial mapping when provided (mount or mapping change)
   useEffect(() => {
+    // Dedupe by stringified value to avoid repeated effects from equivalent objects
+    const nextS = initialMapping == null ? 'null' : (() => {
+      try { return JSON.stringify(initialMapping); } catch (e) { return String(initialMapping); }
+    })();
+    if (lastInitialMappingRef.current === nextS) return;
+    lastInitialMappingRef.current = nextS;
+
+    if (!initialMapping) {
+      // clear internal state when initialMapping explicitly set to null
+      setFineliAmountMin('');
+      setFineliAmountMax('');
+      setSelectedUnit(null);
+      setSelected(null);
+      // when clearing mapping, allow next mapping emission to run
+      skipNextEmitRef.current = false;
+      return;
+    }
+
+    setFineliAmountMin(initialMapping.fineliAmount?.min ?? '');
+    setFineliAmountMax(initialMapping.fineliAmount?.max ?? '');
+
+    // If there's a fineliId, try to load the full item so unit select shows all options
+    if (initialMapping.fineliId) {
+      (async () => {
+        try {
+          const full = await FineliService.getById(initialMapping.fineliId);
+          if (full) {
+            setSelected(full);
+
+            // find unit by code or by name
+            let targetUnit = initialMapping.fineliUnit ?? null;
+            if (targetUnit) {
+              if (typeof targetUnit === 'string') {
+                targetUnit = full.units?.find(u => u.code === targetUnit || u.name === targetUnit) ?? { code: targetUnit, name: targetUnit, grams: null };
+              } else {
+                // object with code/name
+                targetUnit = full.units?.find(u => u.code === targetUnit.code || u.name === targetUnit.name) ?? targetUnit;
+              }
+            }
+            setSelectedUnit(targetUnit ?? null);
+            // we've just applied the initial mapping from props — skip emitting it back to parent once
+            skipNextEmitRef.current = true;
+            return;
+          }
+        } catch (err) {
+          // fallback to minimal placeholder below
+        }
+
+        // fallback: normalise unit: allow stored unit to be either a code string or an object
+        let unit = initialMapping.fineliUnit ?? null;
+        if (unit && typeof unit === 'string') {
+          unit = { code: unit, name: unit, grams: null };
+        }
+        setSelectedUnit(unit);
+        setSelected({
+          fineliId: initialMapping.fineliId,
+          name: initialMapping.fineliName || `Fineli ${initialMapping.fineliId}`,
+          units: unit ? [unit] : [],
+          nutrients: initialMapping.nutrients || {}
+        });
+        // applied fallback initial mapping — skip emitting it back to parent once
+        skipNextEmitRef.current = true;
+      })();
+    } else {
+      // no fineliId, just set unit/min/max
+      let unit = initialMapping.fineliUnit ?? null;
+      if (unit && typeof unit === 'string') unit = { code: unit, name: unit, grams: null };
+      setSelectedUnit(unit);
+      // applied initial mapping without fineliId — skip emitting once
+      skipNextEmitRef.current = true;
+    }
+  }, [initialMapping]);
+
+  useEffect(() => {
+    if (skipNextEmitRef.current) {
+      // consume the skip flag once and don't emit mapping on initial prefill
+      skipNextEmitRef.current = false;
+      return;
+    }
     const min = parseFloat(fineliAmountMin);
     const max = parseFloat(fineliAmountMax);
     const gramsPer = getGramsPerUnit(selectedUnit);
@@ -62,10 +146,19 @@ export default function ProductDoseFineliSelector({
     };
 
     if (typeof onMappingChange === 'function') {
-      const s = JSON.stringify(mapping);
-      if (lastSentMappingRef.current !== s) {
-        lastSentMappingRef.current = s;
-        onMappingChange(mapping);
+      // If nothing is selected and amounts are empty, treat as cleared mapping and emit null
+      const isEmpty = !mapping.fineliId && !mapping.fineliUnit && mapping.fineliAmount.min == null && mapping.fineliAmount.max == null;
+      if (isEmpty) {
+        if (lastSentMappingRef.current !== 'null') {
+          lastSentMappingRef.current = 'null';
+          onMappingChange(null);
+        }
+      } else {
+        const s = JSON.stringify(mapping);
+        if (lastSentMappingRef.current !== s) {
+          lastSentMappingRef.current = s;
+          onMappingChange(mapping);
+        }
       }
     }
   }, [selected, selectedUnit, fineliAmountMin, fineliAmountMax, dose, onMappingChange]);

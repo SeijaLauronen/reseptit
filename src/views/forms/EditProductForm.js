@@ -49,8 +49,30 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
 
   const noColor = { code: '#FFF', name: 'White' };
 
-  const [selectedFineli, setSelectedFineli] = useState(null);
-  const [selectedFineliMapping, setSelectedFineliMapping] = useState(null);
+  const [selectedFineli, setSelectedFineli] = useState(() => {
+    if (product.fineliId) {
+      // create a lightweight placeholder so selector can show previously saved unit
+      return {
+        fineliId: product.fineliId,
+        name: product.fineliName || `Fineli ${product.fineliId}`,
+        units: product.fineliUnit ? [product.fineliUnit] : []
+      };
+    }
+    return null;
+  });
+
+  const [selectedFineliMapping, setSelectedFineliMapping] = useState(() => {
+    if (product.fineliId) {
+      return {
+        dose: product.dose ?? null,
+        fineliId: product.fineliId ?? null,
+        fineliUnit: product.fineliUnit ?? null,
+        fineliAmount: product.fineliAmount ?? { min: null, max: null },
+        fineliDose: product.fineliDose ?? { min: null, max: null }
+      };
+    }
+    return null;
+  });
 
   const fetchAndSetCategories = async () => {
     try {
@@ -89,8 +111,18 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
       product.classId = parseInt(productClassId, 10);
       product.info = prodinfo;
       // store selected Fineli mapping if chosen
-      if (selectedFineli) {
-        product.fineliId = selectedFineli.fineliId;
+      if (selectedFineliMapping) {
+        product.fineliId = selectedFineliMapping.fineliId;
+        product.fineliUnit = selectedFineliMapping.fineliUnit ?? null;
+        product.fineliAmount = selectedFineliMapping.fineliAmount ?? { min: null, max: null };
+        product.fineliDose = selectedFineliMapping.fineliDose ?? { min: null, max: null };
+        product.dose = selectedFineliMapping.dose ?? dose;
+      } else {
+        // remove any previously saved mapping
+        delete product.fineliId;
+        delete product.fineliUnit;
+        delete product.fineliAmount;
+        delete product.fineliDose;
       }
       Object.keys(colors).forEach(colorKey => {
         product[colorKey] = productSelectedColors.includes(colorKey);
@@ -210,11 +242,32 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
                 initialQuery={name}
                 autoSearch={true}
                 dose={dose}
+                initialMapping={selectedFineliMapping}
                 onSelect={item => {
                   setSelectedFineli(item);
                 }}
-                onMappingChange={mapping => setSelectedFineliMapping(mapping)}
+                onMappingChange={mapping => {
+                  try {
+                    const prev = selectedFineliMapping;
+                    const prevS = prev == null ? 'null' : JSON.stringify(prev);
+                    const nextS = mapping == null ? 'null' : JSON.stringify(mapping);
+                    if (prevS === nextS) return; // no-op, avoid re-render loop
+                  } catch (err) {
+                    // If stringify fails for some reason, fall back to set anyway
+                  }
+                  setSelectedFineliMapping(mapping);
+                }}
               />
+
+              {selectedFineliMapping && (
+                <div style={{ marginTop: 8 }}>
+                  <button type="button" onClick={() => {
+                    // remove mapping
+                    setSelectedFineli(null);
+                    setSelectedFineliMapping(null);
+                  }}>Poista vastaavuus</button>
+                </div>
+              )}
 
               {selectedFineli && <div>Valittu: {selectedFineli.name} (ID: {selectedFineli.fineliId})</div>}
               {/*}

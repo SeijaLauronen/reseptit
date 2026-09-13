@@ -114,16 +114,9 @@ export const updateProduct = async (id, updatedProduct) => {
     const db = await getDB();
     const tx = db.transaction('products', 'readwrite');
     const store = tx.objectStore('products');
-    const product = await store.get(id);
-
-    // Päivitetään kaikki annetut kentät, TODO menisikö put käskyllä kuten alempana product päivityksessä...
-    for (const key in updatedProduct) {
-      if (updatedProduct.hasOwnProperty(key)) {
-        product[key] = updatedProduct[key];
-      }
-    }
-
-    await store.put(product);
+    // Replace the stored product with the provided updatedProduct object.
+    // This ensures removed/undefined fields are persisted as deletions.
+    await store.put(updatedProduct);
   } catch (err) {
     console.error('Error updating product:', err);
     throw new Error('Virhe päivitettäessä tuotetta: ' + err);
