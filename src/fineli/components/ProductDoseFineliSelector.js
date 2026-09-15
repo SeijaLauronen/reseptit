@@ -27,6 +27,7 @@ export default function ProductDoseFineliSelector({
 
   const lastSentMappingRef = useRef(null);
   const lastSentSelectRef = useRef(null);
+  const fineliSelectRef = useRef(null); // että saadaan Hae nailla suoraan aukeamaan valintalista
 
   /*
    * Alustus tehdään vain kerran komponentin elinkaaren aikana.
@@ -487,10 +488,10 @@ export default function ProductDoseFineliSelector({
 
     const payload = selected
       ? {
-          ...selected,
-          fineliUnit:
-            selectedUnit ?? null
-        }
+        ...selected,
+        fineliUnit:
+          selectedUnit ?? null
+      }
       : null;
 
     const s = JSON.stringify(payload);
@@ -506,6 +507,15 @@ export default function ProductDoseFineliSelector({
     selectedUnit,
     onSelect
   ]);
+
+// Avataan Finelin valintalista automaattisesti, kun on painettu Hae"
+// TODO ei toimi, johtunee selaimesta. Toteutetaan toisenlaisella komponentilla myöhemmin
+  useEffect(() => {
+    if (results.length > 1 && fineliSelectRef.current) {
+      fineliSelectRef.current.focus();
+      fineliSelectRef.current.click();
+    }
+  }, [results]);
 
   return (
     <div style={{ border: '1px solid #ddd', padding: 12, borderRadius: 6 }}>
@@ -569,6 +579,7 @@ export default function ProductDoseFineliSelector({
             >
 
               <FineliSelect
+                ref={fineliSelectRef}
                 value={selected?.fineliId || ''}
                 onChange={e => {
                   const val = e.target.value;
@@ -708,28 +719,28 @@ export default function ProductDoseFineliSelector({
           </FineliDoseItem>
 
           <div style={{ marginTop: 8 }}>
-              {validationMessage && <div style={{ color: 'red' }}>{validationMessage}</div>}
+            {validationMessage && <div style={{ color: 'red' }}>{validationMessage}</div>}
 
-              <div style={{ fontSize: 13, marginTop: 6 }}>
-                {(() => {
-                  const min = parseFloat(fineliAmountMin);
-                  const max = parseFloat(fineliAmountMax);
-                  const gramsPer = getGramsPerUnit(selectedUnit);
+            <div style={{ fontSize: 13, marginTop: 6 }}>
+              {(() => {
+                const min = parseFloat(fineliAmountMin);
+                const max = parseFloat(fineliAmountMax);
+                const gramsPer = getGramsPerUnit(selectedUnit);
 
-                  if (!selectedUnit) return 'Valitse yksikkö, jotta määrät voidaan laskea.';
-                  if (isNaN(min) && isNaN(max)) return 'Anna min tai max arvo.';
+                if (!selectedUnit) return 'Valitse yksikkö, jotta määrät voidaan laskea.';
+                if (isNaN(min) && isNaN(max)) return 'Anna min tai max arvo.';
 
-                  const minGrams = !isNaN(min) && gramsPer != null ? (min * gramsPer) : null;
-                  const maxGrams = !isNaN(max) && gramsPer != null ? (max * gramsPer) : null;
+                const minGrams = !isNaN(min) && gramsPer != null ? (min * gramsPer) : null;
+                const maxGrams = !isNaN(max) && gramsPer != null ? (max * gramsPer) : null;
 
-                  return (
-                    <div>
-                      Vastaavuus: {minGrams != null ? `${minGrams} g` : '—'} — {maxGrams != null ? `${maxGrams} g` : '—'}
-                    </div>
-                  );
-                })()}
-              </div>
+                return (
+                  <div>
+                    Vastaavuus: {minGrams != null ? `${minGrams} g` : '—'} — {maxGrams != null ? `${maxGrams} g` : '—'}
+                  </div>
+                );
+              })()}
             </div>
+          </div>
         </div>
       )}
 

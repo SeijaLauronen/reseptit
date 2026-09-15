@@ -258,7 +258,8 @@ const EditProductForm = ({ product, onSave, onCancel, onDelete, isOpen, editAmou
               {/* muu lomake */}
               <ProductDoseFineliSelector
                 initialQuery={name}
-                autoSearch={true}
+                
+                autoSearch={Boolean(product.fineliId)}
                 dose={dose}
                 initialMapping={selectedFineliMapping}
                 onSelect={item => {
