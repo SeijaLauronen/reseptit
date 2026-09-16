@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-import useFineli from '../useFineli';
 import FineliService from '../FineliService';
+import FineliProductSelector from '../FineliProductSelector';
 import { nutrientDefinitions } from '../nutrients';
 import { FineliSelect } from '../../components/Input';
 import { InputQuantity } from '../../components/Input';
@@ -16,18 +16,14 @@ export default function ProductDoseFineliSelector({
   dose = null,
   initialMapping = null,
 }) {
-  const [query, setQuery] = useState(initialQuery || '');
-  const { results, loading, error, search } = useFineli();
   const [selected, setSelected] = useState(null);
   const [selectedUnit, setSelectedUnit] = useState(null);
-  const [infoMessage, setInfoMessage] = useState('');
   const [fineliAmountMin, setFineliAmountMin] = useState('');
   const [fineliAmountMax, setFineliAmountMax] = useState('');
   const [validationMessage, setValidationMessage] = useState('');
 
   const lastSentMappingRef = useRef(null);
   const lastSentSelectRef = useRef(null);
-  const fineliSelectRef = useRef(null); // että saadaan Hae nailla suoraan aukeamaan valintalista
 
   /*
    * Alustus tehdään vain kerran komponentin elinkaaren aikana.
@@ -106,51 +102,6 @@ export default function ProductDoseFineliSelector({
       ) ?? null
     );
   };
-
-  /*
-   * Fineli-haku.
-   *
-   * Tämä määritellään ennen alustusefektiä, jotta
-   * automaattinen haku voi käyttää sitä.
-   */
-  const doSearch = useCallback(async (q) => {
-    setInfoMessage('');
-
-    if (!q || !q.trim()) return;
-
-    const res = await search(q);
-
-    if (!res || res.length === 0) {
-      setSelected(null);
-      setSelectedUnit(null);
-      setInfoMessage('Ei tuloksia');
-      return;
-    }
-
-    if (res.length === 1) {
-      const item = res[0];
-
-      setSelected(item);
-
-      /*
-       * Uuden haun yhteydessä ensimmäinen yksikkö on oletus.
-       * G on datasetissä ensimmäisenä.
-       */
-      setSelectedUnit(item.units?.[0] ?? null);
-
-      setInfoMessage(
-        'Valittu automaattisesti yksi tulos'
-      );
-
-      return;
-    }
-
-    /*
-     * Useita tuloksia: näytetään tuotteen valinta.
-     */
-    setSelected(null);
-    setSelectedUnit(null);
-  }, [search]);
 
   /*
    * Alustetaan olemassa oleva Fineli-mapping vain kerran.
@@ -342,37 +293,6 @@ export default function ProductDoseFineliSelector({
   }, [initialMapping]);
 
   /*
-   * Automaattinen haku tuotteen nimellä.
-   *
-   * Jos tuotteella on jo olemassa oleva Fineli-vastaavuus,
-   * automaattista hakua ei tehdä.
-   *
-   * Näin tallennettu KPL_M tms. ei pääse vaihtumaan G:ksi.
-   */
-  useEffect(() => {
-    if (!autoSearch) return;
-
-    if (!initialQuery || !initialQuery.trim()) {
-      return;
-    }
-
-    if (hasInitialMappingRef.current) {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      doSearch(initialQuery);
-    }, debounceMs);
-
-    return () => clearTimeout(timer);
-  }, [
-    initialQuery,
-    autoSearch,
-    debounceMs,
-    doSearch
-  ]);
-
-  /*
    * Muodostetaan mapping ja ilmoitetaan siitä parentille.
    */
   useEffect(() => {
@@ -508,154 +428,39 @@ export default function ProductDoseFineliSelector({
     onSelect
   ]);
 
-// Avataan Finelin valintalista automaattisesti, kun on painettu Hae"
-// TODO ei toimi, johtunee selaimesta. Toteutetaan toisenlaisella komponentilla myöhemmin
-  useEffect(() => {
-    if (results.length > 1 && fineliSelectRef.current) {
-      fineliSelectRef.current.focus();
-      fineliSelectRef.current.click();
-    }
-  }, [results]);
-
   return (
     <div style={{ border: '1px solid #ddd', padding: 12, borderRadius: 6 }}>
 
-      <div style={{ marginBottom: 8 }}>
+      <FineliProductSelector
+        initialQuery={initialQuery}
+        autoSearch={
+          autoSearch &&
+          !hasInitialMappingRef.current
+        }
+        debounceMs={debounceMs}
+        selectedId={selected?.fineliId || ''}
+        onSelect={(item) => {
+          if (!item) {
+            setSelected(null);
+            setSelectedUnit(null);
+            return;
+          }
 
-        <label
-          style={{
-            display: 'block',
-            fontSize: 12,
-            marginBottom: 4
-          }}
-        >
-          Hae Finelistä
-        </label>
+          /*
+           * Käyttäjä valitsi uuden Fineli-tuotteen.
+           * Tällöin ensimmäinen yksikkö eli G on
+           * oletuksena oikein.
+           */
+          hasInitialMappingRef.current = false;
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            gap: 8,
-            alignItems: 'center'
-          }}
-        >
+          setSelected(item);
 
-          <input
-            value={query}
-            onChange={e => {
-              setQuery(e.target.value);
-              setInfoMessage('');
-            }}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                doSearch(query);
-              }
-            }}
-            placeholder="Kirjoita tuotteen nimi"
-            style={{
-              width: '100%',
-              padding: 6
-            }}
-          />
+          setSelectedUnit(
+            item.units?.[0] ?? null
+          );
+        }}
+      />
 
-          <button
-            onClick={() => doSearch(query)}
-            disabled={loading}
-            style={{
-              padding: '6px 10px'
-            }}
-          >
-            Hae
-          </button>
-
-          {results && results.length > 0 && (
-            <div
-              style={{
-                gridColumn: '1 / -1',
-                marginTop: 8
-              }}
-            >
-
-              <FineliSelect
-                ref={fineliSelectRef}
-                value={selected?.fineliId || ''}
-                onChange={e => {
-                  const val = e.target.value;
-
-                  if (!val) {
-                    setSelected(null);
-                    setSelectedUnit(null);
-
-                    return;
-                  }
-
-                  const item = results.find(
-                    r =>
-                      String(r.fineliId) ===
-                      String(val)
-                  );
-
-                  if (item) {
-                    /*
-                     * Käyttäjä valitsi uuden Fineli-tuotteen.
-                     * Tällöin ensimmäinen yksikkö eli G on
-                     * oletuksena oikein.
-                     */
-                    hasInitialMappingRef.current = false;
-
-                    setSelected(item);
-
-                    // G on aina ensimmäisenä
-                    setSelectedUnit(
-                      item.units?.[0] ?? null
-                    );
-                  }
-                }}
-              >
-                <option value="">
-                  Valitse tuote...
-                </option>
-
-                {results.map(r => (
-                  <option
-                    key={r.fineliId}
-                    value={r.fineliId}
-                  >
-                    {r.name}
-                  </option>
-                ))}
-              </FineliSelect>
-
-            </div>
-          )}
-
-        </div>
-      </div>
-
-
-      {loading && <div>Haetaan...</div>}
-
-      {error && (
-        <div style={{ color: 'red' }}>
-          Virhe haussa
-        </div>
-      )}
-
-      {infoMessage && (
-        <div
-          style={{
-            color: '#333',
-            marginTop: 6
-          }}
-        >
-          {infoMessage}
-        </div>
-      )}
-
-
-      {/* Unit select moved inline with Min/Max below */}
 
       {selected && (
         <div>
