@@ -72,10 +72,48 @@ function groupProducts(products) {
     return Object.values(grouped);
 }
 
+function getMissingFineliProducts(day, products) {
+    const included = new Map();
 
-export default function DayNutrition({ day, products }) {
+    (day?.meals || []).forEach(meal => {
+        (meal.mealClasses || []).forEach(mealClass => {
+            const productIds = mealClass.products
+                ? String(mealClass.products)
+                    .replace(/[{}]/g, '')
+                    .split(',')
+                    .map(Number)
+                    .filter(Boolean)
+                : [];
+
+            productIds.forEach(productId => {
+                const product = products.find(
+                    p =>
+                        p.id === productId &&
+                        (mealClass.classId === p.classId || mealClass.classId === -1)
+                );
+
+                if (product && !included.has(product.id)) {
+                    included.set(product.id, product);
+                }
+            });
+        });
+    });
+
+    return [...included.values()].filter(product => {
+        const hasMapping =
+            product?.fineliId &&
+            product?.fineliUnit &&
+            product?.fineliAmount &&
+            product?.fineliDose;
+
+        return !hasMapping;
+    });
+}
+
+export default function DayNutrition({ day, products, onOpenEditProduct }) {
     const [nutrition, setNutrition] = useState(null);
     const [nutritionItems, setNutritionItems] = useState([]);
+    const missingProducts = getMissingFineliProducts(day, products);
 
     useEffect(() => {
         let cancelled = false;
@@ -150,16 +188,51 @@ export default function DayNutrition({ day, products }) {
 
             <ul>
                 {groupProducts(nutritionItems).map(({ product, min, max }) => (
-                    <li key={product.id}>
-                        {product.name || product.title || `Tuote ${product.id}`}
-                        {': '}
-                        {min === max
-                            ? `${min} g`
-                            : `${min}–${max} g`}
+                    <li key={product.id}
+                        style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}
+                    >
+                        <span>
+                            {product.name || product.title || `Tuote ${product.id}`}
+                            {': '}
+                            {min === max
+                                ? `${min} g`
+                                : `${min}–${max} g`}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() => onOpenEditProduct?.(product)}
+                        >
+                            Muokkaa
+                        </button>
+
                     </li>
                 ))}
             </ul>
 
+            {missingProducts.length > 0 && (
+                <div style={{ marginBottom: 20 }}>
+                    <h4>Puuttuva Fineli-vastaavuus</h4>
+                    <ul>
+                        {missingProducts.map(product => (
+                            <li
+                                key={product.id}
+                                style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}
+                            >
+                                <span>
+                                    {product.name || product.title || `Tuote ${product.id}`}
+                                </span>
+
+                                <button
+                                    type="button"
+                                    onClick={() => onOpenEditProduct?.(product)}
+                                >
+                                    Hae
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             <h3>Päivän ravintotiedot</h3>
 

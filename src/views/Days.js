@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import { getDays, addDay, updateDay, deleteDay, getProducts } from '../controller';
+import { getDays, addDay, updateDay, deleteDay, getProducts, updateProduct, deleteProduct } from '../controller';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCopy } from '@fortawesome/free-solid-svg-icons';
 import EditDayForm from './forms/EditDayForm';
 import EditMealForm from './forms/EditMealForm';
+import EditProductForm from './forms/EditProductForm';
 import { DayStickyTop, DayTabStickyTop } from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
@@ -815,6 +816,23 @@ const Days = ({ refresh = false, isMenuOpen }) => {
   const noDaysMessage =
     "Päiviä ei ole määriteltynä. Lisää ensin päiviä suunnittelun puolella.";
 
+  const [editingProduct, setEditingProduct] = useState(null);
+
+  const handleOpenProductEdit = (product) => {
+    setEditingProduct(product);
+  };
+
+  const handleSaveProduct = async (id, updatedProduct) => {
+    await updateProduct(id, updatedProduct);
+    await loadAllData();
+    setEditingProduct(null);
+  };
+
+  const handleDeleteProduct = async (id) => {
+    await deleteProduct(id);
+    await loadAllData();
+    setEditingProduct(null);
+  };
 
   // Älä renderöi mitään ennen kuin data on ladattu
   if (
@@ -823,7 +841,6 @@ const Days = ({ refresh = false, isMenuOpen }) => {
   ) {
     return <div></div>;
   }
-
 
   return (
     <MyErrorBoundary>
@@ -1578,10 +1595,21 @@ const Days = ({ refresh = false, isMenuOpen }) => {
                                 </AddButton>
                               </GroupRight>
 
+                              {editingProduct && (
+                                <EditProductForm
+                                  product={editingProduct}
+                                  onSave={handleSaveProduct}
+                                  onCancel={() => setEditingProduct(null)}
+                                  onDelete={handleDeleteProduct}
+                                  isOpen={!!editingProduct}
+                                  editAmount={false}
+                                />
+                              )}
 
                               <DayNutrition
                                 day={day}
                                 products={products}
+                                onOpenEditProduct={handleOpenProductEdit}
                               />
 
                             </AccordionDraggable>
