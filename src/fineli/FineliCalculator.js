@@ -5,14 +5,23 @@ export async function calculateProductNutrition(product) {
     return null;
   }
 
-  const minGrams = Number(product.fineliDose?.min);
-  const maxGrams = Number(product.fineliDose?.max);
+  let minGrams = Number(product.fineliDose?.min);
+  let maxGrams = Number(product.fineliDose?.max);
 
   if (
     !Number.isFinite(minGrams) &&
     !Number.isFinite(maxGrams)
   ) {
     return null;
+  }
+
+  // Pitää ottaa kiinni tilanne, jossa toiseen ei ole annettu arvoa ollenkaan
+  if (product.fineliDose?.min === null && Number.isFinite(maxGrams)) {
+    minGrams = maxGrams;
+  }
+
+  if (product.fineliDose?.max === null && Number.isFinite(minGrams)) {
+    maxGrams = minGrams;
   }
 
   const fineli = await FineliService.getById(product.fineliId);

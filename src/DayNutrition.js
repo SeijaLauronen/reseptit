@@ -47,7 +47,7 @@ function formatGrams(product) {
 }
 
 
-function groupProducts(products) {
+function groupProductsX(products) {
     const grouped = {};
 
     products.forEach(product => {
@@ -71,6 +71,48 @@ function groupProducts(products) {
 
     return Object.values(grouped);
 }
+
+function groupProducts(products) {
+    const grouped = {};
+
+    products.forEach(product => {
+        if (!product?.fineliDose) {
+            return;
+        }
+
+        const id = product.id;
+
+        let min = Number(product.fineliDose.min);
+        let max = Number(product.fineliDose.max);
+
+        // Jos toinen puuttuu, käytetään toista myös sille.
+        if (product.fineliDose.min === null && Number.isFinite(max)) {
+            min = max;
+        }
+
+        if (product.fineliDose.max === null && Number.isFinite(min)) {
+            max = min;
+        }
+
+        if (!Number.isFinite(min) || !Number.isFinite(max)) {
+            return;
+        }
+
+        if (!grouped[id]) {
+            grouped[id] = {
+                product,
+                min: 0,
+                max: 0
+            };
+        }
+
+        grouped[id].min += min;
+        grouped[id].max += max;
+    });
+
+    return Object.values(grouped);
+}
+
 
 function getMissingFineliProducts(day, products) {
     const included = new Map();
