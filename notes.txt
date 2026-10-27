@@ -1,0 +1,85 @@
+1. Lazy load näkymät App.js
+2. Poista duplikaattien drag library package.json
+3. Vähennä ikonikirjastoja
+4. Siirrä raskas Fineli-koodi pois aloitusbundlesta
+5. Tarkista bundle analytiikalla myöhemmin
+
+
+Konkreettiset suositukset juuri tähän projektiin
+Tämä varoitus on todennäköisesti hyvin relevantti tässä projektissa, koska App.js tuo kaikki näkymät heti kerralla, ja package.json sisältää useita raskaita kirjastoja.
+
+******************************************************************
+
+1) Suurin riski: kaikki näkymät ladataan yhdellä bundlella
+App.js tekee tällä hetkellä näin:
+
+tuo kaikki näkymät heti
+renderöi eri näkymät switchillä
+mutta kaikki ne ovat silti mukana tuotantobundlessa
+Tämä tarkoittaa, että vaikka käyttäjä avaa vain esimerkiksi kategorian, bundlessa on silti mukana Days, Recipes, Products, ShoppingList ja muut.
+
+Suositus:
+
+käytä lazy loading / code splitting
+lataa näkymät vain tarvittaessa
+Esimerkiksi:
+
+Kategoriat alussa
+Tuotteet kun avataan
+Päivät / Reseptit vasta kun niitä tarvitaan
+
+****************************************************************
+2) Duplikoituneet drag-and-drop-kirjastot
+package.json näyttää sisältävän:
+
+@hello-pangea/dnd
+react-beautiful-dnd
+Nämä ovat samaan tarkoitukseen käytettäviä paketteja. Yksi riittää.
+
+Suositus:
+
+jätä vain yksi, mieluiten @hello-pangea/dnd jos käytät sitä jo
+poista toinen
+Tämä voi vähentää bundlea merkittävästi.
+*********************************************************
+3) Useita ikonikirjastoja yhtä aikaa
+package.json sisältää:
+
+@fortawesome/*
+react-icons
+lucide-react
+@react-md/icon
+Näitä on paljon, vaikka projektissa ehkä käytetään vain osaa.
+
+Suositus:
+
+valitse yksi icon library
+käytä vain niitä ikoneita, jotka todella tarvitaan
+älä tuoda koko kirjastoa koko sovellukseen
+Esimerkiksi:
+
+jos käytät FontAwesomea, älä käytä react-icons tai lucide-react samalla
+********************************************************
+4) Fineli-kansio on todennäköinen painavin osio
+fineli näyttää sisältävän datan käsittelyn, prosessoidun datan ja laskentalogiikan. Tämä on usein yksi bundle-koon suurista aiheuttajista, jos se on tuotava heti.
+
+Suositus:
+
+siirrä raskas data-/laskentakoodi lazy-loadin taakse
+lataa Fineli-laskenta vain silloin kun tarvitaan
+jos data on iso, käytä erillistä latausta tai rakenteellista splitteriä
+******************************************************************
+5) Pidä näkymäkohtainen koodi erillään
+Oikea idea tässä projektiin on:
+
+App lataa vain perusnäkymän
+jokainen näkymä on oma chunkki
+esimerkiksi:
+Categories
+Products
+ShoppingList
+Days
+Recipes
+Tämä on paljon parempi kuin yksi iso bundle.
+*************************************************************
+

@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import Menu from './components/Menu';
 import Categories from './views/Categories';
-import Products from './views/Products';
+//import Products from './views/Products';
 import ShoppingList from './views/ShoppingList';
-import Days from './views/Days';
-import Recipes from './views/Recipes';
+//import Days from './views/Days';
+//import Recipes from './views/Recipes';
 import Footer from './components/Footer';
 import Container from './components/Container';
 import Info from './components/Info';
 import helpTexts from './helpTexts';
 import DisabledOverlay from './components/DisabledOverlay';
+/* The bundle size was significantly larger than recommended, let us use lazy import.*/
+const Products = lazy(() => import( './views/Products'));
+const Days = lazy(() => import('./views/Days'));
+const Recipes = lazy(() => import('./views/Recipes'));
 
 const App = () => {
 
@@ -76,10 +80,18 @@ const App = () => {
         return <Products refresh={refresh} categoryId={selectedCategoryId} />;
       case 'shoppingList':
         return <ShoppingList refresh={refresh} />;
-      case 'days':
-        return <Days refresh={refresh} />;
+      case 'days':        
+        return (
+          <Suspense fallback={<div>Ladataan...</div>}>
+            <Days refresh={refresh}/>
+          </Suspense>
+        );
       case 'recipes':
-        return <Recipes refresh={refresh} />;
+        return (
+          <Suspense fallback={<div>Ladataan...</div>}>
+            <Recipes refresh={refresh}/>
+          </Suspense>
+        );
       default:
         return <Categories refresh={refresh} onCategorySelect={handleCategorySelect} />;
     }
