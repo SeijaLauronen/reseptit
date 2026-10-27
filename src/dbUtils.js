@@ -1,6 +1,6 @@
 // dbUtils.js
 import { getDB } from './database';
-const STORE_NAMES = ['categories', 'products', 'colordefinitions', 'productclasses', 'days']; // Määritä taulujen nimet, TODO kumpaanko näm laitetaan, on myös database.js
+const STORE_NAMES = ['categories', 'products', 'colordefinitions', 'productclasses', 'days', 'recipes']; // Määritä taulujen nimet, TODO kumpaanko näm laitetaan, on myös database.js
 
 //TODO eri taulujen operaatioit voisi yhdistää lähettämällä taulun nimen ja tietueen parametirnä
 
@@ -332,14 +332,66 @@ export const deleteDay = async (id) => {
 /* Days end*/
 
 
+/* Recipes, ruokareseptit */
+export const fetchRecipes = async () => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('recipes', 'readonly');
+    const store = tx.objectStore('recipes');
+    return await store.getAll();
+  } catch (err) {
+    console.error('Error fetching recipes:', err);
+    throw new Error('Virhe haettaessa reseptejä: ' + err);
+  }
+};
 
 
+export const addRecipe = async (recipe) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('recipes', 'readwrite');
+    const store = tx.objectStore('recipes');
+    const addedId = await store.add(recipe);
+    return addedId;
+  } catch (err) {
+    console.error('Error adding recipe:', err);
+    throw new Error('Virhe lisättäessä reseptiä: ' + err);
+  }
+};
 
+export const updateRecipe = async (id, updatedRecipe) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('recipes', 'readwrite');
+    const store = tx.objectStore('recipes');
+    const recipe = await store.get(id);
 
+    // Päivitetään kaikki annetut kentät, TODO menisikö put käskyllä kuten alempana product päivityksessä...
+    for (const key in updatedRecipe) {
+      if (updatedRecipe.hasOwnProperty(key)) {
+        recipe[key] = updatedRecipe[key];
+      }
+    }
 
+    await store.put(recipe);
+  } catch (err) {
+    console.error('Error updating recipe:', err);
+    throw new Error('Virhe päivitettäessä reseptiä: ' + err);
+  }
+};
 
-
-
+export const deleteRecipe = async (id) => {
+  try {
+    const db = await getDB();
+    const tx = db.transaction('recipes', 'readwrite');
+    const store = tx.objectStore('recipes');
+    await store.delete(id);
+  } catch (err) {
+    console.error('Error deleting recipe:', err);
+    throw new Error('Virhe poistettaessa reseptiä: ' + err);
+  }
+};
+/* Recipes end*/
 
 
 //TODO tämä on myös tuolla database.js:ssä Valitse jompi kumpi

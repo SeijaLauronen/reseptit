@@ -99,3 +99,28 @@ export const DayTabStickyTop = styled(StickyTop)`
 `;
 
 
+export const RecipeStickyTop = styled(StickyTop)`
+  display: grid;
+  justify-content: center;
+  grid-template-rows: auto auto ; /* Kaksi riviä */    
+  row-gap: 15px;
+  align-items: center; /* Kohdista ikonit keskelle pystysuunnassa */
+  padding-left: 10px;
+  padding-bottom: 0px;
+  padding-top: 14px;
+  box-shadow: inset 0 -4px 4px -2px rgba(0, 0, 0, 0.1); //Varjo alareunaan
+  
+  .topHeader{    
+    padding-right: 10px;
+    padding-left: 10px;
+    grid-row: 1;
+  }
+
+  /* Alempi rivi  */
+  .tab-row {
+    grid-row: 2;
+    display: flex;    
+    padding: 4px 4px 0px 4px; // ylhäällä, oikealla, alhaalla, vasen
+  }
+
+`;

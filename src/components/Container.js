@@ -25,6 +25,10 @@ export const DayContainer = styled(ProductContainer)`
   padding-top: 110px;
 `;
 
+export const RecipeContainer = styled(ProductContainer)`
+  padding-top: 110px;
+`;
+
 export const FormContainer = styled.div`
 padding: 20px;
 background-color: #fff;

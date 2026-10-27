@@ -904,7 +904,7 @@ const Days = ({ refresh = false, isMenuOpen }) => {
           className='daycontainer'
         >
 
-          <DayStickyTop>
+          <DayStickyTop className="day-sticky-top">
             <div className="topHeader">
               <ToggleSwitchButton
                 checked={showActiveDaysOnly}

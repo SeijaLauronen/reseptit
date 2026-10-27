@@ -5,6 +5,7 @@ import { importDataToDatabase, exportDataFromDatabase, loadExampleDataToDatabase
 import { upsertColorDefinition as dbUpsertColorDefinition, getColorDefinition as dbGetColorDefinition}  from './dbUtils';
 import { fetchProductclasses, addProductclass as dbAddProductclass, updateProductclass as dbUpdateProductclass, deleteProductclass as dbDeleteProductclass } from './dbUtils';
 import { fetchDays, addDay as dbAddDay, updateDay as dbUpdateDay, deleteDay as dbDeleteDay } from './dbUtils';
+import { fetchRecipes, addRecipe as dbAddRecipe, updateRecipe as dbUpdateRecipe, deleteRecipe as dbDeleteRecipe } from './dbUtils';
 
 export const handleImportData = async (data) => {
   try {
@@ -246,6 +247,43 @@ export const deleteDay = async (id) => {
   await dbDeleteDay(id);
 };
 /* Days end */
+
+
+/* Recipes */
+const validateRecipe = (recipe) => {
+  if (!recipe.name || recipe.name.trim() === '') {
+    return 'Nimi on pakollinen tieto';
+  }
+  return null;
+};
+
+export const getRecipes = async () => {
+  const recipes = await fetchRecipes();
+  return recipes.sort((a, b) => a.order-b.order); //Huom, integereille ei localComparea, vaan näin
+};
+
+export const addRecipe = async (recipe) => {  
+  const error = validateRecipe(recipe);
+  if (error) {
+    throw new Error(error);
+  }
+  const addedId = await dbAddRecipe(recipe);
+  return addedId;
+};
+
+export const updateRecipe = async (id, updatedRecipe) => {
+  const error = validateRecipe(updatedRecipe);
+  if (error) {
+    throw new Error(error);
+  }
+  await dbUpdateRecipe(id, updatedRecipe);
+};
+
+export const deleteRecipe = async (id) => {
+  await dbDeleteRecipe(id);
+};
+/* Recipes end */
+
 
 
 //Tietokannan tyhjennys
