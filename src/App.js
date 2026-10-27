@@ -1,7 +1,7 @@
-import React, { Suspense, lazy, useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useTransition } from 'react';
 import Menu from './components/Menu';
 import Categories from './views/Categories';
-//import Products from './views/Products';
+import Products from './views/Products';
 import ShoppingList from './views/ShoppingList';
 //import Days from './views/Days';
 //import Recipes from './views/Recipes';
@@ -11,7 +11,7 @@ import Info from './components/Info';
 import helpTexts from './helpTexts';
 import DisabledOverlay from './components/DisabledOverlay';
 /* The bundle size was significantly larger than recommended, let us use lazy import.*/
-const Products = lazy(() => import( './views/Products'));
+// const Products = lazy(() => import( './views/Products'));
 const Days = lazy(() => import('./views/Days'));
 const Recipes = lazy(() => import('./views/Recipes'));
 
@@ -26,6 +26,7 @@ const App = () => {
     const savedView = localStorage.getItem('lastView');
     return savedView || 'categories';
   });
+  
 
   useEffect(() => {
     localStorage.setItem('lastView', view);

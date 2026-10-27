@@ -81,5 +81,12 @@ ShoppingList
 Days
 Recipes
 Tämä on paljon parempi kuin yksi iso bundle.
+
+
+Products:in lazy latauksesta tuli:
+    A component suspended while responding to synchronous input. 
+    This will cause the UI to be replaced with a loading indicator. 
+    To fix, updates that suspend should be wrapped with startTransition.
+Muutin sen takaisin tavalliseksi latauksekis, Voisi koittaa korjata käytäämällä useTransition.
 *************************************************************
 
