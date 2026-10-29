@@ -9,7 +9,9 @@ import { SpeechInput } from '../components/Input';
 import { AddButton } from '../components/Button';
 import FilterWithCrossIcon, { SearchWithCrossIcon } from '../components/FilterIcon';
 import { getRecipes, addRecipe, updateRecipe, deleteRecipe, getProducts } from '../controller';
-import AccordionWrapper from '../components/Accordion';
+import Accordion from '../components/Accordion';
+import { InputWrapper } from '../components/Container';
+import { InputTextArea } from '../components/Input';
 
 const Recipes = ({ refresh = false, isMenuOpen }) => {
     const [error, setError] = useState('');
@@ -19,6 +21,8 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
     const [products, setProducts] = useState([]);
     const [recipes, setRecipes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [editingRecipeId, setEditingRecipeId] = useState(null);
+    const [tempInstructions, setTempInstructions] = useState('');
 
     // Yhdistetty data-loadaus
     const loadAllData = async () => {
@@ -56,19 +60,68 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
     };
 
 
-    const handleInputChange = (e) => {
-        const value = e.target.value;
-        setNewRecipe(value);
-        //setFilter(value.toLowerCase());
-        //scrollToFirstMatchingProduct(value.toLowerCase());
-        setError(null);
+    const handleRecipeTextChange = (recipeId, value) => {
+        setRecipes(prev =>
+            prev.map(recipe =>
+                recipe.id === recipeId
+                    ? { ...recipe, instructions: value }
+                    : recipe
+            )
+        );
     };
+
+
+    const handleInputChange = (e) => {
+        setNewRecipe(e.target.value);
+        setError('');
+    };
+
+    const handleEditRecipe = (recipe) => {
+        setEditingRecipeId(recipe.id);
+        setTempInstructions(recipe.instructions || '');
+    };
+
+    const handleCancelEdit = () => {
+        setEditingRecipeId(null);
+        setTempInstructions('');
+    };
+
+
+    const handleSaveRecipe = async (recipeId) => {
+        const recipeToUpdate = recipes.find(recipe => recipe.id === recipeId);
+    // TODO onkohan ihan hyvä laittaa tuo id menemään erikseen, ja tuosta muuttujasta, tarkista
+        if (!recipeToUpdate) return;
+
+        try {
+            await updateRecipe(
+                recipeId,
+                {
+                    ...recipeToUpdate,
+                    instructions: tempInstructions,
+                });
+
+            setRecipes(prev =>
+                prev.map(recipe =>
+                    recipe.id === recipeId
+                        ? { ...recipe, instructions: tempInstructions }
+                        : recipe
+                )
+            );
+
+            setEditingRecipeId(null);
+            setTempInstructions('');
+        } catch (err) {
+            setError(err.message || 'Reseptin tallennus epäonnistui');
+        }
+    };
+
 
     const handleAddRecipe = async () => {
         try {
 
             const newRecipeId = await addRecipe({
-                name: newRecipe
+                name: newRecipe,
+                instructions: '',
             });
 
             setNewRecipe('');
@@ -79,6 +132,7 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
             setError(err.message);
         }
     };
+
 
     const handleClearFilter = () => {
         setFilter('');
@@ -99,26 +153,42 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
                 )}
 
 
-                <RecipeContainer
-                    $isMenuOpen={isMenuOpen}
-                    className='recipecontainer'
-                >
-
+                <RecipeContainer $isMenuOpen={isMenuOpen} className='recipecontainer'>
                     <RecipeStickyTop className="day-sticky-top">
                         <div className="recipes-placeholder">Reseptit - toteutus kesken</div>
-
                     </RecipeStickyTop>
 
 
                     {recipes.length > 0 ? (
                         recipes.map((recipe) => (
-                            <>
-                                <AccordionWrapper
-                                    key={recipe.id}
-                                    title={recipe.name}
-                                    content={<div>Reseptin sisältö</div>}
-                                />
-                            </>
+                            <Accordion
+                                key={recipe.id}
+                                title={recipe.name}
+                                icons={
+                                    editingRecipeId === recipe.id ? (
+                                        <>
+                                            <button onClick={() => handleSaveRecipe(recipe.id)}>Tallenna</button>
+                                            <button onClick={handleCancelEdit}>Peruuta</button>
+                                        </>
+                                    ) : (
+                                        <button onClick={() => handleEditRecipe(recipe)}>Muokkaa</button>
+                                    )
+                                }
+                            >
+                                {editingRecipeId === recipe.id ? (
+                                    <InputWrapper>
+                                        <InputTextArea
+                                            value={tempInstructions}
+                                            onChange={(e) => setTempInstructions(e.target.value)}
+                                            placeholder="Ohje"
+                                        />
+                                    </InputWrapper>
+                                ) : (
+                                    <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+                                        {recipe.instructions || 'Ei ohjetta'}
+                                    </div>
+                                )}
+                            </Accordion>
                         ))
                     ) : (
                         <div className="no-recipes">Ei reseptejä</div>
@@ -151,7 +221,7 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
                 </RecipeContainer>
 
             </>
-        </MyErrorBoundary>
+        </MyErrorBoundary >
     );
 };
 
