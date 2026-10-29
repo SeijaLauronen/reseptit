@@ -8,7 +8,7 @@ import InputAdd from '../components/Input';
 import { SpeechInput, InputName } from '../components/Input';
 import { AddButton } from '../components/Button';
 import FilterWithCrossIcon, { SearchWithCrossIcon } from '../components/FilterIcon';
-import { getRecipes, addRecipe, updateRecipe, deleteRecipe, getProducts } from '../controller';
+import { getRecipes, addRecipe, updateRecipe, deleteRecipe, getProducts, addProduct } from '../controller';
 import Accordion from '../components/Accordion';
 import { InputWrapper } from '../components/Container';
 import { InputTextArea } from '../components/Input';
@@ -30,7 +30,8 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
     const [tempRecipe, setTempRecipe] = useState(null);
     const [ingredientDraft, setIngredientDraft] = useState("");
     const [ingredientAmount, setIngredientAmount] = useState("");
-    const [selectedProductId, setSelectedProductId] = useState("");    
+    const [ingredientQuery, setIngredientQuery] = useState("");
+    const [selectedProductId, setSelectedProductId] = useState("");
     const [confirmDialog, setConfirmDialog] = useState({
         isOpen: false,
         message: '',
@@ -218,7 +219,7 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
         setNewRecipe('');
         setCountFoundRecipes(0);
     };
-   
+
 
     const handleAddIngredient = (ingredient) => {
         setTempRecipe((prev) => {
@@ -239,6 +240,101 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
             };
         });
     };
+
+
+    const handleCreateProductX = async (prodName) => {
+        //TODO tämä pitää tarkistaa, että menee niinkuin pitää
+        // jos olet jo pannut productin luontifunktion controlleriin:
+        // const created = await addProduct({ name });
+        // return created;
+
+        let newProdId = null;
+        try {
+            const addedProdId = await addProduct({ name: prodName });
+            newProdId = addedProdId;
+        } catch (err) {
+            setError(err.message);
+        }
+
+        const newProduct = {
+            newProdId,
+            prodName,
+        };
+
+        setProducts((prev) => [...prev, newProduct]);
+        return newProduct;
+    };
+
+
+    const handleCreateProductZ = async (prodName) => {
+        try {
+            const addedProdId = await addProduct({ name: prodName });
+
+            const newProduct = {
+                id: addedProdId,
+                name: prodName,
+            };
+
+            setProducts(prev => [...prev, newProduct]);
+
+            setTempRecipe(prev => ({
+                ...prev,
+                ingredients: [
+                    ...(Array.isArray(prev?.ingredients) ? prev.ingredients : []),
+                    {
+                        productId: addedProdId,
+                        productName: prodName,
+                        nickname: "",
+                        amount: ingredientAmount || "",
+                    }
+                ]
+            }));
+
+            setIngredientAmount("");
+            setIngredientQuery("");
+            return newProduct;
+        } catch (err) {
+            setError(err.message || 'Tuotteen luonti epäonnistui');
+            return null;
+        }
+    };
+
+
+    const handleCreateProduct = async (prodName) => {
+        try {
+            const addedProdId = await addProduct({ name: prodName });
+
+            const newProduct = {
+                id: addedProdId,
+                name: prodName,
+            };
+
+            setProducts((prev) => [...prev, newProduct]);
+
+            const ingredientToAdd = {
+                productId: addedProdId,
+                productName: prodName,
+                nickname: "",
+                amount: ingredientAmount || "",
+            };
+
+            setTempRecipe((prev) => {
+                const current = Array.isArray(prev?.ingredients) ? prev.ingredients : [];
+                return {
+                    ...prev,
+                    ingredients: [...current, ingredientToAdd],
+                };
+            });
+
+            setIngredientAmount("");
+            setIngredientQuery("");
+            return newProduct;
+        } catch (err) {
+            setError(err.message || 'Tuotteen luonti epäonnistui');
+            return null;
+        }
+    };
+
 
     return (
         <MyErrorBoundary>
@@ -324,12 +420,11 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
                                             isEditing={true}
                                             amount={ingredientAmount}
                                             setAmount={setIngredientAmount}
-                                            selectedProductId={selectedProductId}
-                                            setSelectedProductId={setSelectedProductId}
-                                            customName={ingredientDraft}
-                                            setCustomName={setIngredientDraft}
+                                            query={ingredientQuery}
+                                            setQuery={setIngredientQuery}
                                             onAddIngredient={handleAddIngredient}
                                             onRemoveIngredient={handleRemoveIngredient}
+                                            onCreateProduct={handleCreateProduct}
                                         />
 
 
