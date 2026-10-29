@@ -98,6 +98,11 @@ export const IconContainer = styled.span`
   }
 `;
 
+export const IconContainerRight = styled(IconContainer)`
+  width: 100%;
+  justify-content: flex-end;
+`;
+
 export const IconWrapper = styled.span`
   margin-left: 10px;
   margin-right: 10px;

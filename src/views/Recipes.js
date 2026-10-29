@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import MyErrorBoundary from '../components/ErrorBoundary';
 import Toast from '../components/Toast';
-import { RecipeContainer, IconContainer, IconWrapper } from '../components/Container';
+import { RecipeContainer, IconContainer, IconContainerRight, IconWrapper } from '../components/Container';
 import { RecipeStickyTop } from '../components/StickyTop';
 import StickyBottom from '../components/StickyBottom';
 import InputAdd from '../components/Input';
-import { SpeechInput } from '../components/Input';
+import { SpeechInput, InputName } from '../components/Input';
 import { AddButton } from '../components/Button';
 import FilterWithCrossIcon, { SearchWithCrossIcon } from '../components/FilterIcon';
 import { getRecipes, addRecipe, updateRecipe, deleteRecipe, getProducts } from '../controller';
@@ -15,6 +15,7 @@ import { InputTextArea } from '../components/Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave, faUndo, faTrash } from '@fortawesome/free-solid-svg-icons';
 import ConfirmDialog from '../components/ConfirmDialog';
+import Ingredients from '../components/Ingredients';
 
 const Recipes = ({ refresh = false, isMenuOpen }) => {
     const [error, setError] = useState('');
@@ -26,6 +27,10 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [editingRecipeId, setEditingRecipeId] = useState(null);
     const [tempInstructions, setTempInstructions] = useState('');
+    const [tempRecipe, setTempRecipe] = useState(null);
+    const [ingredientDraft, setIngredientDraft] = useState("");
+    const [ingredientAmount, setIngredientAmount] = useState("");
+    const [selectedProductId, setSelectedProductId] = useState("");    
     const [confirmDialog, setConfirmDialog] = useState({
         isOpen: false,
         message: '',
@@ -87,16 +92,61 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
 
     const handleEditRecipe = (recipe) => {
         setEditingRecipeId(recipe.id);
-        setTempInstructions(recipe.instructions || '');
+        setTempRecipe({
+            ...recipe,
+            ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+            instructions: recipe.instructions || '',
+        });
+        setIngredientDraft("");
+        setSelectedProductId("");
     };
 
     const handleCancelEdit = () => {
+        setEditingRecipeId(null);
+        setTempRecipe(null);
+    };
+
+    const handleEditRecipeX = (recipe) => {
+        setEditingRecipeId(recipe.id);
+        setTempInstructions(recipe.instructions || '');
+    };
+
+    const handleCancelEditX = () => {
         setEditingRecipeId(null);
         setTempInstructions('');
     };
 
 
     const handleSaveRecipe = async (recipeId) => {
+        const recipeToUpdate = recipes.find(recipe => recipe.id === recipeId);
+
+        if (!recipeToUpdate || !tempRecipe) return;
+
+        try {
+            await updateRecipe(
+                recipeId,
+                {
+                    ...recipeToUpdate,
+                    ...tempRecipe,
+                }
+            );
+
+            setRecipes(prev =>
+                prev.map(recipe =>
+                    recipe.id === recipeId
+                        ? { ...recipe, ...tempRecipe }
+                        : recipe
+                )
+            );
+
+            setEditingRecipeId(null);
+            setTempRecipe(null);
+        } catch (err) {
+            setError(err.message || 'Reseptin tallennus epäonnistui');
+        }
+    };
+
+    const handleSaveRecipeX = async (recipeId) => {
         const recipeToUpdate = recipes.find(recipe => recipe.id === recipeId);
         // TODO onkohan ihan hyvä laittaa tuo id menemään erikseen, ja tuosta muuttujasta, tarkista
         if (!recipeToUpdate) return;
@@ -168,6 +218,27 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
         setNewRecipe('');
         setCountFoundRecipes(0);
     };
+   
+
+    const handleAddIngredient = (ingredient) => {
+        setTempRecipe((prev) => {
+            const current = Array.isArray(prev?.ingredients) ? prev.ingredients : [];
+            return {
+                ...prev,
+                ingredients: [...current, ingredient],
+            };
+        });
+    };
+
+    const handleRemoveIngredient = (index) => {
+        setTempRecipe((prev) => {
+            const current = Array.isArray(prev?.ingredients) ? prev.ingredients : [];
+            return {
+                ...prev,
+                ingredients: current.filter((_, i) => i !== index),
+            };
+        });
+    };
 
     return (
         <MyErrorBoundary>
@@ -183,7 +254,7 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
 
 
                 <RecipeContainer $isMenuOpen={isMenuOpen} className='recipecontainer'>
-                    <RecipeStickyTop className="day-sticky-top">
+                    <RecipeStickyTop className="recipe-sticky-top">
                         <div className="recipes-placeholder">Reseptit - toteutus kesken</div>
                     </RecipeStickyTop>
 
@@ -198,76 +269,97 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
                                 icons={
                                     editingRecipeId === recipe.id ? (
                                         <IconContainer>
-                                            <IconWrapper onClick={() => handleDeleteRecipe(recipe)}>
-                                                <FontAwesomeIcon
-                                                    icon={faTrash}
-                                                    color="red"
-                                                />
-                                            </IconWrapper>
-                                            <IconWrapper onClick={(event) => handleSaveRecipe(recipe.id, event)}>
-                                                <FontAwesomeIcon
-                                                    icon={faSave}
-                                                    style={{ color: 'green' }}
-                                                />
-                                            </IconWrapper>
                                             <IconWrapper onClick={handleCancelEdit}>
                                                 <FontAwesomeIcon
                                                     icon={faUndo}
                                                     style={{ color: 'blue' }}
                                                 />
                                             </IconWrapper>
-                                            <IconWrapper >
-                                                <FontAwesomeIcon
-                                                    icon={faEdit}
-                                                    style={{ color: 'grey' }}
-                                                />
-                                            </IconWrapper>
+
                                         </IconContainer>
                                     ) : (
                                         <IconContainer>
-                                            <IconWrapper onClick={() => handleDeleteRecipe(recipe)}>
-                                                <FontAwesomeIcon
-                                                    icon={faTrash}
-                                                    color="red"
-                                                />
-                                            </IconWrapper>
-
-                                            <IconWrapper >
-                                                <FontAwesomeIcon
-                                                    icon={faSave}
-                                                    style={{ color: 'grey' }}
-                                                />
-                                            </IconWrapper>
-                                            <IconWrapper >
-                                                <FontAwesomeIcon
-                                                    icon={faUndo}
-                                                    style={{ color: 'grey' }}
-                                                />
-                                            </IconWrapper>
-
                                             <IconWrapper onClick={() => handleEditRecipe(recipe)}>
                                                 <FontAwesomeIcon
                                                     icon={faEdit}
                                                 />
                                             </IconWrapper>
-
                                         </IconContainer>
                                     )
                                 }
                             >
                                 {editingRecipeId === recipe.id ? (
-                                    <InputWrapper>
-                                        <InputTextArea
-                                            value={tempInstructions}
-                                            onChange={(e) => setTempInstructions(e.target.value)}
-                                            placeholder="Ohje"
+                                    <>
+                                        <div>
+                                            <IconContainerRight>
+                                                <IconWrapper onClick={() => handleDeleteRecipe(recipe)}>
+                                                    <FontAwesomeIcon
+                                                        icon={faTrash}
+                                                        color="red"
+                                                    />
+                                                </IconWrapper>
+                                                <IconWrapper onClick={(event) => handleSaveRecipe(recipe.id, event)}>
+                                                    <FontAwesomeIcon
+                                                        icon={faSave}
+                                                        style={{ color: 'green' }}
+                                                    />
+                                                </IconWrapper>
+
+                                            </IconContainerRight>
+                                        </div>
+
+                                        <InputWrapper style={{ width: '80%' }}>
+                                            <InputName
+                                                type="text"
+                                                value={tempRecipe?.name || ''}
+                                                onChange={(e) =>
+                                                    setTempRecipe(prev => ({ ...prev, name: e.target.value }))
+                                                }
+                                            />
+                                        </InputWrapper>
+
+                                        <Ingredients
+                                            products={products}
+                                            items={tempRecipe?.ingredients || []}
+                                            isEditing={true}
+                                            amount={ingredientAmount}
+                                            setAmount={setIngredientAmount}
+                                            selectedProductId={selectedProductId}
+                                            setSelectedProductId={setSelectedProductId}
+                                            customName={ingredientDraft}
+                                            setCustomName={setIngredientDraft}
+                                            onAddIngredient={handleAddIngredient}
+                                            onRemoveIngredient={handleRemoveIngredient}
                                         />
-                                    </InputWrapper>
+
+
+                                        <InputWrapper style={{ width: '100%' }}>
+                                            <InputTextArea
+                                                value={tempRecipe?.instructions || ''}
+                                                onChange={(e) =>
+                                                    setTempRecipe(prev => ({ ...prev, instructions: e.target.value }))
+                                                }
+                                                placeholder="Ohje"
+                                            />
+                                        </InputWrapper>
+
+                                    </>
                                 ) : (
-                                    <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
-                                        {recipe.instructions || 'Ei ohjetta'}
-                                    </div>
+                                    <>
+                                        <h4>{recipe.name}</h4>
+                                        <Ingredients
+                                            products={products}
+                                            items={recipe.ingredients || []}
+                                            isEditing={false}
+                                        />
+                                        <h4>Ohje</h4>
+                                        <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+                                            {recipe.instructions || ''}
+                                        </div>
+                                    </>
                                 )}
+
+
                             </Accordion>
                         ))
                     ) : (
