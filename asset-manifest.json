@@ -1,9 +1,9 @@
 {
   "files": {
     "main.css": "/reseptit/static/css/main.e6c13ad2.css",
-    "main.js": "/reseptit/static/js/main.9c174c97.js",
+    "main.js": "/reseptit/static/js/main.aeac528f.js",
     "static/js/468.12c06e21.chunk.js": "/reseptit/static/js/468.12c06e21.chunk.js",
-    "static/js/310.542ee66d.chunk.js": "/reseptit/static/js/310.542ee66d.chunk.js",
+    "static/js/265.2ffc391d.chunk.js": "/reseptit/static/js/265.2ffc391d.chunk.js",
     "static/js/881.95aff911.chunk.js": "/reseptit/static/js/881.95aff911.chunk.js",
     "static/media/help-all-pages.jpg": "/reseptit/static/media/help-all-pages.e2f3f31a0437a6d918ce.jpg",
     "static/media/help-days-plan-products.jpg": "/reseptit/static/media/help-days-plan-products.ef1638eb1fcac804cdf0.jpg",
@@ -26,12 +26,12 @@
     "static/media/help-menu.jpg": "/reseptit/static/media/help-menu.e543189e9a306bba4d59.jpg",
     "index.html": "/reseptit/index.html",
     "main.e6c13ad2.css.map": "/reseptit/static/css/main.e6c13ad2.css.map",
-    "main.9c174c97.js.map": "/reseptit/static/js/main.9c174c97.js.map",
+    "main.aeac528f.js.map": "/reseptit/static/js/main.aeac528f.js.map",
     "468.12c06e21.chunk.js.map": "/reseptit/static/js/468.12c06e21.chunk.js.map",
-    "310.542ee66d.chunk.js.map": "/reseptit/static/js/310.542ee66d.chunk.js.map"
+    "265.2ffc391d.chunk.js.map": "/reseptit/static/js/265.2ffc391d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.9c174c97.js"
+    "static/js/main.aeac528f.js"
   ]
 }
