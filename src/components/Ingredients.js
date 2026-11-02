@@ -163,6 +163,8 @@ const Ingredients = ({
     setAmount,
     query,
     setQuery,
+    selectedProductId,
+    setSelectedProductId,
     onAddIngredient,
     onRemoveIngredient,
     onCreateProduct,
@@ -206,33 +208,46 @@ const Ingredients = ({
         setAmount("");
     };
 
-    const handleCreateProductX = async () => {
-        const trimmedName = (query || "").trim();
-        if (!trimmedName) return;
-
-        const created = await onCreateProduct(trimmedName);
-
-        if (created) {
-            onAddIngredient({
-                productId: created.id,
-                productName: created.name,
-                nickname: "",
-                amount: (amount || "").trim() || "",
-            });
-
-            setQuery("");
-            setAmount("");
-        }
-    };
-
     const handleCreateProduct = async () => {
         const trimmedName = (query || "").trim();
         if (!trimmedName) return;
 
         await onCreateProduct(trimmedName);
+    };
+
+    const handleAddSelectedIngredient = () => {
+        const trimmedAmount = (amount || "").trim();
+
+        if (!selectedProductId && !(query || "").trim()) return;
+
+        if (selectedProductId) {
+            const product = products.find(
+                (p) => String(p.id) === String(selectedProductId)
+            );
+
+            if (product) {
+                onAddIngredient({
+                    productId: product.id,
+                    productName: product.name,
+                    nickname: "",
+                    amount: trimmedAmount || "",
+                });
+            }
+        } else {
+            const trimmedName = (query || "").trim();
+            if (!trimmedName) return;
+
+            onAddIngredient({
+                productId: null,
+                productName: "",
+                nickname: trimmedName,
+                amount: trimmedAmount || "",
+            });
+        }
 
         setQuery("");
         setAmount("");
+        setSelectedProductId("");
     };
 
     const getDisplayName = (item) => {
@@ -302,28 +317,35 @@ const Ingredients = ({
                                     <ProductOption
                                         key={product.id}
                                         type="button"
-                                        onClick={() => handleSelectProduct(product)}
+                                        //onClick={() => handleSelectProduct(product)}
+                                        onClick={() => {
+                                            setQuery(product.name);
+                                            setSelectedProductId(String(product.id));
+                                        }}
                                     >
                                         {product.name}
                                     </ProductOption>
                                 ))
-                            ) : (                                                                    
-                                    <ProductOption type="button" onClick={handleCreateProduct}>
-                                        Lisää reseptille ja tuotteisiin "{query.trim()}"
-                                    </ProductOption>                                
+                            ) : (
+                                <ProductOption type="button" onClick={handleCreateProduct}>
+                                    Lisää tuotteisiin "{query.trim()}"
+                                </ProductOption>
                             )}
                         </SearchResults>
                     )}
                 </SearchWrap>
 
-                <AddButton type="button" onClick={handleAddCustomIngredient}>
+                <AddButton type="button" 
+                    //onClick={handleAddCustomIngredient}
+                    onClick={handleAddSelectedIngredient}
+                    >                    
                     Reseptiin
                 </AddButton>
             </AddRow>
 
 
 
-        </IngredientsWrapper>
+        </IngredientsWrapper >
     );
 };
 

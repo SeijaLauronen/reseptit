@@ -32,6 +32,7 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
     const [ingredientAmount, setIngredientAmount] = useState("");
     const [ingredientQuery, setIngredientQuery] = useState("");
     const [selectedProductId, setSelectedProductId] = useState("");
+    
     const [confirmDialog, setConfirmDialog] = useState({
         isOpen: false,
         message: '',
@@ -147,35 +148,6 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
         }
     };
 
-    const handleSaveRecipeX = async (recipeId) => {
-        const recipeToUpdate = recipes.find(recipe => recipe.id === recipeId);
-        // TODO onkohan ihan hyvä laittaa tuo id menemään erikseen, ja tuosta muuttujasta, tarkista
-        if (!recipeToUpdate) return;
-
-        try {
-            await updateRecipe(
-                recipeId,
-                {
-                    ...recipeToUpdate,
-                    instructions: tempInstructions,
-                });
-
-            setRecipes(prev =>
-                prev.map(recipe =>
-                    recipe.id === recipeId
-                        ? { ...recipe, instructions: tempInstructions }
-                        : recipe
-                )
-            );
-
-            setEditingRecipeId(null);
-            setTempInstructions('');
-        } catch (err) {
-            setError(err.message || 'Reseptin tallennus epäonnistui');
-        }
-    };
-
-
     const handleAddRecipe = async () => {
         try {
 
@@ -264,41 +236,7 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
         setProducts((prev) => [...prev, newProduct]);
         return newProduct;
     };
-
-
-    const handleCreateProductZ = async (prodName) => {
-        try {
-            const addedProdId = await addProduct({ name: prodName });
-
-            const newProduct = {
-                id: addedProdId,
-                name: prodName,
-            };
-
-            setProducts(prev => [...prev, newProduct]);
-
-            setTempRecipe(prev => ({
-                ...prev,
-                ingredients: [
-                    ...(Array.isArray(prev?.ingredients) ? prev.ingredients : []),
-                    {
-                        productId: addedProdId,
-                        productName: prodName,
-                        nickname: "",
-                        amount: ingredientAmount || "",
-                    }
-                ]
-            }));
-
-            setIngredientAmount("");
-            setIngredientQuery("");
-            return newProduct;
-        } catch (err) {
-            setError(err.message || 'Tuotteen luonti epäonnistui');
-            return null;
-        }
-    };
-
+    
 
     const handleCreateProduct = async (prodName) => {
         try {
@@ -318,6 +256,8 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
                 amount: ingredientAmount || "",
             };
 
+            // Ei viedä suoraan reseptille
+            /*        
             setTempRecipe((prev) => {
                 const current = Array.isArray(prev?.ingredients) ? prev.ingredients : [];
                 return {
@@ -328,6 +268,7 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
 
             setIngredientAmount("");
             setIngredientQuery("");
+            */
             return newProduct;
         } catch (err) {
             setError(err.message || 'Tuotteen luonti epäonnistui');
@@ -422,6 +363,8 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
                                             setAmount={setIngredientAmount}
                                             query={ingredientQuery}
                                             setQuery={setIngredientQuery}
+                                            selectedProductId={selectedProductId}
+                                            setSelectedProductId={setSelectedProductId}
                                             onAddIngredient={handleAddIngredient}
                                             onRemoveIngredient={handleRemoveIngredient}
                                             onCreateProduct={handleCreateProduct}
