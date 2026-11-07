@@ -15,10 +15,37 @@ import DisabledOverlay from './components/DisabledOverlay';
 const Days = lazy(() => import('./views/Days'));
 const Recipes = lazy(() => import('./views/Recipes'));
 
+class ChunkErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 24 }}>
+          <h3>Jotain meni vikaan</h3>
+          <p>Offline-tilassa tämä näkymä ei ole ladattu.</p>
+          <button onClick={() => window.location.reload()}>
+            Yritä uudelleen
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const App = () => {
 
-  const [refresh, setRefresh] = useState(false);  
-  const [isMenuOpen, setIsMenuOpen] = useState(false);  
+  const [refresh, setRefresh] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
 
@@ -26,7 +53,7 @@ const App = () => {
     const savedView = localStorage.getItem('lastView');
     return savedView || 'categories';
   });
-  
+
 
   useEffect(() => {
     localStorage.setItem('lastView', view);
@@ -53,12 +80,12 @@ const App = () => {
     setIsMenuOpen(isOpen);
   };
 
-  const handleCategorySelect = (categoryId) => {    
+  const handleCategorySelect = (categoryId) => {
     setSelectedCategoryId(categoryId);
     setView('products');
   };
 
-  const handleViewChange = (view) => {    
+  const handleViewChange = (view) => {
     setSelectedCategoryId(null);
     localStorage.removeItem('lastSelectedCategoryId');
     setView(view);
@@ -81,17 +108,21 @@ const App = () => {
         return <Products refresh={refresh} categoryId={selectedCategoryId} />;
       case 'shoppingList':
         return <ShoppingList refresh={refresh} />;
-      case 'days':        
+      case 'days':
         return (
-          <Suspense fallback={<div>Ladataan...</div>}>
-            <Days refresh={refresh}/>
-          </Suspense>
+          <ChunkErrorBoundary>
+            <Suspense fallback={<div>Ladataan...</div>}>
+              <Days refresh={refresh} />
+            </Suspense>
+          </ChunkErrorBoundary>
         );
       case 'recipes':
         return (
-          <Suspense fallback={<div>Ladataan...</div>}>
-            <Recipes refresh={refresh}/>
-          </Suspense>
+          <ChunkErrorBoundary>
+            <Suspense fallback={<div>Ladataan...</div>}>
+              <Recipes refresh={refresh} />
+            </Suspense>
+          </ChunkErrorBoundary>
         );
       default:
         return <Categories refresh={refresh} onCategorySelect={handleCategorySelect} />;
@@ -104,7 +135,7 @@ const App = () => {
       <Menu onDatabaseCleared={handleDatabaseCleared} onToggleMenu={toggleMenu} isOpen={isMenuOpen} onOpenInfo={handleOpenInfo} />
       <DisabledOverlay $isDisabled={isMenuOpen}>
         <Container>{renderView()}</Container>
-        <Footer setView={handleViewChange} currentView={view} selectedCategoryId={selectedCategoryId}/>
+        <Footer setView={handleViewChange} currentView={view} selectedCategoryId={selectedCategoryId} />
       </DisabledOverlay>
       <Info isOpen={isInfoOpen} onCancel={handleCloseInfo}>
         {infoMessage}
