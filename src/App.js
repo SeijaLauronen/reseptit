@@ -30,7 +30,7 @@ class ChunkErrorBoundary extends React.Component {
       return (
         <div style={{ padding: 24 }}>
           <h3>Jotain meni vikaan</h3>
-          <p>Offline-tilassa tämä näkymä ei ole ladattu.</p>
+          <p>{this.props.viewName} ei latautunut offline-tilassa.</p>
           <button onClick={() => window.location.reload()}>
             Yritä uudelleen
           </button>
@@ -110,7 +110,7 @@ const App = () => {
         return <ShoppingList refresh={refresh} />;
       case 'days':
         return (
-          <ChunkErrorBoundary>
+          <ChunkErrorBoundary key={view} viewName="Päivät">
             <Suspense fallback={<div>Ladataan...</div>}>
               <Days refresh={refresh} />
             </Suspense>
@@ -118,7 +118,7 @@ const App = () => {
         );
       case 'recipes':
         return (
-          <ChunkErrorBoundary>
+          <ChunkErrorBoundary key={view} viewName="Reseptit">
             <Suspense fallback={<div>Ladataan...</div>}>
               <Recipes refresh={refresh} />
             </Suspense>
