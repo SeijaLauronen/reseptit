@@ -32,7 +32,9 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
     const [ingredientAmount, setIngredientAmount] = useState("");
     const [ingredientQuery, setIngredientQuery] = useState("");
     const [selectedProductId, setSelectedProductId] = useState("");
-    
+    const [editingIngredientIndex, setEditingIngredientIndex] = useState(null);
+    const [tempIngredient, setTempIngredient] = useState(null);
+
     const [confirmDialog, setConfirmDialog] = useState({
         isOpen: false,
         message: '',
@@ -94,6 +96,8 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
 
     const handleEditRecipe = (recipe) => {
         setEditingRecipeId(recipe.id);
+        setEditingIngredientIndex(null);
+        setTempIngredient(null);
         setTempRecipe({
             ...recipe,
             ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
@@ -105,6 +109,8 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
 
     const handleCancelEdit = () => {
         setEditingRecipeId(null);
+        setEditingIngredientIndex(null);
+        setTempIngredient(null);
         setTempRecipe(null);
     };
 
@@ -213,30 +219,43 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
         });
     };
 
-
-    const handleCreateProductX = async (prodName) => {
-        //TODO tämä pitää tarkistaa, että menee niinkuin pitää
-        // jos olet jo pannut productin luontifunktion controlleriin:
-        // const created = await addProduct({ name });
-        // return created;
-
-        let newProdId = null;
-        try {
-            const addedProdId = await addProduct({ name: prodName });
-            newProdId = addedProdId;
-        } catch (err) {
-            setError(err.message);
-        }
-
-        const newProduct = {
-            newProdId,
-            prodName,
-        };
-
-        setProducts((prev) => [...prev, newProduct]);
-        return newProduct;
+    const handleStartIngredientEdit = (index, ingredient) => {
+        setEditingIngredientIndex(index);
+        setTempIngredient({
+            ...ingredient,
+            amount: ingredient.amount || '',
+            productId: ingredient.productId || '',
+            productName: ingredient.productName || '',
+            nickname: ingredient.nickname || '',
+        });
     };
-    
+
+    const handleCancelIngredientEdit = () => {
+        setEditingIngredientIndex(null);
+        setTempIngredient(null);
+    };
+
+    const handleSaveIngredientEdit = (index) => {
+        if (!tempIngredient) return;
+
+        setTempRecipe((prev) => {
+            const current = Array.isArray(prev?.ingredients) ? prev.ingredients : [];
+            const next = [...current];
+            next[index] = {
+                ...next[index],
+                ...tempIngredient,
+            };
+
+            return {
+                ...prev,
+                ingredients: next,
+            };
+        });
+
+        setEditingIngredientIndex(null);
+        setTempIngredient(null);
+    };
+
 
     const handleCreateProduct = async (prodName) => {
         try {
@@ -275,7 +294,6 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
             return null;
         }
     };
-
 
     return (
         <MyErrorBoundary>
@@ -365,6 +383,12 @@ const Recipes = ({ refresh = false, isMenuOpen }) => {
                                             setQuery={setIngredientQuery}
                                             selectedProductId={selectedProductId}
                                             setSelectedProductId={setSelectedProductId}
+                                            editingIndex={editingIngredientIndex}
+                                            tempIngredient={tempIngredient}
+                                            setTempIngredient={setTempIngredient}
+                                            onStartEdit={handleStartIngredientEdit}
+                                            onCancelEdit={handleCancelIngredientEdit}
+                                            onSaveEdit={handleSaveIngredientEdit}
                                             onAddIngredient={handleAddIngredient}
                                             onRemoveIngredient={handleRemoveIngredient}
                                             onCreateProduct={handleCreateProduct}

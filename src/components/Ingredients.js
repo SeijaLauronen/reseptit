@@ -10,13 +10,6 @@ const IngredientsWrapper = styled.div`
   margin: 10px 0;
 `;
 
-const AddRowX = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  flex-wrap: wrap;
-`;
 
 const AmountInput = styled.input`
   width: 60px;
@@ -27,10 +20,6 @@ const AmountInput = styled.input`
   margin-left: 10px;
 `;
 
-const SearchWrapX = styled.div`
-  position: relative;
-  width: 100%;
-`;
 
 const AddRow = styled.div`
   display: flex;
@@ -40,10 +29,27 @@ const AddRow = styled.div`
   flex-wrap: nowrap;
 `;
 
-const SearchWrapZ = styled.div`
-  position: relative;
+const EditRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 80%;
+  flex-wrap: nowrap;
+  background-color: #cbe3a3;
+`;
+
+const EditFields = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex: 1 1 auto;
   min-width: 0;
+`;
+
+const EditActions = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
 `;
 
 const SearchWrap = styled.div`
@@ -57,22 +63,10 @@ const AddButton = styled.button`
   flex-shrink: 0;
 `;
 
-const SearchResultsZ = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  z-index: 20;
+const ActionButtons = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-  margin-top: 2px;
-  padding: 6px;
-  background: #f7f7f7;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  gap: 8px;
+  flex-shrink: 0;
 `;
 
 const SearchResults = styled.div`
@@ -96,15 +90,6 @@ const SearchResults = styled.div`
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 `;
 
-const SearchResultsX = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 80%;
-  margin-top: 4px;
-  margin-left: 80px;
-  
-`;
 
 const ProductOption = styled.button`
   width: 100%;
@@ -165,6 +150,12 @@ const Ingredients = ({
     setQuery,
     selectedProductId,
     setSelectedProductId,
+    editingIndex,
+    tempIngredient,
+    setTempIngredient,
+    onStartEdit,
+    onCancelEdit,
+    onSaveEdit,
     onAddIngredient,
     onRemoveIngredient,
     onCreateProduct,
@@ -257,6 +248,112 @@ const Ingredients = ({
         return `${amountText}Tuote`;
     };
 
+
+    const renderIngredientRow = (item, index) => {
+        const isEditingThis = editingIndex === index;
+
+        if (isEditingThis && tempIngredient) {
+            const editValue = tempIngredient.nickname || tempIngredient.productName || "";
+            const filteredEditProducts = editValue.trim()
+                ? products.filter((product) =>
+                    product.name.toLowerCase().includes(editValue.trim().toLowerCase())
+                )
+                : [];
+
+            return (
+
+                <EditRow key={`${item.productName || item.nickname || "ingredient"}-${index}`}>
+                    <IngredientName style={{ display: "flex", gap: 8, alignItems: "center", width: "100%" }}>
+                        <EditFields>
+                            <AmountInput
+                                type="text"
+                                value={tempIngredient.amount || ""}
+                                onChange={(e) =>
+                                    setTempIngredient(prev => ({ ...prev, amount: e.target.value }))
+                                }
+                                placeholder="Määrä"
+                            />
+
+                            <SearchWrap style={{ flex: 1 }}>
+                                <SpeechInput
+                                    value={editValue}
+                                    onChange={(e) =>
+                                        setTempIngredient(prev => ({
+                                            ...prev,
+                                            nickname: e.target.value,
+                                            productName: "",
+                                            productId: "",
+                                        }))
+                                    }
+                                    placeholder="Tuote tai nimitys"
+                                />
+
+                                {editValue && (
+                                    <SearchResults>
+                                        {filteredEditProducts.length > 0 ? (
+                                            filteredEditProducts.map((product) => (
+                                                <ProductOption
+                                                    key={product.id}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setTempIngredient(prev => ({
+                                                            ...prev,
+                                                            productId: product.id,
+                                                            productName: product.name,
+                                                            nickname: "",
+                                                        }))
+                                                    }
+                                                >
+                                                    {product.name}
+                                                </ProductOption>
+                                            ))
+                                        ) : (
+                                            <ProductOption
+                                                type="button"
+                                                onClick={async () => {
+                                                    const created = await onCreateProduct(editValue.trim());
+                                                    if (created) {
+                                                        setTempIngredient(prev => ({
+                                                            ...prev,
+                                                            productId: created.id,
+                                                            productName: created.name,
+                                                            nickname: "",
+                                                        }));
+                                                    }
+                                                }}
+                                            >
+                                                Lisää tuotteisiin: "{editValue.trim()}"
+                                            </ProductOption>
+                                        )}
+                                    </SearchResults>
+                                )}
+                            </SearchWrap>
+                        </EditFields>
+                    </IngredientName>
+
+                    <EditActions>
+                        <button type="button" onClick={() => onSaveEdit(index)}>Tallenna</button>
+                        <button type="button" onClick={onCancelEdit}>Peru</button>
+                    </EditActions>
+
+                </EditRow>
+            );
+        }
+
+        return (
+            <IngredientItem key={`${item.productName || item.nickname || "ingredient"}-${index}`}>
+                <IngredientName>{getDisplayName(item)}</IngredientName>
+
+                <div style={{ display: "flex", gap: 8 }}>
+                    <button type="button" onClick={() => onStartEdit(index, item)}>Muokkaa</button>
+                    <RemoveButton type="button" onClick={() => onRemoveIngredient(index)}>x</RemoveButton>
+                </div>
+            </IngredientItem>
+        );
+    };
+
+
+
     if (!isEditing) {
         return (
             <IngredientsWrapper>
@@ -280,19 +377,26 @@ const Ingredients = ({
             {items.length === 0 ? (
                 <div>Ei tuotteita</div>
             ) : (
-                <IngredientList>
-                    {items.map((item, index) => (
-                        <IngredientItem key={`${getDisplayName(item)}-${index}`}>
-                            <IngredientName>{getDisplayName(item)}</IngredientName>
-                            <RemoveButton
-                                type="button"
-                                onClick={() => onRemoveIngredient(index)}
-                            >
-                                x
-                            </RemoveButton>
-                        </IngredientItem>
-                    ))}
-                </IngredientList>
+                <>
+                    <IngredientList>
+                        {items.map((item, index) => renderIngredientRow(item, index))}
+                    </IngredientList>
+                    {/*
+                    <IngredientList>
+                        {items.map((item, index) => (
+                            <IngredientItem key={`${getDisplayName(item)}-${index}`}>
+                                <IngredientName>{getDisplayName(item)}</IngredientName>
+                                <RemoveButton
+                                    type="button"
+                                    onClick={() => onRemoveIngredient(index)}
+                                >
+                                    x
+                                </RemoveButton>
+                            </IngredientItem>
+                        ))}
+                    </IngredientList>
+                    */}
+                </>
             )}
 
             <AddRow>
@@ -307,10 +411,52 @@ const Ingredients = ({
                     <SpeechInput
                         value={query || ""}
                         onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Hae tuotetta tai kirjoita nimitys"
+                        placeholder="Hae tai anna ainesosa"
                     />
 
                     {normalizedQuery && (
+                        <>
+                            <SearchResults>
+                                {filteredProducts.length > 0 ? (
+                                    filteredProducts.map((product) => (
+                                        <ProductOption
+                                            key={product.id}
+                                            type="button"
+                                            onClick={() => {
+                                                setSelectedProductId(String(product.id));
+                                                setTempIngredient(prev => ({
+                                                    ...prev,
+                                                    productId: product.id,
+                                                    productName: product.name,
+                                                    nickname: "",
+                                                }));
+                                                setQuery(product.name);
+                                            }}
+                                        >
+                                            {product.name}
+                                        </ProductOption>
+                                    ))
+                                ) : (
+                                    <ProductOption
+                                        type="button"
+                                        onClick={async () => {
+                                            const created = await onCreateProduct(query.trim());
+                                            if (created) {
+                                                setTempIngredient(prev => ({
+                                                    ...prev,
+                                                    productId: created.id,
+                                                    productName: created.name,
+                                                    nickname: "",
+                                                }));
+                                            }
+                                            setQuery("");
+                                        }}
+                                    >
+                                        Lisää tuotteeseen: "{query.trim()}"
+                                    </ProductOption>
+                                )}
+                            </SearchResults>
+                            {/*
                         <SearchResults>
                             {filteredProducts.length > 0 ? (
                                 filteredProducts.map((product) => (
@@ -332,13 +478,15 @@ const Ingredients = ({
                                 </ProductOption>
                             )}
                         </SearchResults>
+                        */}
+                        </>
                     )}
                 </SearchWrap>
 
-                <AddButton type="button" 
+                <AddButton type="button"
                     //onClick={handleAddCustomIngredient}
                     onClick={handleAddSelectedIngredient}
-                    >                    
+                >
                     Reseptiin
                 </AddButton>
             </AddRow>
